@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import pl.crystalek.crcapi.Recipe;
 import pl.crystalek.crcapi.config.exception.ConfigLoadException;
 import pl.crystalek.crcapi.item.ItemBuilder;
 import pl.crystalek.crcapi.util.NumberUtil;
@@ -22,7 +23,7 @@ public class ConfigParserUtil {
             throw new ConfigLoadException("Nie wykryto pola material!");
         }
 
-        final ItemBuilder itemBuilder = ItemBuilder.builder().material(Material.valueOf(itemConfiguration.getString("material").toUpperCase()));
+        final ItemBuilder itemBuilder = ItemBuilder.builder().material(getMaterial(itemConfiguration.getString("material")));
         if (itemConfiguration.contains("amount")) {
             itemBuilder.amount(itemConfiguration.getInt("amount"));
         }
@@ -86,5 +87,27 @@ public class ConfigParserUtil {
         }
 
         return itemBuilder.build();
+    }
+
+    public Recipe.RecipeBuilder getRecipe(final ConfigurationSection recipeConfiguration) throws ConfigLoadException {
+        return Recipe.builder()
+                .slot1(getMaterial(recipeConfiguration.getString("1")))
+                .slot2(getMaterial(recipeConfiguration.getString("2")))
+                .slot3(getMaterial(recipeConfiguration.getString("3")))
+                .slot4(getMaterial(recipeConfiguration.getString("4")))
+                .slot5(getMaterial(recipeConfiguration.getString("5")))
+                .slot6(getMaterial(recipeConfiguration.getString("6")))
+                .slot7(getMaterial(recipeConfiguration.getString("7")))
+                .slot8(getMaterial(recipeConfiguration.getString("8")))
+                .slot9(getMaterial(recipeConfiguration.getString("9")));
+
+    }
+
+    private Material getMaterial(final String materialName) throws ConfigLoadException {
+        try {
+            return Material.valueOf(materialName.toUpperCase());
+        } catch (final IllegalArgumentException exception) {
+            throw new ConfigLoadException("Nie odnaleziono przedmiotu: " + materialName);
+        }
     }
 }

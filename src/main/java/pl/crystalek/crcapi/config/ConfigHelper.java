@@ -14,7 +14,7 @@ import java.io.IOException;
 @FieldDefaults(level = AccessLevel.PACKAGE)
 @RequiredArgsConstructor
 public class ConfigHelper {
-    final JavaPlugin plugin;
+    final JavaPlugin plugin = JavaPlugin.getProvidingPlugin(ConfigHelper.class);
     final String fileName;
     File file;
     @Getter

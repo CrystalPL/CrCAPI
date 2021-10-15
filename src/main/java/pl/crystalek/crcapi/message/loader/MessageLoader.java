@@ -29,11 +29,6 @@ public class MessageLoader {
     @Getter
     Map<String, List<Message>> messageMap = new HashMap<>();
 
-    public MessageLoader(final JavaPlugin plugin) {
-        this.plugin = plugin;
-        fileHelper = new FileHelper(plugin, "messages.yml");
-    }
-
     public void init() {
         try {
             fileHelper.checkExist();
