@@ -1,0 +1,9 @@
+dependencies {
+    implementation 'net.kyori:adventure-api:4.9.2'
+    implementation "net.kyori:adventure-platform-bukkit:4.0.0"
+    implementation project (":core")
+}
+
+shadowJar {
+    archiveFileName = "CrCAPIMessage.jar"
+}

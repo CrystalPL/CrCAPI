@@ -12,7 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class Recipe {
+public final class Recipe {
     final JavaPlugin plugin = JavaPlugin.getProvidingPlugin(Recipe.class);
     Material slot1;
     Material slot2;

@@ -9,11 +9,11 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class ColorUtil {
 
-    public static String color(final String text) {
+    public String color(final String text) {
         return ChatColor.translateAlternateColorCodes('&', text);
     }
 
-    public static List<String> color(final List<String> list) {
+    public List<String> color(final List<String> list) {
         return list.stream().map(ColorUtil::color).collect(Collectors.toList());
     }
 }
