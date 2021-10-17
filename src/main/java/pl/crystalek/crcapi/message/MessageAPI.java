@@ -49,8 +49,10 @@ public final class MessageAPI {
         messageList.forEach(message -> message.sendMessage(audience, replacements));
     }
 
-    public void init() {
-        messageLoader.init();
+    public boolean init() {
+        final boolean init = messageLoader.init();
         messageMap = messageLoader.getMessageMap();
+
+        return init;
     }
 }

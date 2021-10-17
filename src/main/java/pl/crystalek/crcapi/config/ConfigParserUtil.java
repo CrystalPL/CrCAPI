@@ -104,10 +104,11 @@ public class ConfigParserUtil {
     }
 
     private Material getMaterial(final String materialName) throws ConfigLoadException {
-        try {
-            return Material.valueOf(materialName.toUpperCase());
-        } catch (final IllegalArgumentException exception) {
+        final Material material = Material.getMaterial(materialName.toUpperCase());
+        if (material == null) {
             throw new ConfigLoadException("Nie odnaleziono przedmiotu: " + materialName);
         }
+
+        return material;
     }
 }

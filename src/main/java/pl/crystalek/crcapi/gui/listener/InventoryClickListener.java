@@ -9,6 +9,7 @@ import org.bukkit.inventory.InventoryHolder;
 import pl.crystalek.crcapi.gui.action.Action;
 import pl.crystalek.crcapi.gui.item.GUIItem;
 import pl.crystalek.crcapi.gui.type.BaseGUI;
+import pl.crystalek.crcapi.gui.type.PersistentGUI;
 
 import java.util.Optional;
 
@@ -26,15 +27,17 @@ public final class InventoryClickListener implements Listener {
             return;
         }
 
-        final BaseGUI baseGUI = (BaseGUI) inventoryHolder;
-        final Optional<GUIItem> slotOptional = baseGUI.getItem(event.getSlot() + 1);
-        if (slotOptional.isPresent()) {
-            final GUIItem guiItem = slotOptional.get();
+        final PersistentGUI baseGUI = (PersistentGUI) inventoryHolder;
+        if (clickedInventory.getType() != InventoryType.PLAYER) {
+            final Optional<GUIItem> slotOptional = baseGUI.getItem(event.getSlot() + 1);
+            if (slotOptional.isPresent()) {
+                final GUIItem guiItem = slotOptional.get();
 
-            final Optional<Action> action = guiItem.getActionManager().getAction(event.getAction());
-            if (action.isPresent()) {
-                action.get().getAction().accept(event);
-                return;
+                final Optional<Action> action = guiItem.getActionManager().getAction(event.getAction());
+                if (action.isPresent()) {
+                    action.get().getAction().accept(event);
+                    return;
+                }
             }
         }
 

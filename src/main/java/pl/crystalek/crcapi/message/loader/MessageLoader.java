@@ -29,17 +29,18 @@ public class MessageLoader {
     @Getter
     Map<String, List<Message>> messageMap = new HashMap<>();
 
-    public void init() {
+    public boolean init() {
         try {
             fileHelper.checkExist();
         } catch (final IOException exception) {
             LogUtil.error("Nie udało się utworzyć pliku lub folderu pluginu");
             Bukkit.getPluginManager().disablePlugin(plugin);
-            return;
+            return false;
         }
 
         fileHelper.load();
         loadMessage(fileHelper.getConfiguration());
+        return true;
     }
 
     private void loadMessage(final FileConfiguration configuration) {

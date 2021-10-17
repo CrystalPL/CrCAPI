@@ -1,6 +1,7 @@
 package pl.crystalek.crcapi.gui.type;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import pl.crystalek.crcapi.gui.item.GUIItem;
 
@@ -10,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@Getter
 public final class PersistentGUI extends BaseGUI {
     Map<Integer, GUIItem> slotListMap = new LinkedHashMap<>();
 
