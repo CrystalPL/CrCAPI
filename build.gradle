@@ -37,6 +37,6 @@ subprojects {
     shadowJar {
         classifier(null)
         minimize()
-        destinationDirectory.set(new File("F:\\Minecraft\\minecraft1.8.8\\plugins"))
+        destinationDirectory.set(new File("C:\\Users\\Crystal\\Desktop\\api"))
     }
 }

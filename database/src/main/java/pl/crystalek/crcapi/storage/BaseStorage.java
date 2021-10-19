@@ -15,7 +15,7 @@ import java.io.File;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
-public final class Storage<T extends BaseProvider> {
+public final class BaseStorage<T extends BaseProvider> {
     final StorageType storageType;
     final DatabaseConfig databaseConfig;
     final File sqliteDatabaseLocation;
