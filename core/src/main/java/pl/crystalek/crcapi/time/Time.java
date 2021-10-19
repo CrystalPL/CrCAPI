@@ -1,5 +1,11 @@
 package pl.crystalek.crcapi.time;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 enum Time {
 
     YEAR("rok", "lata", "lat", "y", 31_536_000_000L),
@@ -10,19 +16,11 @@ enum Time {
     MINUTE("minuta", "minuty", "minut", "min", 60_000),
     SECOND("sekunda", "sekundy", "sekund", "s", 1_000);
 
-    private final String text1;
-    private final String text2;
-    private final String text3;
-    private final String shortForm;
-    private final long millis;
-
-    Time(final String text1, final String text2, final String text3, final String shortForm, final long millis) {
-        this.text1 = text1;
-        this.text2 = text2;
-        this.text3 = text3;
-        this.shortForm = shortForm;
-        this.millis = millis;
-    }
+    String text1;
+    String text2;
+    String text3;
+    String shortForm;
+    long millis;
 
     String getForm(final long number, final boolean shortForm) {
         if (number == 0) {
