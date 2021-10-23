@@ -2,6 +2,7 @@ package pl.crystalek.crcapi.message.impl;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
@@ -23,6 +24,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @AllArgsConstructor
 public final class BossBarMessage implements Message {
+    @Getter
     Component component;
     float progress;
     BossBar.Color color;
@@ -91,6 +93,17 @@ public final class BossBarMessage implements Message {
     public void sendMessage(final Audience sender, final Map<String, Object> replacements) {
         final Component title = MessageUtil.replace(this.component, replacements);
         final BossBar bossBar = BossBar.bossBar(MessageUtil.replace(title, replacements), progress, color, overlay);
+
+        sender.showBossBar(bossBar);
+        if (plugin != null) {
+            Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> sender.hideBossBar(bossBar), stayTime);
+        }
+    }
+
+    @Override
+    public void sendMessageComponent(final Audience sender, final Map<String, Component> replacements) {
+        final Component title = MessageUtil.replaceComponent(this.component, replacements);
+        final BossBar bossBar = BossBar.bossBar(MessageUtil.replaceComponent(title, replacements), progress, color, overlay);
 
         sender.showBossBar(bossBar);
         if (plugin != null) {

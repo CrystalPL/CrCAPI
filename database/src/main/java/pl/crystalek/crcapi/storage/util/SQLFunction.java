@@ -1,8 +1,8 @@
-package pl.crystalek.crcapi.storage.impl;
+package pl.crystalek.crcapi.storage.util;
 
 import java.sql.SQLException;
 
 @FunctionalInterface
-interface SQLFunction<T, R> {
+public interface SQLFunction<T, R> {
     R apply(T t) throws SQLException;
 }

@@ -1,6 +1,7 @@
 package pl.crystalek.crcapi.message.impl;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import net.kyori.adventure.audience.Audience;
@@ -16,6 +17,7 @@ import java.util.Map;
 
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
+@Getter
 public final class ChatMessage implements Message {
     Component component;
 
@@ -64,5 +66,10 @@ public final class ChatMessage implements Message {
     @Override
     public void sendMessage(final Audience sender, final Map<String, Object> replacements) {
         sender.sendMessage(MessageUtil.replace(component, replacements));
+    }
+
+    @Override
+    public void sendMessageComponent(final Audience sender, final Map<String, Component> replacements) {
+        sender.sendMessage(MessageUtil.replaceComponent(component, replacements));
     }
 }

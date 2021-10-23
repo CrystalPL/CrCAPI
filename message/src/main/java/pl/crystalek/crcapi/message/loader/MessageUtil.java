@@ -41,4 +41,15 @@ public class MessageUtil {
 
         return newComponent;
     }
+
+    public Component replaceComponent(final Component component, final Map<String, Component> replacements) {
+        Component newComponent = component;
+
+        for (final Map.Entry<String, Component> entry : replacements.entrySet()) {
+            final TextReplacementConfig replacement = TextReplacementConfig.builder().matchLiteral(entry.getKey()).replacement(entry.getValue()).build();
+            newComponent = newComponent.replaceText(replacement);
+        }
+
+        return newComponent;
+    }
 }

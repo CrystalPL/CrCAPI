@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.crystalek.crcapi.config.ConfigHelper;
 import pl.crystalek.crcapi.config.FileHelper;
+import pl.crystalek.crcapi.message.impl.ChatMessage;
 import pl.crystalek.crcapi.message.loader.MessageLoader;
 
 import java.util.List;
@@ -47,6 +48,30 @@ public final class MessageAPI {
         }
 
         messageList.forEach(message -> message.sendMessage(audience, replacements));
+    }
+
+    public static void sendMessageComponent(final String messagePath, final CommandSender messageReceiver, final Map<String, Component> replacements) {
+        sendMessageComponent(messagePath, bukkitAudiences.sender(messageReceiver), replacements);
+    }
+
+    public static void sendMessageComponent(final String messagePath, final Audience audience, final Map<String, Component> replacements) {
+        final List<Message> messageList = messageMap.get(messagePath);
+        if (messageList == null) {
+            audience.sendMessage(Component.text("Nie odnaleziono wiadomości: " + messagePath + ". Zgłoś błąd administratorowi."));
+            return;
+        }
+
+        messageList.forEach(message -> message.sendMessageComponent(audience, replacements));
+    }
+
+    public static Component getChatComponent(final String messagePath) {
+        for (final Message message : messageMap.get(messagePath)) {
+            if (message instanceof ChatMessage) {
+                return message.getComponent();
+            }
+        }
+
+        return null;
     }
 
     public boolean init() {

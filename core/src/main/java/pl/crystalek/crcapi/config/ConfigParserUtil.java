@@ -1,7 +1,10 @@
 package pl.crystalek.crcapi.config;
 
 import lombok.experimental.UtilityClass;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -87,6 +90,41 @@ public class ConfigParserUtil {
         }
 
         return itemBuilder.build();
+    }
+
+    public Location getLocation(final ConfigurationSection locationConfiguration) throws ConfigLoadException {
+        final String worldName = locationConfiguration.getString("world");
+        final World world = Bukkit.getWorld(worldName);
+        if (world == null) {
+            throw new ConfigLoadException("Nie odnaleziono świata: " + worldName);
+        }
+
+        final Optional<Double> xOptional = NumberUtil.getDouble("x");
+        if (!xOptional.isPresent()) {
+            throw new ConfigLoadException("Koordynat x nie jest liczbą!");
+        }
+
+        final Optional<Double> yOptional = NumberUtil.getDouble("z");
+        if (!yOptional.isPresent()) {
+            throw new ConfigLoadException("Koordynat y nie jest liczbą!");
+        }
+
+        final Optional<Double> zOptional = NumberUtil.getDouble("z");
+        if (!zOptional.isPresent()) {
+            throw new ConfigLoadException("Koordynat z nie jest liczbą!");
+        }
+
+        final Optional<Float> yawOptional = NumberUtil.getFloat("yaw");
+        if (!yawOptional.isPresent()) {
+            throw new ConfigLoadException("Koordynat yaw nie jest liczbą!");
+        }
+
+        final Optional<Float> pitchOptional = NumberUtil.getFloat("pitch");
+        if (!pitchOptional.isPresent()) {
+            throw new ConfigLoadException("Koordynat pitch nie jest liczbą!");
+        }
+
+        return new Location(world, xOptional.get(), yOptional.get(), zOptional.get(), yawOptional.get(), pitchOptional.get());
     }
 
     public Recipe.RecipeBuilder getRecipe(final ConfigurationSection recipeConfiguration) throws ConfigLoadException {

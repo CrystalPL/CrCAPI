@@ -2,31 +2,51 @@ package pl.crystalek.crcapi.storage.config;
 
 import lombok.experimental.UtilityClass;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.plugin.java.JavaPlugin;
 import pl.crystalek.crcapi.config.exception.ConfigLoadException;
+import pl.crystalek.crcapi.storage.StorageType;
+
+import java.io.File;
 
 @UtilityClass
 public class DatabaseConfigLoader {
 
     public DatabaseConfig getDatabaseConfig(final ConfigurationSection databaseConfiguration) throws ConfigLoadException {
-        checkFieldExist(databaseConfiguration, "hostname");
-        checkFieldExist(databaseConfiguration, "port");
-        checkFieldExist(databaseConfiguration, "database");
-        checkFieldExist(databaseConfiguration, "username");
-        checkFieldExist(databaseConfiguration, "password");
-        checkFieldExist(databaseConfiguration, "useSSL");
-        checkFieldExist(databaseConfiguration, "poolSize");
-        checkFieldExist(databaseConfiguration, "connectionTimeout");
+        checkFieldExist(databaseConfiguration, "storageType");
 
-        final String hostname = databaseConfiguration.getString("hostname");
-        final String port = databaseConfiguration.getString("port");
-        final String database = databaseConfiguration.getString("database");
-        final String username = databaseConfiguration.getString("username");
-        final String password = databaseConfiguration.getString("password");
-        final boolean useSSL = databaseConfiguration.getBoolean("useSSL");
-        final int poolSize = databaseConfiguration.getInt("poolSize");
-        final int connectionTimeout = databaseConfiguration.getInt("connectionTimeout");
+        final ConfigurationSection databaseSettings = databaseConfiguration.getConfigurationSection("settings");
+        checkFieldExist(databaseSettings, "hostname");
+        checkFieldExist(databaseSettings, "port");
+        checkFieldExist(databaseSettings, "database");
+        checkFieldExist(databaseSettings, "username");
+        checkFieldExist(databaseSettings, "password");
+        checkFieldExist(databaseSettings, "useSSL");
+        checkFieldExist(databaseSettings, "poolSize");
+        checkFieldExist(databaseSettings, "connectionTimeout");
+        checkFieldExist(databaseSettings, "prefix");
 
-        return new DatabaseConfig(hostname, port, database, username, password, useSSL, poolSize, connectionTimeout);
+        final ConfigurationSection sqliteConfiguration = databaseConfiguration.getConfigurationSection("sqlite");
+        checkFieldExist(sqliteConfiguration, "fileName");
+
+        final StorageType storageType;
+        try {
+            storageType = StorageType.valueOf(databaseConfiguration.getString("storageType").toUpperCase());
+        } catch (final IllegalArgumentException exception) {
+            throw new ConfigLoadException("Nie odnaleziono bazy: " + databaseConfiguration.getString("storageType"));
+        }
+        final String hostname = databaseSettings.getString("hostname");
+        final String port = databaseSettings.getString("port");
+        final String database = databaseSettings.getString("database");
+        final String username = databaseSettings.getString("username");
+        final String password = databaseSettings.getString("password");
+        final boolean useSSL = databaseSettings.getBoolean("useSSL");
+        final int poolSize = databaseSettings.getInt("poolSize");
+        final int connectionTimeout = databaseSettings.getInt("connectionTimeout");
+        final String prefix = databaseSettings.getString("prefix");
+        final String sqliteFileName = sqliteConfiguration.getString("fileName");
+        final File sqliteDatabaseLocation = new File(JavaPlugin.getProvidingPlugin(DatabaseConfigLoader.class).getDataFolder(), sqliteFileName);
+
+        return new DatabaseConfig(storageType, hostname, port, database, username, password, useSSL, poolSize, connectionTimeout, prefix, sqliteDatabaseLocation);
     }
 
     private void checkFieldExist(final ConfigurationSection databaseConfiguration, final String field) throws ConfigLoadException {

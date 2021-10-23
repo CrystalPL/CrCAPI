@@ -1,6 +1,7 @@
 package pl.crystalek.crcapi.message.impl;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import net.kyori.adventure.audience.Audience;
@@ -19,7 +20,9 @@ import java.util.Optional;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public final class TitleMessage implements Message {
-    Component title;
+    //tile component
+    @Getter
+    Component component;
     Component subTitle;
     Title.Times times;
 
@@ -65,7 +68,13 @@ public final class TitleMessage implements Message {
 
     @Override
     public void sendMessage(final Audience sender, final Map<String, Object> replacements) {
-        final Title title = Title.title(MessageUtil.replace(this.title, replacements), MessageUtil.replace(subTitle, replacements), times);
+        final Title title = Title.title(MessageUtil.replace(this.component, replacements), MessageUtil.replace(subTitle, replacements), times);
+        sender.showTitle(title);
+    }
+
+    @Override
+    public void sendMessageComponent(final Audience sender, final Map<String, Component> replacements) {
+        final Title title = Title.title(MessageUtil.replaceComponent(this.component, replacements), MessageUtil.replaceComponent(subTitle, replacements), times);
         sender.showTitle(title);
     }
 }

@@ -1,4 +1,4 @@
-package pl.crystalek.crcapi.storage.impl;
+package pl.crystalek.crcapi.storage.util;
 
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.AccessLevel;
