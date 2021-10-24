@@ -4,7 +4,7 @@ import org.bukkit.command.CommandSender;
 
 import java.util.List;
 
-public interface SubCommand {
+public interface BaseSubCommand {
 
     void execute(final CommandSender sender, final String[] args);
 
