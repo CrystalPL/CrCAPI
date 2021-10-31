@@ -99,27 +99,27 @@ public class ConfigParserUtil {
             throw new ConfigLoadException("Nie odnaleziono świata: " + worldName);
         }
 
-        final Optional<Double> xOptional = NumberUtil.getDouble("x");
+        final Optional<Double> xOptional = NumberUtil.getDouble(locationConfiguration.get("x"));
         if (!xOptional.isPresent()) {
             throw new ConfigLoadException("Koordynat x nie jest liczbą!");
         }
 
-        final Optional<Double> yOptional = NumberUtil.getDouble("z");
+        final Optional<Double> yOptional = NumberUtil.getDouble(locationConfiguration.get("y"));
         if (!yOptional.isPresent()) {
             throw new ConfigLoadException("Koordynat y nie jest liczbą!");
         }
 
-        final Optional<Double> zOptional = NumberUtil.getDouble("z");
+        final Optional<Double> zOptional = NumberUtil.getDouble(locationConfiguration.get("z"));
         if (!zOptional.isPresent()) {
             throw new ConfigLoadException("Koordynat z nie jest liczbą!");
         }
 
-        final Optional<Float> yawOptional = NumberUtil.getFloat("yaw");
+        final Optional<Float> yawOptional = NumberUtil.getFloat(locationConfiguration.get("yaw"));
         if (!yawOptional.isPresent()) {
             throw new ConfigLoadException("Koordynat yaw nie jest liczbą!");
         }
 
-        final Optional<Float> pitchOptional = NumberUtil.getFloat("pitch");
+        final Optional<Float> pitchOptional = NumberUtil.getFloat(locationConfiguration.get("pitch"));
         if (!pitchOptional.isPresent()) {
             throw new ConfigLoadException("Koordynat pitch nie jest liczbą!");
         }

@@ -64,6 +64,14 @@ public final class MessageAPI {
         messageList.forEach(message -> message.sendMessageComponent(audience, replacements));
     }
 
+    public static void broadcastComponent(final String messagePath, final Map<String, Component> replacements) {
+        sendMessageComponent(messagePath, bukkitAudiences.players(), replacements);
+    }
+
+    public static void broadcast(final String messagePath, final Map<String, Object> replacements) {
+        sendMessage(messagePath, bukkitAudiences.players(), replacements);
+    }
+
     public static Component getChatComponent(final String messagePath) {
         for (final Message message : messageMap.get(messagePath)) {
             if (message instanceof ChatMessage) {
