@@ -12,6 +12,7 @@ import pl.crystalek.crcapi.config.ConfigHelper;
 import pl.crystalek.crcapi.config.FileHelper;
 import pl.crystalek.crcapi.message.impl.ChatMessage;
 import pl.crystalek.crcapi.message.loader.MessageLoader;
+import pl.crystalek.crcapi.message.loader.MessageUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -62,6 +63,14 @@ public final class MessageAPI {
         }
 
         messageList.forEach(message -> message.sendMessageComponent(audience, replacements));
+    }
+
+    public static void sendMessage(final Component component, final CommandSender messageReceiver, final Map<String, Component> replacements) {
+        bukkitAudiences.sender(messageReceiver).sendMessage(MessageUtil.replaceComponent(component, replacements));
+    }
+
+    public static void sendMessageComponent(final Component component, final CommandSender messageReceiver, final Map<String, Object> replacements) {
+        bukkitAudiences.sender(messageReceiver).sendMessage(MessageUtil.replace(component, replacements));
     }
 
     public static void broadcastComponent(final String messagePath, final Map<String, Component> replacements) {

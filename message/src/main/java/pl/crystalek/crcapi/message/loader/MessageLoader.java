@@ -23,7 +23,7 @@ import java.util.*;
 
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
-public class MessageLoader {
+public final class MessageLoader {
     JavaPlugin plugin;
     FileHelper fileHelper;
     @Getter

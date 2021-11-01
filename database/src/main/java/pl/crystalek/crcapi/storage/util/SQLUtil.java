@@ -16,6 +16,16 @@ import java.sql.SQLException;
 public final class SQLUtil {
     HikariDataSource database;
 
+    public void openConnection(final SQLConsumer<Connection> consumer) {
+        try (
+                final Connection connection = database.getConnection()
+        ) {
+            consumer.accept(connection);
+        } catch (final SQLException exception) {
+            exception.printStackTrace();
+        }
+    }
+
     public <R> R openConnection(final SQLFunction<Connection, R> consumer) {
         try (
                 final Connection connection = database.getConnection()
@@ -35,7 +45,9 @@ public final class SQLUtil {
     }
 
     public Boolean executeUpdateAndOpenConnection(final String sql, final Object... params) {
-        return openConnection(connection -> executeUpdate(connection, sql, params));
+        return openConnection(connection -> {
+            return executeUpdate(connection, sql, params);
+        });
     }
 
     public <R> R executeQuery(final Connection connection, final String sql, SQLFunction<ResultSet, R> consumer, final Object... params) throws SQLException {
@@ -47,7 +59,9 @@ public final class SQLUtil {
     }
 
     public <R> R executeQueryAndOpenConnection(final String sql, SQLFunction<ResultSet, R> consumer, final Object... params) {
-        return openConnection(connection -> executeQuery(connection, sql, consumer, params));
+        return openConnection(connection -> {
+            return executeQuery(connection, sql, consumer, params);
+        });
     }
 
     public void completionStatement(final PreparedStatement statement, final Object... params) throws SQLException {

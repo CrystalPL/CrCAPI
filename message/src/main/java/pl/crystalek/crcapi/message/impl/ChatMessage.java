@@ -29,15 +29,15 @@ public final class ChatMessage implements Message {
             return new ChatMessage(singleChatMessage);
         }
 
-        final Component chatMessageComponent = Component.text("");
+        Component chatMessageComponent = Component.text("");
         for (final String messageSectionName : chatMessageConfiguration.getKeys(false)) {
             final ConfigurationSection messageSectionConfiguration = chatMessageConfiguration.getConfigurationSection(messageSectionName);
 
-            final Component chatMessage = MessageUtil.replaceOldColorToComponent(MessageUtil.getStringMessage(messageSectionConfiguration.get("message")));
+            Component chatMessage = MessageUtil.replaceOldColorToComponent(MessageUtil.getStringMessage(messageSectionConfiguration.get("message")));
 
             //check if the message has hover event
             if (messageSectionConfiguration.contains("hover")) {
-                chatMessage.hoverEvent(HoverEvent.showText(MessageUtil.replaceOldColorToComponent(MessageUtil.getStringMessage(messageSectionConfiguration.get("hover")))));
+                chatMessage = chatMessage.hoverEvent(HoverEvent.showText(MessageUtil.replaceOldColorToComponent(MessageUtil.getStringMessage(messageSectionConfiguration.get("hover")))));
             }
 
             //check if the message has click event
@@ -54,10 +54,10 @@ public final class ChatMessage implements Message {
                 }
 
                 final String action = messageSectionConfiguration.getString("action.action");
-                chatMessage.clickEvent(ClickEvent.clickEvent(clickEventType, action));
+                chatMessage = chatMessage.clickEvent(ClickEvent.clickEvent(clickEventType, action));
             }
 
-            chatMessageComponent.append(chatMessage);
+            chatMessageComponent = chatMessageComponent.append(chatMessage);
         }
 
         return new ChatMessage(chatMessageComponent);
