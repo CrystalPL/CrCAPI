@@ -81,6 +81,10 @@ public final class MessageAPI {
         sendMessage(messagePath, bukkitAudiences.players(), replacements);
     }
 
+    public static void broadcast(final String messagePath) {
+        sendMessage(messagePath, bukkitAudiences.players());
+    }
+
     public static Component getChatComponent(final String messagePath) {
         for (final Message message : messageMap.get(messagePath)) {
             if (message instanceof ChatMessage) {
