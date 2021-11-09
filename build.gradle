@@ -36,7 +36,7 @@ subprojects {
 
     shadowJar {
         classifier(null)
-        minimize()
+//        minimize()
         destinationDirectory.set(new File("C:\\Users\\Crystal\\Desktop\\api"))
     }
 }

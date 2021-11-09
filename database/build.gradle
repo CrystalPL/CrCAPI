@@ -14,4 +14,10 @@ shadowJar {
     relocate 'google.protobuf', 'pl.crystalek.crcapi.lib.protobuf'
 
     archiveFileName = "CrCAPIDatabase.jar"
+
+    exclude 'com/mysql/**'
+
+//    minimize {
+//        exclude(dependency('mysql:mysql-connector-java:8.0.26'))
+//    }
 }
