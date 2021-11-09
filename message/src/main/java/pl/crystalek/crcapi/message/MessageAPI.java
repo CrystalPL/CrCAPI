@@ -8,40 +8,37 @@ import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
-import pl.crystalek.crcapi.config.ConfigHelper;
 import pl.crystalek.crcapi.config.FileHelper;
-import pl.crystalek.crcapi.message.impl.ChatMessage;
 import pl.crystalek.crcapi.message.loader.MessageLoader;
 import pl.crystalek.crcapi.message.loader.MessageUtil;
 
 import java.util.List;
 import java.util.Map;
 
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public final class MessageAPI {
-    static Map<String, List<Message>> messageMap;
-    static BukkitAudiences bukkitAudiences;
-    MessageLoader messageLoader;
+    final BukkitAudiences bukkitAudiences;
+    final MessageLoader messageLoader;
+    Map<String, List<Message>> messageMap;
 
-    public MessageAPI() {
-        final JavaPlugin plugin = JavaPlugin.getProvidingPlugin(ConfigHelper.class);
-        this.messageLoader = new MessageLoader(plugin, new FileHelper("messages.yml"));
-        bukkitAudiences = BukkitAudiences.create(plugin);
+    public MessageAPI(final JavaPlugin plugin) {
+        this.messageLoader = new MessageLoader(plugin, new FileHelper("messages.yml", plugin));
+        this.bukkitAudiences = BukkitAudiences.create(plugin);
     }
 
-    public static void sendMessage(final String messagePath, final CommandSender messageReceiver) {
+    public void sendMessage(final String messagePath, final CommandSender messageReceiver) {
         sendMessage(messagePath, bukkitAudiences.sender(messageReceiver));
     }
 
-    public static void sendMessage(final String messagePath, final CommandSender messageReceiver, final Map<String, Object> replacements) {
+    public void sendMessage(final String messagePath, final CommandSender messageReceiver, final Map<String, Object> replacements) {
         sendMessage(messagePath, bukkitAudiences.sender(messageReceiver), replacements);
     }
 
-    public static void sendMessage(final String messagePath, final Audience audience) {
+    public void sendMessage(final String messagePath, final Audience audience) {
         sendMessage(messagePath, audience, ImmutableMap.of());
     }
 
-    public static void sendMessage(final String messagePath, final Audience audience, final Map<String, Object> replacements) {
+    public void sendMessage(final String messagePath, final Audience audience, final Map<String, Object> replacements) {
         final List<Message> messageList = messageMap.get(messagePath);
         if (messageList == null) {
             audience.sendMessage(Component.text("Nie odnaleziono wiadomości: " + messagePath + ". Zgłoś błąd administratorowi."));
@@ -51,11 +48,11 @@ public final class MessageAPI {
         messageList.forEach(message -> message.sendMessage(audience, replacements));
     }
 
-    public static void sendMessageComponent(final String messagePath, final CommandSender messageReceiver, final Map<String, Component> replacements) {
+    public void sendMessageComponent(final String messagePath, final CommandSender messageReceiver, final Map<String, Component> replacements) {
         sendMessageComponent(messagePath, bukkitAudiences.sender(messageReceiver), replacements);
     }
 
-    public static void sendMessageComponent(final String messagePath, final Audience audience, final Map<String, Component> replacements) {
+    public void sendMessageComponent(final String messagePath, final Audience audience, final Map<String, Component> replacements) {
         final List<Message> messageList = messageMap.get(messagePath);
         if (messageList == null) {
             audience.sendMessage(Component.text("Nie odnaleziono wiadomości: " + messagePath + ". Zgłoś błąd administratorowi."));
@@ -65,29 +62,29 @@ public final class MessageAPI {
         messageList.forEach(message -> message.sendMessageComponent(audience, replacements));
     }
 
-    public static void sendMessage(final Component component, final CommandSender messageReceiver, final Map<String, Component> replacements) {
+    public void sendMessage(final Component component, final CommandSender messageReceiver, final Map<String, Component> replacements) {
         bukkitAudiences.sender(messageReceiver).sendMessage(MessageUtil.replaceComponent(component, replacements));
     }
 
-    public static void sendMessageComponent(final Component component, final CommandSender messageReceiver, final Map<String, Object> replacements) {
+    public void sendMessageComponent(final Component component, final CommandSender messageReceiver, final Map<String, Object> replacements) {
         bukkitAudiences.sender(messageReceiver).sendMessage(MessageUtil.replace(component, replacements));
     }
 
-    public static void broadcastComponent(final String messagePath, final Map<String, Component> replacements) {
+    public void broadcastComponent(final String messagePath, final Map<String, Component> replacements) {
         sendMessageComponent(messagePath, bukkitAudiences.players(), replacements);
     }
 
-    public static void broadcast(final String messagePath, final Map<String, Object> replacements) {
+    public void broadcast(final String messagePath, final Map<String, Object> replacements) {
         sendMessage(messagePath, bukkitAudiences.players(), replacements);
     }
 
-    public static void broadcast(final String messagePath) {
+    public void broadcast(final String messagePath) {
         sendMessage(messagePath, bukkitAudiences.players());
     }
 
-    public static Component getChatComponent(final String messagePath) {
+    public Component getComponent(final String messagePath, final Class<? extends Message> clazz) {
         for (final Message message : messageMap.get(messagePath)) {
-            if (message instanceof ChatMessage) {
+            if (message.getClass().isInstance(clazz)) {
                 return message.getComponent();
             }
         }

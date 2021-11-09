@@ -10,9 +10,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.bukkit.plugin.java.JavaPlugin;
 import pl.crystalek.crcapi.storage.config.DatabaseConfig;
 import pl.crystalek.crcapi.storage.impl.Database;
-import pl.crystalek.crcapi.util.LogUtil;
 
 import java.util.concurrent.TimeUnit;
 
@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public final class MongoStorage implements Database {
     final DatabaseConfig databaseConfig;
+    final JavaPlugin plugin;
     MongoClient mongoClient;
     MongoClientSettings clientSettings;
     @Getter
@@ -37,7 +38,7 @@ public final class MongoStorage implements Database {
 
             return true;
         } catch (final MongoException exception) {
-            LogUtil.error("Wystąpił błąd podczas próby konfiguracji połączenia bazy mongodb");
+            plugin.getLogger().severe("Wystąpił błąd podczas próby konfiguracji połączenia bazy mongodb");
             return false;
         }
     }
@@ -49,7 +50,7 @@ public final class MongoStorage implements Database {
             database = mongoClient.getDatabase(databaseConfig.getDatabase());
             return true;
         } catch (final MongoException exception) {
-            LogUtil.error("Wystąpił błąd podczas próby połączenia z bazą mongodb");
+            plugin.getLogger().severe("Wystąpił błąd podczas próby połączenia z bazą mongodb");
             return false;
         }
     }

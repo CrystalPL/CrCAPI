@@ -5,8 +5,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.bukkit.plugin.java.JavaPlugin;
 import pl.crystalek.crcapi.storage.impl.Database;
-import pl.crystalek.crcapi.util.LogUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +17,7 @@ import java.sql.SQLException;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public final class SQLiteStorage implements Database {
     final File databaseLocation;
+    final JavaPlugin plugin;
     @Getter
     HikariDataSource database;
 
@@ -25,7 +26,7 @@ public final class SQLiteStorage implements Database {
         try {
             Class.forName("org.sqlite.JDBC");
         } catch (final ClassNotFoundException exception) {
-            LogUtil.error("Wystąpił błąd podczas próby inicjalizacji SQLite");
+            plugin.getLogger().severe("Wystąpił błąd podczas próby inicjalizacji SQLite");
             exception.printStackTrace();
             return false;
         }
@@ -55,7 +56,7 @@ public final class SQLiteStorage implements Database {
                     return false;
                 }
             } catch (final IOException exception) {
-                LogUtil.error("Wystąpił błąd podczas próby stworzenia pliku bazy SQLite");
+                plugin.getLogger().severe("Wystąpił błąd podczas próby stworzenia pliku bazy SQLite");
                 exception.printStackTrace();
                 return false;
             }

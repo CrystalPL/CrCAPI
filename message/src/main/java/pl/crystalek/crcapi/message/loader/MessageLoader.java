@@ -16,7 +16,6 @@ import pl.crystalek.crcapi.message.impl.ActionBarMessage;
 import pl.crystalek.crcapi.message.impl.BossBarMessage;
 import pl.crystalek.crcapi.message.impl.ChatMessage;
 import pl.crystalek.crcapi.message.impl.TitleMessage;
-import pl.crystalek.crcapi.util.LogUtil;
 
 import java.io.IOException;
 import java.util.*;
@@ -33,7 +32,7 @@ public final class MessageLoader {
         try {
             fileHelper.checkExist();
         } catch (final IOException exception) {
-            LogUtil.error("Nie udało się utworzyć pliku lub folderu pluginu");
+            plugin.getLogger().severe("Nie udało się utworzyć pliku lub folderu pluginu!");
             Bukkit.getPluginManager().disablePlugin(plugin);
             return false;
         }
@@ -71,8 +70,8 @@ public final class MessageLoader {
                 final ChatMessage chatMessage = ChatMessage.loadChatMessage(messageConfiguration);
                 messageList.add(chatMessage);
             } catch (final MessageLoadException exception) {
-                LogUtil.error("Wystąpił problem podczas ładowania wiadomości wysyłanej na czacie w sekcji: " + messageConfiguration.getName());
-                LogUtil.error(exception.getMessage());
+                plugin.getLogger().severe("Wystąpił problem podczas ładowania wiadomości wysyłanej na czacie w sekcji: " + messageConfiguration.getName());
+                plugin.getLogger().severe(exception.getMessage());
             }
         }
 
@@ -88,10 +87,9 @@ public final class MessageLoader {
                 final TitleMessage titleMessage = TitleMessage.loadTitleMessage(messageConfiguration);
                 messageList.add(titleMessage);
             } catch (final MessageLoadException exception) {
-                LogUtil.error("Wystąpił problem podczas ładowania wiadomości wyświetlanej na środku ekranu w sekcji: " + messageConfiguration.getName());
-                LogUtil.error(exception.getMessage());
+                plugin.getLogger().severe("Wystąpił problem podczas ładowania wiadomości wyświetlanej na środku ekranu w sekcji: " + messageConfiguration.getName());
+                plugin.getLogger().severe(exception.getMessage());
             }
-
         }
 
         //bossbar configurer
@@ -100,8 +98,8 @@ public final class MessageLoader {
                 final BossBarMessage bossBarMessage = BossBarMessage.loadBossBar(messageConfiguration, plugin);
                 messageList.add(bossBarMessage);
             } catch (final MessageLoadException exception) {
-                LogUtil.error("Wystąpił problem podczas ładowania wiadomości wyświetlanej na pasku smoka w sekcji: " + messageConfiguration.getName());
-                LogUtil.error(exception.getMessage());
+                plugin.getLogger().severe(exception.getMessage());
+                plugin.getLogger().severe("Wystąpił problem podczas ładowania wiadomości wyświetlanej na pasku smoka w sekcji: " + messageConfiguration.getName());
             }
         }
 

@@ -13,7 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public final class Recipe {
-    final JavaPlugin plugin = JavaPlugin.getProvidingPlugin(Recipe.class);
+    JavaPlugin plugin;
     Material slot1;
     Material slot2;
     Material slot3;
@@ -27,6 +27,10 @@ public final class Recipe {
     String recipeName;
 
     public void registerRecipe() {
+        if (plugin == null) {
+            throw new NullPointerException("plugin cannot be null");
+        }
+
         ShapedRecipe recipe;
         try {
             Class.forName("org.bukkit.NamespacedKey");
