@@ -4,6 +4,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
+import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +12,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 public final class ActionManager {
-    final Map<InventoryAction, Action> inventoryActionEventMap = new HashMap<>();
+    final Map<InventoryAction, Action> inventoryActionEventMap = new EnumMap<>(InventoryAction.class);
 
     public Optional<Action> getAction(final InventoryAction action) {
         return Optional.ofNullable(inventoryActionEventMap.get(action));

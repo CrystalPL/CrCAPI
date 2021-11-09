@@ -1,11 +1,10 @@
 dependencies {
-    implementation 'net.kyori:adventure-api:4.9.2'
-    implementation "net.kyori:adventure-platform-bukkit:4.0.0"
+    implementation ("net.kyori:adventure-platform-bukkit:4.0.0")
     implementation project (":core")
 }
 
 shadowJar {
-    relocate 'net.kyori.adventure', 'pl.crystalek.crcapi.lib.adventure'
+    relocate 'net.kyori', 'pl.crystalek.crcapi.lib.adventure'
     relocate 'net.kyori.examination', 'pl.crystalek.crcapi.lib.examination'
 
     archiveFileName = "CrCAPIMessage.jar"

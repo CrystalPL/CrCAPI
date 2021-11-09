@@ -13,7 +13,6 @@ import pl.crystalek.crcapi.config.exception.ConfigLoadException;
 import pl.crystalek.crcapi.item.ItemBuilder;
 import pl.crystalek.crcapi.util.NumberUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -58,7 +57,7 @@ public class ConfigParserUtil {
             if (lore instanceof String) {
                 itemBuilder.lore((String) lore);
             } else if (lore instanceof List) {
-                itemBuilder.lore((ArrayList<String>) lore);
+                itemBuilder.lore((List<String>) lore);
             } else {
                 throw new ConfigLoadException("Nie udało się załadować pola lore!");
             }
@@ -69,8 +68,10 @@ public class ConfigParserUtil {
             if (itemFlag instanceof String) {
                 itemBuilder.flag(ItemFlag.valueOf(((String) itemFlag).toUpperCase()));
             } else if (itemFlag instanceof List) {
-                final List<ItemFlag> itemFlagList = ((ArrayList<String>) itemFlag).stream().map(String::toUpperCase).map(ItemFlag::valueOf).collect(Collectors.toList());
-                itemBuilder.flag(itemFlagList);
+                itemBuilder.flag(((List<String>) itemFlag).stream()
+                        .map(line -> ItemFlag.valueOf(line.toUpperCase()))
+                        .collect(Collectors.toList())
+                );
             } else {
                 throw new ConfigLoadException("Nie udało się załadować pola itemFlag!");
             }
@@ -127,22 +128,16 @@ public class ConfigParserUtil {
         return new Location(world, xOptional.get(), yOptional.get(), zOptional.get(), yawOptional.get(), pitchOptional.get());
     }
 
-    public Recipe.RecipeBuilder getRecipe(final ConfigurationSection recipeConfiguration) throws ConfigLoadException {
-        return Recipe.builder()
-                .slot1(getMaterial(recipeConfiguration.getString("1")))
-                .slot2(getMaterial(recipeConfiguration.getString("2")))
-                .slot3(getMaterial(recipeConfiguration.getString("3")))
-                .slot4(getMaterial(recipeConfiguration.getString("4")))
-                .slot5(getMaterial(recipeConfiguration.getString("5")))
-                .slot6(getMaterial(recipeConfiguration.getString("6")))
-                .slot7(getMaterial(recipeConfiguration.getString("7")))
-                .slot8(getMaterial(recipeConfiguration.getString("8")))
-                .slot9(getMaterial(recipeConfiguration.getString("9")));
+    public Recipe getRecipe(final ConfigurationSection recipeConfiguration, final Recipe recipe) throws ConfigLoadException {
+        for (int i = 0; i < 9; i++) {
+            recipe.setItem(i, getMaterial(recipeConfiguration.getString(String.valueOf(i + 1))));
+        }
 
+        return recipe;
     }
 
     private Material getMaterial(final String materialName) throws ConfigLoadException {
-        final Material material = Material.getMaterial(materialName.toUpperCase());
+        final Material material = Material.matchMaterial(materialName);
         if (material == null) {
             throw new ConfigLoadException("Nie odnaleziono przedmiotu: " + materialName);
         }

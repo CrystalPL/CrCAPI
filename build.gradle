@@ -1,8 +1,7 @@
 plugins {
     id 'java'
-    id "com.github.johnrengelman.shadow" version "7.0.0"
+    id "com.github.johnrengelman.shadow" version "7.1.0"
 }
-compileJava.options.encoding = 'UTF-8'
 
 allprojects {
     group = 'pl.crystalek'
@@ -11,17 +10,21 @@ allprojects {
     apply plugin: 'java'
     apply plugin: 'com.github.johnrengelman.shadow'
 
-    sourceCompatibility = '1.8'
-    targetCompatibility = '1.8'
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    compileJava.options.encoding = 'UTF-8'
 }
 
 subprojects {
     repositories {
         mavenCentral()
+
         maven {
             name = 'spigotmc-repo'
             url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
         }
+
         maven {
             name = 'sonatype'
             url = 'https://oss.sonatype.org/content/groups/public/'
@@ -29,14 +32,15 @@ subprojects {
     }
 
     dependencies {
-        shadow 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
-        compileOnly 'org.projectlombok:lombok:1.18.22'
-        annotationProcessor 'org.projectlombok:lombok:1.18.22'
+        shadow ('org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT')
+        shadow ('org.projectlombok:lombok:1.18.22')
+        annotationProcessor ('org.projectlombok:lombok:1.18.22')
     }
 
     shadowJar {
         classifier(null)
-//        minimize()
-        destinationDirectory.set(new File("C:\\Users\\Crystal\\Desktop\\api"))
+        destinationDirectory.set(new File(rootProject.rootDir, "api"))
     }
 }
+
+shadowJar.enabled = false

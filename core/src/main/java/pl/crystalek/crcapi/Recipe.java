@@ -1,32 +1,29 @@
 package pl.crystalek.crcapi;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.experimental.FieldDefaults;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@Builder
 public final class Recipe {
-    JavaPlugin plugin;
-    Material slot1;
-    Material slot2;
-    Material slot3;
-    Material slot4;
-    Material slot5;
-    Material slot6;
-    Material slot7;
-    Material slot8;
-    Material slot9;
-    ItemStack resultItem;
-    String recipeName;
 
-    public void registerRecipe() {
+    private final String recipeName;
+    private final ItemStack resultItem;
+    private final Material[] ingredients;
+
+    public Recipe(final String recipeName, final ItemStack resultItem) {
+        this.recipeName = recipeName;
+        this.resultItem = resultItem;
+        this.ingredients = new Material[9];
+    }
+
+    public void setItem(final int slot, final Material material) {
+        this.ingredients[slot] = material;
+    }
+
+    public void registerRecipe(final Plugin plugin) {
         if (plugin == null) {
             throw new NullPointerException("plugin cannot be null");
         }
@@ -34,30 +31,23 @@ public final class Recipe {
         ShapedRecipe recipe;
         try {
             Class.forName("org.bukkit.NamespacedKey");
-
-            final NamespacedKey bedrock_breaker = new NamespacedKey(plugin, recipeName);
-            recipe = new ShapedRecipe(bedrock_breaker, resultItem);
+            recipe = new ShapedRecipe(new NamespacedKey(plugin, this.recipeName), this.resultItem);
         } catch (final ClassNotFoundException exception) {
-            recipe = new ShapedRecipe(resultItem);
+            recipe = new ShapedRecipe(this.resultItem);
         }
+
         recipe.shape("abc", "def", "ghi");
 
-        setItem(recipe, slot1, 'a');
-        setItem(recipe, slot2, 'b');
-        setItem(recipe, slot3, 'c');
-        setItem(recipe, slot4, 'd');
-        setItem(recipe, slot5, 'e');
-        setItem(recipe, slot6, 'f');
-        setItem(recipe, slot7, 'g');
-        setItem(recipe, slot8, 'h');
-        setItem(recipe, slot9, 'i');
+        for (int i = 0; i < 9; i++) {
+            final Material ingredient = this.ingredients[i];
+            if (ingredient == null || ingredient == Material.AIR) {
+                continue;
+            }
+
+            recipe.setIngredient((char) ('a' + i), ingredient);
+        }
 
         Bukkit.addRecipe(recipe);
     }
 
-    private void setItem(final ShapedRecipe recipe, final Material material, final char character) {
-        if (material != Material.AIR) {
-            recipe.setIngredient(character, material);
-        }
-    }
 }

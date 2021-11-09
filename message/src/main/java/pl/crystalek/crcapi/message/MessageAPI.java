@@ -82,6 +82,7 @@ public final class MessageAPI {
         sendMessage(messagePath, bukkitAudiences.players());
     }
 
+    // Why not use Optional?
     public Component getComponent(final String messagePath, final Class<? extends Message> clazz) {
         for (final Message message : messageMap.get(messagePath)) {
             if (message.getClass().isInstance(clazz)) {

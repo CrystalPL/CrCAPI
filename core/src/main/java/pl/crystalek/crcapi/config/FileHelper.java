@@ -11,6 +11,7 @@ public final class FileHelper extends ConfigHelper {
     }
 
     public void save() throws IOException {
-        configuration.save(file);
+        this.configuration.save(this.file);
     }
+
 }

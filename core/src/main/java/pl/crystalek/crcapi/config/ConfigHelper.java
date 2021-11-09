@@ -14,6 +14,7 @@ import java.io.IOException;
 @FieldDefaults(level = AccessLevel.PACKAGE)
 @RequiredArgsConstructor
 public class ConfigHelper {
+
     final String fileName;
     final JavaPlugin plugin;
     File file;
@@ -21,21 +22,19 @@ public class ConfigHelper {
     FileConfiguration configuration;
 
     public void checkExist() throws IOException {
-        final File dataFolder = plugin.getDataFolder();
-        if (!dataFolder.exists()) {
-            final boolean mkdirs = dataFolder.mkdirs();
-            if (!mkdirs) {
-                throw new IOException();
-            }
+        final File dataFolder = this.plugin.getDataFolder();
+        if (!dataFolder.exists() && !dataFolder.mkdirs()) {
+            throw new IOException();
         }
 
-        file = new File(dataFolder, fileName);
-        if (!file.exists()) {
-            plugin.saveResource(fileName, true);
+        this.file = new File(dataFolder, this.fileName);
+        if (!this.file.exists()) {
+            this.plugin.saveResource(this.fileName, true);
         }
     }
 
     public void load() {
-        configuration = YamlConfiguration.loadConfiguration(file);
+        this.configuration = YamlConfiguration.loadConfiguration(this.file);
     }
+
 }
