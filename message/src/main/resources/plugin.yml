@@ -1,0 +1,4 @@
+name: CrCAPIMessage
+main: pl.crystalek.crcapi.message.CrCAPIMessage
+version: 1.0
+author: Crystal

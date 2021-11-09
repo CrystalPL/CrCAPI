@@ -1,0 +1,4 @@
+name: CrCAPICore
+main: pl.crystalek.crcapi.CrCAPICore
+version: 1.0
+author: Crystal
