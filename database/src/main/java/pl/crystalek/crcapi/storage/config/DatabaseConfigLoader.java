@@ -11,7 +11,7 @@ import java.io.File;
 @UtilityClass
 public class DatabaseConfigLoader {
 
-    public DatabaseConfig getDatabaseConfig(final ConfigurationSection databaseConfiguration) throws ConfigLoadException {
+    public DatabaseConfig getDatabaseConfig(final ConfigurationSection databaseConfiguration, final JavaPlugin plugin) throws ConfigLoadException {
         checkFieldExist(databaseConfiguration, "storageType");
 
         final ConfigurationSection databaseSettings = databaseConfiguration.getConfigurationSection("settings");
@@ -44,7 +44,7 @@ public class DatabaseConfigLoader {
         final int connectionTimeout = databaseSettings.getInt("connectionTimeout");
         final String prefix = databaseSettings.getString("prefix");
         final String sqliteFileName = sqliteConfiguration.getString("fileName");
-        final File sqliteDatabaseLocation = new File(JavaPlugin.getProvidingPlugin(DatabaseConfigLoader.class).getDataFolder(), sqliteFileName);
+        final File sqliteDatabaseLocation = new File(plugin.getDataFolder(), sqliteFileName);
 
         return new DatabaseConfig(storageType, hostname, port, database, username, password, useSSL, poolSize, connectionTimeout, prefix, sqliteDatabaseLocation);
     }
