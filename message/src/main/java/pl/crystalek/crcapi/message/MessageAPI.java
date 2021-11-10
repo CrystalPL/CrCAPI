@@ -14,6 +14,7 @@ import pl.crystalek.crcapi.message.loader.MessageUtil;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public final class MessageAPI {
@@ -82,15 +83,14 @@ public final class MessageAPI {
         sendMessage(messagePath, bukkitAudiences.players());
     }
 
-    // Why not use Optional?
-    public Component getComponent(final String messagePath, final Class<? extends Message> clazz) {
+    public Optional<Component> getComponent(final String messagePath, final Class<? extends Message> clazz) {
         for (final Message message : messageMap.get(messagePath)) {
             if (message.getClass().isInstance(clazz)) {
-                return message.getComponent();
+                return Optional.of(message.getComponent());
             }
         }
 
-        return null;
+        return Optional.empty();
     }
 
     public boolean init() {

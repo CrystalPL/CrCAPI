@@ -1,5 +1,8 @@
 package pl.crystalek.crcapi;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -7,17 +10,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.Plugin;
 
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public final class Recipe {
 
-    private final String recipeName;
-    private final ItemStack resultItem;
-    private final Material[] ingredients;
-
-    public Recipe(final String recipeName, final ItemStack resultItem) {
-        this.recipeName = recipeName;
-        this.resultItem = resultItem;
-        this.ingredients = new Material[9];
-    }
+    String recipeName;
+    ItemStack resultItem;
+    Material[] ingredients = new Material[9];
 
     public void setItem(final int slot, final Material material) {
         this.ingredients[slot] = material;
