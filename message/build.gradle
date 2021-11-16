@@ -1,6 +1,6 @@
 dependencies {
     implementation ("net.kyori:adventure-platform-bukkit:4.0.0")
-    implementation project (":core")
+    shadow project (":core")
 }
 
 shadowJar {

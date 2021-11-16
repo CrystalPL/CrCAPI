@@ -85,7 +85,7 @@ public final class MessageAPI {
 
     public Optional<Component> getComponent(final String messagePath, final Class<? extends Message> clazz) {
         for (final Message message : messageMap.get(messagePath)) {
-            if (message.getClass().isInstance(clazz)) {
+            if (clazz.isInstance(message)) {
                 return Optional.of(message.getComponent());
             }
         }

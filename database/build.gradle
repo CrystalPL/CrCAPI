@@ -3,7 +3,7 @@ dependencies {
     implementation ('org.mongodb:mongodb-driver-sync:4.3.2')
     implementation ('mysql:mysql-connector-java:8.0.26')
 
-    implementation project(":core")
+    shadow project(":core")
 }
 
 shadowJar {
