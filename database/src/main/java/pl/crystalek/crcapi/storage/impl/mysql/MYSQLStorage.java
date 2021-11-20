@@ -21,7 +21,7 @@ public final class MYSQLStorage implements Database {
     @Override
     public boolean connect() {
         database = new HikariDataSource();
-        database.setJdbcUrl("jdbc:mysql://" + databaseConfig.getHostname() + ":" + databaseConfig.getPort() + "/" + databaseConfig.getDatabase() + "?useSSL=" + databaseConfig.isUseSSL());
+        database.setJdbcUrl("jdbc:mysql://" + databaseConfig.getHostname() + ":" + databaseConfig.getPort() + "/" + databaseConfig.getDatabase() + "?allowPublicKeyRetrieval=true" + "&useSSL=" + databaseConfig.isUseSSL());
         database.setDriverClassName("com.mysql.cj.jdbc.Driver");
         database.setUsername(databaseConfig.getUsername());
         database.setPassword(databaseConfig.getPassword());
