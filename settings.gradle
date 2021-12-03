@@ -3,4 +3,5 @@ include 'core'
 include 'gui'
 include 'message'
 include 'database'
+include 'messagei18n'
 
