@@ -1,0 +1,39 @@
+database:
+  # storage type: SQLite, MongoDB, MYSQL
+  storageType: MYSQL
+
+  # settings section, responsible for connection configuration, if you use MYSQL/MongoDB
+  settings:
+    # hostname - database hot
+    hostname: "127.0.0.1"
+
+    # port — database port
+    port: "3306"
+
+    # database — database name
+    database: "chillcode"
+
+    # username — database username
+    username: "root"
+
+    # password — database password
+    password: "admin"
+
+    # useSSL - czy whether to use SSL while connecting with z database
+    useSSL: "false"
+
+    # poolSize — maximum number of connections to the database
+    poolSize: 5
+
+    # connectionTimeout — delay time for connection the database
+    connectionTimeout: 20000
+
+    # prefix you want to appear in table name (SQLite, MYSQL) or collections (MongoDB)
+    prefix: "chillcode_"
+
+  sqlite:
+    # database name, if you use SQLite
+    fileName: data/data.db
+
+# used if there are no messages defined for the language used by the player
+defaultLanguage: pl_PL

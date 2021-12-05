@@ -1,0 +1,10 @@
+dependencies {
+    shadow project(":message-core")
+}
+
+shadowJar {
+    relocate 'net.kyori', 'pl.crystalek.crcapi.lib.adventure'
+    relocate 'net.kyori.examination', 'pl.crystalek.crcapi.lib.examination'
+
+    archiveFileName = "CrCAPISingleMessage.jar"
+}

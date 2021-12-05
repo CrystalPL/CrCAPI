@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'java-library'
     id "com.github.johnrengelman.shadow" version "7.1.0"
 }
 
@@ -7,7 +7,7 @@ allprojects {
     group = 'pl.crystalek'
     version = '1.0-SNAPSHOT'
 
-    apply plugin: 'java'
+    apply plugin: 'java-library'
     apply plugin: 'com.github.johnrengelman.shadow'
 
     sourceCompatibility = JavaVersion.VERSION_1_8

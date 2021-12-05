@@ -3,5 +3,7 @@ include 'core'
 include 'gui'
 include 'message'
 include 'database'
-include 'messagei18n'
+include 'message-core'
+include 'message-localized'
+include 'message-single'
 

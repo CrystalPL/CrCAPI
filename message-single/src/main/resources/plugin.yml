@@ -1,0 +1,5 @@
+name: CrCAPISingleMessage
+main: pl.crystalek.crcapi.singlemessage.CrCAPISingleMessage
+version: 1.0
+author: Crystal
+depend: [ CrCAPICore ]
