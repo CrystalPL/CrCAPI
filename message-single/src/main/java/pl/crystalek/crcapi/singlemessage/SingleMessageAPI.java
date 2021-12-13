@@ -19,7 +19,7 @@ public final class SingleMessageAPI extends MessageAPI {
     Map<String, List<Message>> messageMap;
 
     public SingleMessageAPI(final JavaPlugin plugin) {
-        super(plugin);
+        super(CrCAPISingleMessage.getBukkitAudiences());
         this.messageLoader = new SingleMessageLoader(plugin);
     }
 

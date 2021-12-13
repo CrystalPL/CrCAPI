@@ -1,23 +1,23 @@
 package pl.crystalek.crcapi.message;
 
 import com.google.common.collect.ImmutableMap;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.java.JavaPlugin;
 import pl.crystalek.crcapi.message.util.MessageUtil;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public abstract class MessageAPI {
-    private final BukkitAudiences bukkitAudiences;
-
-    public MessageAPI(final JavaPlugin plugin) {
-        this.bukkitAudiences = BukkitAudiences.create(plugin);
-    }
+    BukkitAudiences bukkitAudiences;
 
     public abstract void sendMessage(final String messagePath, final Audience audience, final Map<String, Object> replacements);
 

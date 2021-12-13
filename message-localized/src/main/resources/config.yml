@@ -29,7 +29,7 @@ database:
     connectionTimeout: 20000
 
     # prefix you want to appear in table name (SQLite, MYSQL) or collections (MongoDB)
-    prefix: "chillcode_"
+    prefix: "message_"
 
   sqlite:
     # database name, if you use SQLite

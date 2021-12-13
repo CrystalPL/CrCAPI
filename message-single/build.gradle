@@ -1,5 +1,5 @@
 dependencies {
-    shadow project(":message-core")
+    implementation project(":message-core")
 }
 
 shadowJar {

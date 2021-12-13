@@ -18,7 +18,7 @@ public final class LocalizedMessageAPI extends MessageAPI {
     LocalizedMessageLoader messageLoader;
 
     public LocalizedMessageAPI(final JavaPlugin plugin) {
-        super(plugin);
+        super(CrCAPILocalizedMessage.getBukkitAudiences());
 
         this.messageLoader = new LocalizedMessageLoader(plugin);
     }
@@ -30,12 +30,12 @@ public final class LocalizedMessageAPI extends MessageAPI {
 
     @Override
     public void sendMessageComponent(final String messagePath, final Audience audience, final Map<String, Component> replacements) {
-        sendMessageComponent(messageLoader.getLocaleMessageMap().get(UserCache.getLocale(audience)), messagePath, audience, replacements);
+        sendMessageComponent(messageLoader.getPlayerMessageMap(UserCache.getLocale(audience)), messagePath, audience, replacements);
     }
 
     @Override
     public Optional<Component> getComponent(final String messagePath, final Audience audience, final Class<? extends Message> clazz) {
-        return getComponent(messageLoader.getLocaleMessageMap().get(UserCache.getLocale(audience)), messagePath, clazz);
+        return getComponent(messageLoader.getPlayerMessageMap(UserCache.getLocale(audience)), messagePath, clazz);
     }
 
     @Override

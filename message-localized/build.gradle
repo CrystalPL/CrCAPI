@@ -1,5 +1,13 @@
+repositories {
+    flatDir {
+        dirs new File(rootProject.rootDir, "api")
+    }
+}
+
 dependencies {
-    shadow project(":message-core")
+    shadow('org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT')
+    implementation project(":message-core")
+    compileOnly name: "CrCAPIDatabase"
 }
 
 shadowJar {
