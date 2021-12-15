@@ -1,0 +1,19 @@
+repositories {
+    flatDir {
+        dirs new File(rootProject.rootDir, "api")
+    }
+}
+
+dependencies {
+    implementation("net.kyori:adventure-platform-bukkit:4.0.0")
+    shadow('org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT')
+    shadow project(":core")
+    compileOnly name: "CrCAPIDatabase"
+}
+
+shadowJar {
+    relocate 'net.kyori', 'pl.crystalek.crcapi.lib.adventure'
+    relocate 'net.kyori.examination', 'pl.crystalek.crcapi.lib.examination'
+
+    archiveFileName = "CrCAPIMessage.jar"
+}

@@ -2,7 +2,5 @@ rootProject.name = 'CrCAPI'
 include 'core'
 include 'gui'
 include 'database'
-include 'message-core'
-include 'message-localized'
-include 'message-single'
+include 'message'
 
