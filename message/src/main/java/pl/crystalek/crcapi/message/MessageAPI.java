@@ -23,9 +23,13 @@ public abstract class MessageAPI {
 
     public abstract void sendMessageComponent(final String messagePath, final Audience audience, final Map<String, Component> replacements);
 
-    public abstract Optional<Component> getComponent(final String messagePath, final Audience audience, final Class<? extends Message> clazz);
+    protected abstract Optional<Component> getComponent(final String messagePath, final Audience audience, final Class<? extends Message> clazz);
 
     public abstract boolean init();
+
+    public Optional<Component> getComponent(final String messagePath, final CommandSender messageReceiver, final Class<? extends Message> clazz) {
+        return this.getComponent(messagePath, bukkitAudiences.sender(messageReceiver), clazz);
+    }
 
     protected void sendMessage(final Map<String, List<Message>> messageMap, final String messagePath, final Audience audience, final Map<String, Object> replacements) {
         final List<Message> messageList = messageMap.get(messagePath);

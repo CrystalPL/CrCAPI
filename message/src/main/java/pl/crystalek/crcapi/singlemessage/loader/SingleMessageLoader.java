@@ -10,15 +10,14 @@ import pl.crystalek.crcapi.message.Message;
 import pl.crystalek.crcapi.message.loader.MessageLoader;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public final class SingleMessageLoader extends MessageLoader {
-    FileHelper fileHelper;
+    final FileHelper fileHelper;
     @Getter
-    Map<String, List<Message>> messageMap = new HashMap<>();
+    Map<String, List<Message>> messageMap;
 
     public SingleMessageLoader(final JavaPlugin plugin) {
         super(plugin);
@@ -37,7 +36,7 @@ public final class SingleMessageLoader extends MessageLoader {
         }
 
         fileHelper.load();
-        loadMessage(fileHelper.getConfiguration());
+        this.messageMap = loadMessage(fileHelper.getConfiguration());
         return true;
     }
 }

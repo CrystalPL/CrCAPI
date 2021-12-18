@@ -1,5 +1,5 @@
-name: CrCAPILocalizedMessage
-main: pl.crystalek.crcapi.messagei18n.CrCAPILocalizedMessage
+name: CrCAPIMessage
+main: pl.crystalek.crcapi.CrCAPIMessage
 version: 1.0
 author: Crystal
 depend: [ CrCAPICore, CrCAPIDatabase ]
