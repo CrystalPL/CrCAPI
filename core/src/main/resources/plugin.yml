@@ -1,4 +1,5 @@
 name: CrCAPICore
 main: pl.crystalek.crcapi.CrCAPICore
 version: 1.0
+api-version: 1.13
 author: Crystal

@@ -5,7 +5,6 @@ import lombok.experimental.FieldDefaults;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.bukkit.plugin.java.JavaPlugin;
-import pl.crystalek.crcapi.CrCAPIMessage;
 import pl.crystalek.crcapi.message.Message;
 import pl.crystalek.crcapi.message.MessageAPI;
 import pl.crystalek.crcapi.messagei18n.loader.LocalizedMessageLoader;
@@ -19,8 +18,6 @@ public final class LocalizedMessageAPI extends MessageAPI {
     LocalizedMessageLoader messageLoader;
 
     public LocalizedMessageAPI(final JavaPlugin plugin) {
-        super(CrCAPIMessage.getBukkitAudiences());
-
         this.messageLoader = new LocalizedMessageLoader(plugin);
     }
 

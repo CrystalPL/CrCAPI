@@ -5,7 +5,6 @@ import lombok.experimental.FieldDefaults;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.bukkit.plugin.java.JavaPlugin;
-import pl.crystalek.crcapi.CrCAPIMessage;
 import pl.crystalek.crcapi.message.Message;
 import pl.crystalek.crcapi.message.MessageAPI;
 import pl.crystalek.crcapi.singlemessage.loader.SingleMessageLoader;
@@ -20,7 +19,6 @@ public final class SingleMessageAPI extends MessageAPI {
     Map<String, List<Message>> messageMap;
 
     public SingleMessageAPI(final JavaPlugin plugin) {
-        super(CrCAPIMessage.getBukkitAudiences());
         this.messageLoader = new SingleMessageLoader(plugin);
     }
 
