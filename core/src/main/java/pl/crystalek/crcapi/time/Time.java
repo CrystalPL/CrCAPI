@@ -12,9 +12,9 @@ enum Time {
     MONTH("miesiąc", "miesiace", "miesiecy", "m", 2_592_000_000L),
     WEEK("tydzień", "tygodnie", "tygodni", "w", 604_800_000L),
     DAY("dzień", "dni", "dni", "d", 86_400_000L),
-    HOUR("godzina", "godziny", "godzin", "h", 3_600_000L),
-    MINUTE("minuta", "minuty", "minut", "min", 60_000),
-    SECOND("sekunda", "sekundy", "sekund", "s", 1_000);
+    HOUR("godzinę", "godziny", "godzin", "h", 3_600_000L),
+    MINUTE("minutę", "minuty", "minut", "min", 60_000),
+    SECOND("sekundę", "sekundy", "sekund", "s", 1_000);
 
     String text1;
     String text2;
