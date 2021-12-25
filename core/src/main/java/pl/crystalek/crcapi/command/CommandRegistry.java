@@ -1,6 +1,7 @@
 package pl.crystalek.crcapi.command;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
@@ -9,6 +10,7 @@ import org.bukkit.command.CommandMap;
 
 import java.lang.reflect.Field;
 
+@Getter
 @UtilityClass
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class CommandRegistry {
