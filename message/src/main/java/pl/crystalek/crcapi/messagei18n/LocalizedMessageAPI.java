@@ -23,7 +23,7 @@ public final class LocalizedMessageAPI extends MessageAPI {
 
     @Override
     public void sendMessage(final String messagePath, final Audience audience, final Map<String, Object> replacements) {
-        sendMessage(messageLoader.getLocaleMessageMap().get(UserCache.getLocale(audience)), messagePath, audience, replacements);
+        sendMessage(messageLoader.getPlayerMessageMap(UserCache.getLocale(audience)), messagePath, audience, replacements);
     }
 
     @Override
