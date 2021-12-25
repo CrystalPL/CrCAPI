@@ -10,10 +10,10 @@ import org.bukkit.command.CommandMap;
 
 import java.lang.reflect.Field;
 
-@Getter
 @UtilityClass
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class CommandRegistry {
+    @Getter
     CommandMap commandMap;
 
     static {
