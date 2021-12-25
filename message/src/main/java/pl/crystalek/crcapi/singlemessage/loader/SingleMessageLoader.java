@@ -30,7 +30,7 @@ public final class SingleMessageLoader extends MessageLoader {
         try {
             fileHelper.checkExist();
         } catch (final IOException exception) {
-            plugin.getLogger().severe("Nie udało się utworzyć pliku lub folderu pluginu!");
+            plugin.getLogger().severe("Failed to create file or plugin directory!");
             Bukkit.getPluginManager().disablePlugin(plugin);
             return false;
         }

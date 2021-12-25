@@ -39,21 +39,21 @@ public final class LocalizedMessageLoader extends MessageLoader {
     public boolean init() {
         final File dataFolder = this.plugin.getDataFolder();
         if (!dataFolder.exists() && !dataFolder.mkdirs()) {
-            plugin.getLogger().severe("Nie udało się utworzyć folderu pluginu!");
+            plugin.getLogger().severe("Failed to create plugin directory!");
             Bukkit.getPluginManager().disablePlugin(plugin);
             return false;
         }
 
         final File messageFolder = new File(dataFolder, "lang");
         if (!messageFolder.exists() && !messageFolder.mkdirs()) {
-            plugin.getLogger().severe("Nie udało się utworzyć folderu lang!");
+            plugin.getLogger().severe("Failed to create lang directory!");
             Bukkit.getPluginManager().disablePlugin(plugin);
             return false;
         }
 
         final File[] languages = messageFolder.listFiles();
         if (languages == null || languages.length == 0) {
-            plugin.getLogger().severe("Nie odnaleziono plików z wiadomościami");
+            plugin.getLogger().severe("Not found messages files!");
             Bukkit.getPluginManager().disablePlugin(plugin);
             return false;
         }
@@ -65,14 +65,14 @@ public final class LocalizedMessageLoader extends MessageLoader {
                     throw new IllegalArgumentException();
                 }
             } catch (final IllegalArgumentException exception) {
-                plugin.getLogger().severe("Nie odnaleziono języka: " + messageFile.getName());
+                plugin.getLogger().severe("Not found language: " + messageFile.getName());
                 Bukkit.getPluginManager().disablePlugin(plugin);
                 return false;
             }
 
             final Map<String, List<Message>> localeMessageMap = loadMessage(YamlConfiguration.loadConfiguration(messageFile));
             this.localeMessageMap.put(locale, localeMessageMap);
-            plugin.getLogger().info("Załadowano język: " + messageFile.getName());
+            plugin.getLogger().info("Loaded language: " + removeExtension(messageFile.getName()));
         }
 
         return true;
