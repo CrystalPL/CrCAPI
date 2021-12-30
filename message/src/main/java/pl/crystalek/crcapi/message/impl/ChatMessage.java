@@ -14,53 +14,63 @@ import pl.crystalek.crcapi.message.exception.MessageLoadException;
 import pl.crystalek.crcapi.message.util.MessageUtil;
 
 import java.util.Map;
+import java.util.function.Predicate;
 
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 @Getter
 public final class ChatMessage implements Message {
+    static Predicate<String> CHAT_FORMAT = key -> key.equalsIgnoreCase("hover") || key.equalsIgnoreCase("action") || key.equalsIgnoreCase("message");
     Component component;
 
     public static ChatMessage loadChatMessage(final ConfigurationSection messageConfiguration) throws MessageLoadException {
-        final ConfigurationSection chatMessageConfiguration = messageConfiguration.getConfigurationSection("chat");
-
-        if (chatMessageConfiguration == null) {
+        if (!messageConfiguration.isConfigurationSection("chat")) {
             final Component singleChatMessage = MessageUtil.replaceOldColorToComponent(MessageUtil.getStringMessage(messageConfiguration.get("chat")));
             return new ChatMessage(singleChatMessage);
+        }
+
+        final ConfigurationSection chatMessageConfiguration = messageConfiguration.getConfigurationSection("chat");
+        if (chatMessageConfiguration.getKeys(false).stream().anyMatch(CHAT_FORMAT)) {
+            return new ChatMessage(getMessageComponent(chatMessageConfiguration));
         }
 
         Component chatMessageComponent = Component.text("");
         for (final String messageSectionName : chatMessageConfiguration.getKeys(false)) {
             final ConfigurationSection messageSectionConfiguration = chatMessageConfiguration.getConfigurationSection(messageSectionName);
+            final Component messageComponent = getMessageComponent(messageSectionConfiguration);
 
-            Component chatMessage = MessageUtil.replaceOldColorToComponent(MessageUtil.getStringMessage(messageSectionConfiguration.get("message")));
-
-            //check if the message has hover event
-            if (messageSectionConfiguration.contains("hover")) {
-                chatMessage = chatMessage.hoverEvent(HoverEvent.showText(MessageUtil.replaceOldColorToComponent(MessageUtil.getStringMessage(messageSectionConfiguration.get("hover")))));
-            }
-
-            //check if the message has click event
-            if (messageSectionConfiguration.contains("action")) {
-                final ClickEvent.Action clickEventType;
-                try {
-                    clickEventType = ClickEvent.Action.valueOf(messageSectionConfiguration.getString("action.type").toUpperCase());
-                } catch (final IllegalArgumentException exception) {
-                    throw new MessageLoadException("Nie odnaleziono akcji typu: " + messageSectionConfiguration.getString("action.type"));
-                }
-
-                if (!messageSectionConfiguration.contains("action.action")) {
-                    throw new MessageLoadException("Nie podano jaka akcja ma być wykonywana!");
-                }
-
-                final String action = messageSectionConfiguration.getString("action.action");
-                chatMessage = chatMessage.clickEvent(ClickEvent.clickEvent(clickEventType, action));
-            }
-
-            chatMessageComponent = chatMessageComponent.append(chatMessage);
+            chatMessageComponent = chatMessageComponent.append(messageComponent);
         }
 
         return new ChatMessage(chatMessageComponent);
+    }
+
+    private static Component getMessageComponent(final ConfigurationSection messageSectionConfiguration) throws MessageLoadException {
+        Component chatMessage = MessageUtil.replaceOldColorToComponent(MessageUtil.getStringMessage(messageSectionConfiguration.get("message")));
+
+        //check if the message has hover event
+        if (messageSectionConfiguration.contains("hover")) {
+            chatMessage = chatMessage.hoverEvent(HoverEvent.showText(MessageUtil.replaceOldColorToComponent(MessageUtil.getStringMessage(messageSectionConfiguration.get("hover")))));
+        }
+
+        //check if the message has click event
+        if (messageSectionConfiguration.contains("action")) {
+            final ClickEvent.Action clickEventType;
+            try {
+                clickEventType = ClickEvent.Action.valueOf(messageSectionConfiguration.getString("action.type").toUpperCase());
+            } catch (final IllegalArgumentException exception) {
+                throw new MessageLoadException("Nie odnaleziono akcji typu: " + messageSectionConfiguration.getString("action.type"));
+            }
+
+            if (!messageSectionConfiguration.contains("action.action")) {
+                throw new MessageLoadException("Nie podano jaka akcja ma być wykonywana!");
+            }
+
+            final String action = messageSectionConfiguration.getString("action.action");
+            chatMessage = chatMessage.clickEvent(ClickEvent.clickEvent(clickEventType, action));
+        }
+
+        return chatMessage;
     }
 
     @Override

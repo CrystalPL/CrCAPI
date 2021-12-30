@@ -1,7 +1,5 @@
 package pl.crystalek.crcapi.message.util;
 
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
@@ -13,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 @UtilityClass
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class MessageUtil {
     public String getStringMessage(final Object objectMessage) {
         String chatMessageString;
