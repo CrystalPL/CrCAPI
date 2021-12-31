@@ -8,7 +8,7 @@ dependencies {
     implementation("net.kyori:adventure-platform-bukkit:4.0.1")
     shadow('org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT')
     shadow project(":core")
-    compileOnly name: "CrCAPIDatabase"
+    shadow name: "CrCAPIDatabase"
 }
 
 shadowJar {
