@@ -1,4 +1,4 @@
-package pl.crystalek.command.service;
+package pl.crystalek.crcapi.command.service;
 
 import com.google.common.collect.ImmutableMap;
 import lombok.AccessLevel;
@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import pl.crystalek.command.model.ICommand;
+import pl.crystalek.crcapi.command.model.ICommand;
 import pl.crystalek.crcapi.message.MessageAPI;
 
 import java.util.ArrayList;

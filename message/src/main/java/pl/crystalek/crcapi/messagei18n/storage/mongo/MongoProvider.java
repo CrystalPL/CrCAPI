@@ -1,13 +1,13 @@
 package pl.crystalek.crcapi.messagei18n.storage.mongo;
 
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.ReplaceOptions;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang.LocaleUtils;
-import pl.crystalek.crcapi.lib.bson.Document;
-import pl.crystalek.crcapi.lib.mongodb.client.MongoCollection;
-import pl.crystalek.crcapi.lib.mongodb.client.MongoDatabase;
-import pl.crystalek.crcapi.lib.mongodb.client.model.ReplaceOptions;
+import org.bson.Document;
 import pl.crystalek.crcapi.messagei18n.storage.Provider;
 import pl.crystalek.crcapi.storage.config.DatabaseConfig;
 

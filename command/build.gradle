@@ -1,5 +1,8 @@
 dependencies {
     shadow project(":message")
+    implementation project(":core")
 }
 
-shadowJar.enabled = false
+shadowJar {
+    archiveFileName = "CrCAPICore.jar"
+}
