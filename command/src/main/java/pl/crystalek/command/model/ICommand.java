@@ -1,4 +1,4 @@
-package pl.crystalek.crcapi.command.model;
+package pl.crystalek.command.model;
 
 import org.bukkit.command.CommandSender;
 

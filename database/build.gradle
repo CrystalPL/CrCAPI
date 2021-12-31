@@ -7,14 +7,6 @@ dependencies {
 }
 
 shadowJar {
-    relocate 'com.mongodb', 'pl.crystalek.crcapi.lib.mongodb'
-    relocate 'com.zaxxer', 'pl.crystalek.crcapi.lib.hikari'
-    relocate 'com.mysql', 'pl.crystalek.crcapi.lib.mysql'
-    relocate 'org.bson', 'pl.crystalek.crcapi.lib.bson'
-    relocate 'org.slf4j', 'pl.crystalek.crcapi.lib.slf4j'
-    relocate 'com.google.protobuf', 'pl.crystalek.crcapi.lib.protobuf'
-    relocate 'google.protobuf', 'pl.crystalek.crcapi.lib.protobuf'
-
     archiveFileName = "CrCAPIDatabase.jar"
 
     minimize {

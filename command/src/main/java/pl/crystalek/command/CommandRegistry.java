@@ -1,4 +1,4 @@
-package pl.crystalek.crcapi.command;
+package pl.crystalek.command;
 
 import lombok.AccessLevel;
 import lombok.Getter;

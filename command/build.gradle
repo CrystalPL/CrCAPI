@@ -1,0 +1,5 @@
+dependencies {
+    shadow project(":message")
+}
+
+shadowJar.enabled = false
