@@ -1,19 +1,25 @@
 plugins {
     id 'java-library'
     id "com.github.johnrengelman.shadow" version "7.1.0"
+    id 'maven-publish'
 }
 
 allprojects {
     group = 'pl.crystalek'
-    version = '1.0-SNAPSHOT'
+    version = '1.0'
 
     apply plugin: 'java-library'
     apply plugin: 'com.github.johnrengelman.shadow'
+    apply plugin: 'maven-publish'
 
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 
     compileJava.options.encoding = 'UTF-8'
+
+    java {
+        withSourcesJar()
+    }
 }
 
 subprojects {
@@ -31,10 +37,42 @@ subprojects {
         }
     }
 
+    publishing {
+        publications {
+            libraries(MavenPublication) {
+                from components.java
+
+                if (artifactId.equals('command')) {
+                    artifactId 'core'
+                }
+
+                // Add external repositories to published artifacts
+                // ~ btw: pls don't touch this
+                pom.withXml {
+                    def repositories = asNode().appendNode('repositories')
+
+                    project.getRepositories().findAll { repo ->
+                        if (repo.getUrl().toString().startsWith('http')) {
+                            def repository = repositories.appendNode('repository')
+                            repository.appendNode('id', repo.getDisplayName())
+                            repository.appendNode('url', repo.getUrl().toString())
+                        }
+                    }
+                }
+            }
+        }
+
+        repositories {
+            maven {
+                url "https://repo.titanvale.net/crc/"
+            }
+        }
+    }
+
     dependencies {
-        shadow ('org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT')
-        shadow ('org.projectlombok:lombok:1.18.22')
-        annotationProcessor ('org.projectlombok:lombok:1.18.22')
+        shadow('org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT')
+        shadow('org.projectlombok:lombok:1.18.22')
+        annotationProcessor('org.projectlombok:lombok:1.18.22')
     }
 
     shadowJar {
@@ -49,7 +87,7 @@ subprojects {
         relocate 'com.google.protobuf', 'pl.crystalek.crcapi.lib.protobuf'
         relocate 'google.protobuf', 'pl.crystalek.crcapi.lib.protobuf'
 
-        classifier(null)
+//        classifier(null)
         destinationDirectory.set(new File(rootProject.rootDir, "api"))
     }
 }

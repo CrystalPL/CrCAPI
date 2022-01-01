@@ -3,3 +3,6 @@ dependencies {
 }
 
 shadowJar.enabled = false
+tasks.withType(PublishToMavenRepository).configureEach {
+    it.enabled = false
+}
