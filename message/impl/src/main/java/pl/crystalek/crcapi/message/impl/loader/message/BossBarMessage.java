@@ -14,9 +14,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.crystalek.crcapi.core.util.NumberUtil;
 import pl.crystalek.crcapi.message.api.Message;
-import pl.crystalek.crcapi.message.api.MessageType;
+import pl.crystalek.crcapi.message.api.type.MessageType;
+import pl.crystalek.crcapi.message.api.util.MessageUtil;
 import pl.crystalek.crcapi.message.impl.exception.MessageLoadException;
-import pl.crystalek.crcapi.message.impl.util.MessageUtil;
 
 import java.util.Map;
 import java.util.Optional;

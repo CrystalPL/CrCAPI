@@ -10,9 +10,9 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.configuration.ConfigurationSection;
 import pl.crystalek.crcapi.message.api.Message;
-import pl.crystalek.crcapi.message.api.MessageType;
+import pl.crystalek.crcapi.message.api.type.MessageType;
+import pl.crystalek.crcapi.message.api.util.MessageUtil;
 import pl.crystalek.crcapi.message.impl.exception.MessageLoadException;
-import pl.crystalek.crcapi.message.impl.util.MessageUtil;
 
 import java.util.Map;
 import java.util.function.Predicate;

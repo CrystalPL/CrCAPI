@@ -6,9 +6,9 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import pl.crystalek.crcapi.message.api.Message;
 import pl.crystalek.crcapi.message.api.MessageAPI;
-import pl.crystalek.crcapi.message.api.MessageType;
+import pl.crystalek.crcapi.message.api.type.MessageType;
+import pl.crystalek.crcapi.message.api.util.MessageUtil;
 import pl.crystalek.crcapi.message.impl.CrCAPIMessage;
-import pl.crystalek.crcapi.message.impl.util.MessageUtil;
 
 import java.util.List;
 import java.util.Map;

@@ -2,6 +2,7 @@ package pl.crystalek.crcapi.message.api;
 
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
+import pl.crystalek.crcapi.message.api.type.MessageType;
 
 import java.util.Map;
 

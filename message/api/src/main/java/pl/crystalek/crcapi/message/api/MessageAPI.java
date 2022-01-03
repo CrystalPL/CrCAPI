@@ -2,6 +2,7 @@ package pl.crystalek.crcapi.message.api;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
+import pl.crystalek.crcapi.message.api.type.MessageType;
 
 import java.util.Map;
 import java.util.Optional;

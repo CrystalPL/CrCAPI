@@ -1,4 +1,4 @@
-package pl.crystalek.crcapi.message.impl.util;
+package pl.crystalek.crcapi.message.api.util;
 
 import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;

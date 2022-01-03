@@ -6,7 +6,7 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.crystalek.crcapi.message.api.Message;
-import pl.crystalek.crcapi.message.api.MessageType;
+import pl.crystalek.crcapi.message.api.type.MessageType;
 import pl.crystalek.crcapi.message.impl.loader.SingleMessageLoader;
 
 import java.util.List;
