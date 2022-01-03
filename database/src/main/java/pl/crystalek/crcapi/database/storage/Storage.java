@@ -16,13 +16,14 @@ import pl.crystalek.crcapi.database.storage.model.Database;
 
 import java.lang.reflect.InvocationTargetException;
 
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
-@Getter
-public final class BaseStorage<T extends BaseProvider> {
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public final class Storage<T extends BaseProvider> {
     final DatabaseConfig databaseConfig;
     final JavaPlugin plugin;
+    @Getter
     Database database;
+    @Getter
     T provider;
 
     public boolean initDatabase() {
@@ -62,10 +63,17 @@ public final class BaseStorage<T extends BaseProvider> {
             }
         } catch (final NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException exception) {
             exception.printStackTrace();
+            plugin.getLogger().severe("Wystąpił problem podczas próby inicjacji bazy danych.");
             return false;
         }
 
         provider.createTable();
         return true;
+    }
+
+    public void close() {
+        if (database != null) {
+            database.close();
+        }
     }
 }

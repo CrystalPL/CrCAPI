@@ -4,9 +4,9 @@ package pl.crystalek.crcapi.database.provider.sql;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.AccessLevel;
 import lombok.Cleanup;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import pl.crystalek.crcapi.database.config.DatabaseConfig;
-import pl.crystalek.crcapi.database.provider.BaseProvider;
 import pl.crystalek.crcapi.database.provider.sql.model.SQLConsumer;
 import pl.crystalek.crcapi.database.provider.sql.model.SQLFunction;
 
@@ -15,15 +15,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PROTECTED)
-public abstract class BaseSQLProvider extends BaseProvider {
+public abstract class BaseSQLProvider {
+    DatabaseConfig databaseConfig;
     HikariDataSource database;
-
-    public BaseSQLProvider(final DatabaseConfig databaseConfig, final HikariDataSource database) {
-        super(databaseConfig);
-
-        this.database = database;
-    }
 
     protected void openConnection(final SQLConsumer<Connection> consumer) {
         try (

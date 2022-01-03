@@ -2,17 +2,13 @@ package pl.crystalek.crcapi.database.provider.mongo;
 
 import com.mongodb.client.MongoDatabase;
 import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import pl.crystalek.crcapi.database.config.DatabaseConfig;
-import pl.crystalek.crcapi.database.provider.BaseProvider;
 
+@RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PROTECTED)
-public abstract class BaseMongoProvider extends BaseProvider {
+public abstract class BaseMongoProvider {
+    DatabaseConfig databaseConfig;
     MongoDatabase mongoDatabase;
-
-    public BaseMongoProvider(final DatabaseConfig databaseConfig, final MongoDatabase mongoDatabase) {
-        super(databaseConfig);
-
-        this.mongoDatabase = mongoDatabase;
-    }
 }
