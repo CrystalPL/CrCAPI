@@ -11,20 +11,21 @@ import pl.crystalek.crcapi.message.api.MessageAPI;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @FieldDefaults(makeFinal = true, level = AccessLevel.PROTECTED)
 public abstract class SingleCommand extends Command {
     MessageAPI messageAPI;
+    CommandData commandData;
 
-    public SingleCommand(final String commandName, final List<String> aliases, final MessageAPI messageAPI) {
-        super(commandName);
-        setAliases(aliases);
+    public SingleCommand(final MessageAPI messageAPI, final Map<Class<? extends SingleCommand>, CommandData> commandDataMap) {
+        super("");
 
         this.messageAPI = messageAPI;
-    }
+        this.commandData = commandDataMap.get(getClass());
 
-    public SingleCommand(final CommandData commandData, final MessageAPI messageAPI) {
-        this(commandData.getCommandName(), commandData.getCommandAliases(), messageAPI);
+        setName(commandData.getCommandName());
+        setAliases(commandData.getCommandAliases());
     }
 
     @Override

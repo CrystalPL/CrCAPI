@@ -13,24 +13,15 @@ import java.util.stream.Collectors;
 public abstract class MultiCommand extends SingleCommand {
     Map<String, SingleCommand> subCommandMap = new HashMap<>();
     Set<String> argumentList = new HashSet<>();
-    CommandData commandData;
 
-    public MultiCommand(final String commandName, final List<String> aliases, final MessageAPI messageAPI, final CommandData commandData) {
-        super(commandName, aliases, messageAPI);
-
-        this.commandData = commandData;
+    public MultiCommand(final MessageAPI messageAPI, final Map<Class<? extends SingleCommand>, CommandData> commandDataMap) {
+        super(messageAPI, commandDataMap);
     }
 
-    public MultiCommand(final CommandData commandData, final MessageAPI messageAPI) {
-        this(commandData.getCommandName(), commandData.getCommandAliases(), messageAPI, commandData);
-    }
-
-    protected void registerSubCommand(final SingleCommand subCommand, final String defaultArgumentName) {
-        registerSubCommand(subCommand, commandData.getArgumentList(defaultArgumentName));
-    }
-
-    protected void registerSubCommand(final SingleCommand subCommand, final List<String> argumentList) {
+    protected void registerSubCommand(final SingleCommand subCommand) {
+        final List<String> argumentList = commandData.getArgumentList(subCommand.getClass());
         argumentList.forEach(argument -> subCommandMap.put(argument, subCommand));
+
         this.argumentList.addAll(argumentList);
     }
 
