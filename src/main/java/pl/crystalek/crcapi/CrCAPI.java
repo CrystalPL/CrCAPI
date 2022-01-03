@@ -16,7 +16,7 @@ public final class CrCAPI extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new InventoryDragListener(), this);
 
         //start message api
-        final CrCAPIMessage crCAPIMessage = new CrCAPIMessage(this);
+        crCAPIMessage = new CrCAPIMessage(this);
         crCAPIMessage.load();
     }
 
