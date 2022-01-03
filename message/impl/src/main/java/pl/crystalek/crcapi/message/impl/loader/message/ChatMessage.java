@@ -17,13 +17,12 @@ import pl.crystalek.crcapi.message.impl.util.MessageUtil;
 import java.util.Map;
 import java.util.function.Predicate;
 
+@Getter
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public final class ChatMessage implements Message {
-    @Getter
-    static MessageType messageType = MessageType.CHAT;
     static Predicate<String> CHAT_FORMAT = key -> key.equalsIgnoreCase("hover") || key.equalsIgnoreCase("action") || key.equalsIgnoreCase("message");
-    @Getter
+    MessageType messageType = MessageType.CHAT;
     Component component;
 
     public static ChatMessage loadChatMessage(final ConfigurationSection messageConfiguration) throws MessageLoadException {

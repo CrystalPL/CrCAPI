@@ -13,12 +13,11 @@ import pl.crystalek.crcapi.message.impl.util.MessageUtil;
 
 import java.util.Map;
 
+@Getter
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public final class ActionBarMessage implements Message {
-    @Getter
-    static MessageType messageType = MessageType.ACTIONBAR;
-    @Getter
+    MessageType messageType = MessageType.ACTIONBAR;
     Component component;
 
     public static ActionBarMessage loadActionBar(final ConfigurationSection actionBarMessageSection) {

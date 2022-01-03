@@ -22,7 +22,7 @@ import java.util.Optional;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public final class TitleMessage implements Message {
     @Getter
-    static MessageType messageType = MessageType.TITLE;
+    MessageType messageType = MessageType.TITLE;
     @Getter
     Component component;
     Component subTitle;

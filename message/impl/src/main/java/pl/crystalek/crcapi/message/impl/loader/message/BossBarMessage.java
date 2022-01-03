@@ -26,9 +26,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public final class BossBarMessage implements Message {
-    @Getter
-    static MessageType messageType = MessageType.BOSSBAR;
-    @Getter
+    MessageType messageType = MessageType.BOSSBAR;
     Component component;
     float progress;
     BossBar.Color color;
