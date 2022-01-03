@@ -1,33 +1,36 @@
 package pl.crystalek.crcapi.message.impl.storage;
 
-import lombok.RequiredArgsConstructor;
+import com.zaxxer.hikari.HikariDataSource;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang.LocaleUtils;
-import pl.crystalek.crcapi.storage.config.DatabaseConfig;
-import pl.crystalek.crcapi.storage.util.SQLFunction;
-import pl.crystalek.crcapi.storage.util.SQLUtil;
+import pl.crystalek.crcapi.database.config.DatabaseConfig;
+import pl.crystalek.crcapi.database.provider.sql.BaseSQLProvider;
+import pl.crystalek.crcapi.database.provider.sql.model.SQLFunction;
 
 import java.sql.ResultSet;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
-@RequiredArgsConstructor
-public abstract class SQLProvider extends Provider {
-    protected final SQLUtil sqlUtil;
-    private final DatabaseConfig databaseConfig;
-    private String getPlayerLocale;
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+public abstract class SQLProvider extends BaseSQLProvider implements Provider {
+    String getPlayerLocale;
+
+    public SQLProvider(final DatabaseConfig databaseConfig, final HikariDataSource database) {
+        super(databaseConfig, database);
+
+        this.getPlayerLocale = String.format("SELECT language_tag FROM %slocaleMap WHERE uuid = ? LIMIT 1;", databaseConfig.getPrefix());
+    }
 
     @Override
     public void createTable() {
-        final String prefix = databaseConfig.getPrefix();
-        getPlayerLocale = String.format("SELECT language_tag FROM %slocaleMap WHERE uuid = ? LIMIT 1;", prefix);
-
         final String userLocaleTable = String.format("CREATE TABLE IF NOT EXISTS %slocaleMap (\n" +
                 "    uuid CHAR(36) NOT NULL UNIQUE PRIMARY KEY NOT NULL,\n" +
                 "    language_tag TEXT NOT NULL\n" +
-                ");", prefix);
+                ");", databaseConfig.getPrefix());
 
-        sqlUtil.executeUpdateAndOpenConnection(userLocaleTable);
+        executeUpdateAndOpenConnection(userLocaleTable);
     }
 
     @Override
@@ -43,6 +46,6 @@ public abstract class SQLProvider extends Provider {
             return Optional.of(locale);
         };
 
-        return sqlUtil.executeQueryAndOpenConnection(getPlayerLocale, function, playerUUID.toString());
+        return executeQueryAndOpenConnection(getPlayerLocale, function, playerUUID.toString());
     }
 }

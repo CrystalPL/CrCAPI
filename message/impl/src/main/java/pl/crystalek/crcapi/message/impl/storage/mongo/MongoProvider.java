@@ -4,24 +4,25 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.ReplaceOptions;
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang.LocaleUtils;
 import org.bson.Document;
+import pl.crystalek.crcapi.database.config.DatabaseConfig;
+import pl.crystalek.crcapi.database.provider.mongo.BaseMongoProvider;
 import pl.crystalek.crcapi.message.impl.storage.Provider;
-import pl.crystalek.crcapi.storage.config.DatabaseConfig;
 
 import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@RequiredArgsConstructor
-public final class MongoProvider extends Provider {
+public final class MongoProvider extends BaseMongoProvider implements Provider {
     final ReplaceOptions replaceOptions = new ReplaceOptions().upsert(true);
-    final MongoDatabase mongoDatabase;
-    final DatabaseConfig databaseConfig;
     MongoCollection<Document> userLocaleCollection;
+
+    public MongoProvider(final DatabaseConfig databaseConfig, final MongoDatabase mongoDatabase) {
+        super(databaseConfig, mongoDatabase);
+    }
 
     @Override
     public void createTable() {

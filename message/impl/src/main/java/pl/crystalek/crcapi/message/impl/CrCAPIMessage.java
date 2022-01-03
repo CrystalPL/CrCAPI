@@ -10,15 +10,17 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.crystalek.crcapi.core.config.ConfigHelper;
+import pl.crystalek.crcapi.database.storage.Storage;
 import pl.crystalek.crcapi.message.api.MessageAPIProvider;
 import pl.crystalek.crcapi.message.impl.config.Config;
 import pl.crystalek.crcapi.message.impl.listener.PlayerJoinListener;
 import pl.crystalek.crcapi.message.impl.listener.PlayerQuitListener;
 import pl.crystalek.crcapi.message.impl.manager.provider.MessageAPIProviderImpl;
 import pl.crystalek.crcapi.message.impl.storage.Provider;
-import pl.crystalek.crcapi.message.impl.storage.Storage;
+import pl.crystalek.crcapi.message.impl.storage.mongo.MongoProvider;
+import pl.crystalek.crcapi.message.impl.storage.mysql.MySQLProvider;
+import pl.crystalek.crcapi.message.impl.storage.sqlite.SQLiteProvider;
 import pl.crystalek.crcapi.message.impl.user.UserCache;
-import pl.crystalek.crcapi.storage.BaseStorage;
 
 import java.io.IOException;
 
@@ -28,7 +30,7 @@ public final class CrCAPIMessage {
     @Getter
     static BukkitAudiences bukkitAudiences;
     final JavaPlugin plugin;
-    Storage storage;
+    Storage<Provider> storage;
 
     public void load() {
         bukkitAudiences = BukkitAudiences.create(plugin);
@@ -52,14 +54,14 @@ public final class CrCAPIMessage {
         }
 
         if (config.isLocalizedMessageEnable()) {
-            storage = new Storage(new BaseStorage<>(config.getDatabaseConfig(), plugin));
-            if (!storage.init()) {
+            storage = new Storage<>(config.getDatabaseConfig(), plugin);
+            if (!storage.initDatabase() || !storage.initProvider(MySQLProvider.class, SQLiteProvider.class, MongoProvider.class)) {
                 plugin.getLogger().severe("Wyłączanie pluginu");
                 Bukkit.getPluginManager().disablePlugin(plugin);
                 return;
             }
 
-            final Provider provider = storage.getStorage().getProvider();
+            final Provider provider = storage.getProvider();
 
             final PluginManager pluginManager = Bukkit.getPluginManager();
             pluginManager.registerEvents(new PlayerJoinListener(plugin, provider), plugin);
@@ -72,8 +74,6 @@ public final class CrCAPIMessage {
     }
 
     public void close() {
-        if (storage != null) {
-            storage.getStorage().getDatabase().close();
-        }
+        storage.close();
     }
 }

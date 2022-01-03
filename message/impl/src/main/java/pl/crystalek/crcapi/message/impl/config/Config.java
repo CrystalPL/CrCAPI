@@ -9,8 +9,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.crystalek.crcapi.core.config.exception.ConfigLoadException;
-import pl.crystalek.crcapi.storage.config.DatabaseConfig;
-import pl.crystalek.crcapi.storage.config.DatabaseConfigLoader;
+import pl.crystalek.crcapi.database.config.DatabaseConfig;
+import pl.crystalek.crcapi.database.config.DatabaseConfigLoader;
 
 import java.util.Locale;
 
