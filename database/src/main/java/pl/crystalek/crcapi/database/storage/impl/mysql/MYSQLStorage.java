@@ -1,12 +1,12 @@
-package pl.crystalek.crcapi.storage.impl.mysql;
+package pl.crystalek.crcapi.database.storage.impl.mysql;
 
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import pl.crystalek.crcapi.storage.config.DatabaseConfig;
-import pl.crystalek.crcapi.storage.impl.Database;
+import pl.crystalek.crcapi.database.config.DatabaseConfig;
+import pl.crystalek.crcapi.database.storage.model.Database;
 
 import java.sql.Connection;
 import java.sql.SQLException;

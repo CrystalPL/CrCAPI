@@ -1,10 +1,10 @@
-package pl.crystalek.crcapi.storage.config;
+package pl.crystalek.crcapi.database.config;
 
 import lombok.experimental.UtilityClass;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.crystalek.crcapi.core.config.exception.ConfigLoadException;
-import pl.crystalek.crcapi.storage.type.StorageType;
+import pl.crystalek.crcapi.database.storage.type.StorageType;
 
 import java.io.File;
 

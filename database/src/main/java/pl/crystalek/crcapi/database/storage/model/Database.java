@@ -1,4 +1,4 @@
-package pl.crystalek.crcapi.storage.impl;
+package pl.crystalek.crcapi.database.storage.model;
 
 public interface Database {
     boolean connect();

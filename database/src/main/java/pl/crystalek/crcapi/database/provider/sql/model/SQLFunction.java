@@ -1,4 +1,4 @@
-package pl.crystalek.crcapi.storage.util;
+package pl.crystalek.crcapi.database.provider.sql.model;
 
 import java.sql.SQLException;
 

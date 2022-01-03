@@ -1,4 +1,4 @@
-package pl.crystalek.crcapi.storage.impl.mongo;
+package pl.crystalek.crcapi.database.storage.impl.mongo;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -11,8 +11,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.bukkit.plugin.java.JavaPlugin;
-import pl.crystalek.crcapi.storage.config.DatabaseConfig;
-import pl.crystalek.crcapi.storage.impl.Database;
+import pl.crystalek.crcapi.database.config.DatabaseConfig;
+import pl.crystalek.crcapi.database.storage.model.Database;
 
 import java.util.concurrent.TimeUnit;
 
