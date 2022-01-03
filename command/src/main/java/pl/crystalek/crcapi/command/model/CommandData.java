@@ -17,7 +17,7 @@ public final class CommandData {
     //(default) subcommand name -> new subcommand names
     Map<String, List<String>> subCommandMap;
 
-    public List<String> getSubCommand(final String subCommandName) {
-        return subCommandMap.get(subCommandName);
+    public List<String> getArgumentList(final String defaultArgumentName) {
+        return subCommandMap.get(defaultArgumentName);
     }
 }
