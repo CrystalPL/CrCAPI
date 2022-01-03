@@ -13,7 +13,7 @@ import java.sql.SQLException;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public final class MYSQLStorage implements Database {
+public class MYSQLStorage implements Database {
     final DatabaseConfig databaseConfig;
     @Getter
     HikariDataSource database;

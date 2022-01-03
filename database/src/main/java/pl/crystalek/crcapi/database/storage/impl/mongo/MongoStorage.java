@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public final class MongoStorage implements Database {
+public class MongoStorage implements Database {
     final DatabaseConfig databaseConfig;
     final JavaPlugin plugin;
     MongoClient mongoClient;

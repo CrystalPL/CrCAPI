@@ -15,7 +15,7 @@ import java.sql.SQLException;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public final class SQLiteStorage implements Database {
+public class SQLiteStorage implements Database {
     final File databaseLocation;
     final JavaPlugin plugin;
     @Getter
