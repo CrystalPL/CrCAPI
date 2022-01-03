@@ -8,14 +8,17 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.ConfigurationSection;
 import pl.crystalek.crcapi.message.api.Message;
+import pl.crystalek.crcapi.message.api.MessageType;
 import pl.crystalek.crcapi.message.impl.util.MessageUtil;
 
 import java.util.Map;
 
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
-@Getter
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public final class ActionBarMessage implements Message {
+    @Getter
+    static MessageType messageType = MessageType.ACTIONBAR;
+    @Getter
     Component component;
 
     public static ActionBarMessage loadActionBar(final ConfigurationSection actionBarMessageSection) {

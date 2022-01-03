@@ -10,7 +10,7 @@ public interface MessageAPI {
 
     boolean init();
 
-    Optional<Component> getComponent(final String messagePath, final CommandSender messageReceiver, final Class<? extends Message> clazz);
+    Optional<Component> getComponent(final String messagePath, final CommandSender messageReceiver, final MessageType messageType);
 
     void sendMessage(final String messagePath, final CommandSender messageReceiver);
 

@@ -12,4 +12,6 @@ public interface Message {
     void sendMessageComponent(final Audience sender, final Map<String, Component> replacements);
 
     Component getComponent();
+
+    MessageType getMessageType();
 }

@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import pl.crystalek.crcapi.message.api.Message;
 import pl.crystalek.crcapi.message.api.MessageAPI;
+import pl.crystalek.crcapi.message.api.MessageType;
 import pl.crystalek.crcapi.message.impl.CrCAPIMessage;
 import pl.crystalek.crcapi.message.impl.util.MessageUtil;
 
@@ -18,14 +19,14 @@ abstract class MessageAPIImpl implements MessageAPI {
 
     abstract void sendMessageComponent(final String messagePath, final Audience audience, final Map<String, Component> replacements);
 
-    abstract Optional<Component> getComponent(final String messagePath, final Audience audience, final Class<? extends Message> clazz);
+    abstract Optional<Component> getComponent(final String messagePath, final Audience audience, final MessageType messageType);
 
     @Override
     public abstract boolean init();
 
     @Override
-    public Optional<Component> getComponent(final String messagePath, final CommandSender messageReceiver, final Class<? extends Message> clazz) {
-        return this.getComponent(messagePath, CrCAPIMessage.getBukkitAudiences().sender(messageReceiver), clazz);
+    public Optional<Component> getComponent(final String messagePath, final CommandSender messageReceiver, final MessageType messageType) {
+        return this.getComponent(messagePath, CrCAPIMessage.getBukkitAudiences().sender(messageReceiver), messageType);
     }
 
     @Override
@@ -88,9 +89,9 @@ abstract class MessageAPIImpl implements MessageAPI {
         messageList.forEach(message -> message.sendMessageComponent(audience, replacements));
     }
 
-    Optional<Component> getComponent(final Map<String, List<Message>> messageMap, final String messagePath, final Class<? extends Message> clazz) {
+    Optional<Component> getComponent(final Map<String, List<Message>> messageMap, final String messagePath, final MessageType messageType) {
         for (final Message message : messageMap.get(messagePath)) {
-            if (clazz.isInstance(message)) {
+            if (message.getMessageType() == messageType) {
                 return Optional.of(message.getComponent());
             }
         }

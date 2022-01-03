@@ -10,6 +10,7 @@ import net.kyori.adventure.title.Title;
 import org.bukkit.configuration.ConfigurationSection;
 import pl.crystalek.crcapi.core.util.NumberUtil;
 import pl.crystalek.crcapi.message.api.Message;
+import pl.crystalek.crcapi.message.api.MessageType;
 import pl.crystalek.crcapi.message.impl.exception.MessageLoadException;
 import pl.crystalek.crcapi.message.impl.util.MessageUtil;
 
@@ -17,10 +18,11 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
 
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public final class TitleMessage implements Message {
-    //tile component
+    @Getter
+    static MessageType messageType = MessageType.TITLE;
     @Getter
     Component component;
     Component subTitle;

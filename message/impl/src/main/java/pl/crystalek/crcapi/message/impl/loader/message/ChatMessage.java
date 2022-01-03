@@ -10,17 +10,20 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.configuration.ConfigurationSection;
 import pl.crystalek.crcapi.message.api.Message;
+import pl.crystalek.crcapi.message.api.MessageType;
 import pl.crystalek.crcapi.message.impl.exception.MessageLoadException;
 import pl.crystalek.crcapi.message.impl.util.MessageUtil;
 
 import java.util.Map;
 import java.util.function.Predicate;
 
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
-@Getter
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public final class ChatMessage implements Message {
+    @Getter
+    static MessageType messageType = MessageType.CHAT;
     static Predicate<String> CHAT_FORMAT = key -> key.equalsIgnoreCase("hover") || key.equalsIgnoreCase("action") || key.equalsIgnoreCase("message");
+    @Getter
     Component component;
 
     public static ChatMessage loadChatMessage(final ConfigurationSection messageConfiguration) throws MessageLoadException {

@@ -5,7 +5,7 @@ import lombok.experimental.FieldDefaults;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.bukkit.plugin.java.JavaPlugin;
-import pl.crystalek.crcapi.message.api.Message;
+import pl.crystalek.crcapi.message.api.MessageType;
 import pl.crystalek.crcapi.message.impl.loader.LocalizedMessageLoader;
 import pl.crystalek.crcapi.message.impl.user.UserCache;
 
@@ -31,8 +31,8 @@ public final class LocalizedMessageAPI extends MessageAPIImpl {
     }
 
     @Override
-    Optional<Component> getComponent(final String messagePath, final Audience audience, final Class<? extends Message> clazz) {
-        return getComponent(messageLoader.getPlayerMessageMap(UserCache.getLocale(audience)), messagePath, clazz);
+    Optional<Component> getComponent(final String messagePath, final Audience audience, final MessageType messageType) {
+        return getComponent(messageLoader.getPlayerMessageMap(UserCache.getLocale(audience)), messagePath, messageType);
     }
 
     @Override
