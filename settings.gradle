@@ -4,4 +4,6 @@ include 'gui'
 include 'database'
 include 'message'
 include 'command'
+include 'message:impl'
+include 'message:api'
 

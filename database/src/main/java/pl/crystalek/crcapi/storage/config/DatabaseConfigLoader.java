@@ -3,8 +3,8 @@ package pl.crystalek.crcapi.storage.config;
 import lombok.experimental.UtilityClass;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
-import pl.crystalek.crcapi.config.exception.ConfigLoadException;
-import pl.crystalek.crcapi.storage.StorageType;
+import pl.crystalek.crcapi.core.config.exception.ConfigLoadException;
+import pl.crystalek.crcapi.storage.type.StorageType;
 
 import java.io.File;
 
@@ -34,6 +34,7 @@ public class DatabaseConfigLoader {
         } catch (final IllegalArgumentException exception) {
             throw new ConfigLoadException("Nie odnaleziono bazy: " + databaseConfiguration.getString("storageType"));
         }
+
         final String hostname = databaseSettings.getString("hostname");
         final String port = databaseSettings.getString("port");
         final String database = databaseSettings.getString("database");

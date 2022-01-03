@@ -1,6 +1,0 @@
-name: CrCAPIMessage
-main: pl.crystalek.crcapi.CrCAPIMessage
-version: 1.0
-author: Crystal
-depend: [ CrCAPICore ]
-softdepend: [ CrCAPIDatabase ]

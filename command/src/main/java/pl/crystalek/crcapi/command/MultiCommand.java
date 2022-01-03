@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
 import pl.crystalek.crcapi.command.model.CommandData;
 import pl.crystalek.crcapi.command.model.ICommand;
 import pl.crystalek.crcapi.command.service.CommandService;
-import pl.crystalek.crcapi.message.MessageAPI;
+import pl.crystalek.crcapi.message.api.MessageAPI;
 
 import java.util.*;
 import java.util.stream.Collectors;

@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import pl.crystalek.crcapi.storage.StorageType;
+import pl.crystalek.crcapi.storage.type.StorageType;
 
 import java.io.File;
 

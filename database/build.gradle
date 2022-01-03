@@ -6,10 +6,4 @@ dependencies {
     shadow project(":core")
 }
 
-shadowJar {
-    archiveFileName = "CrCAPIDatabase.jar"
-
-    minimize {
-        exclude(dependency('mysql:mysql-connector-java:8.0.26'))
-    }
-}
+shadowJar.enabled = false

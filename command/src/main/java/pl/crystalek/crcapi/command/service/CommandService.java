@@ -7,7 +7,7 @@ import lombok.experimental.FieldDefaults;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import pl.crystalek.crcapi.command.model.ICommand;
-import pl.crystalek.crcapi.message.MessageAPI;
+import pl.crystalek.crcapi.message.api.MessageAPI;
 
 import java.util.ArrayList;
 import java.util.List;

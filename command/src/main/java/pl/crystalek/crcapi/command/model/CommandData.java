@@ -6,11 +6,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @RequiredArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public final class CommandData {
     String commandName;
     List<String> commandAliases;
+    //(default) subcommand name -> new subcommand names
+    Map<String, List<String>> subCommandMap;
+
+    public List<String> getSubCommand(final String subCommandName) {
+        return subCommandMap.get(subCommandName);
+    }
 }

@@ -1,5 +1,0 @@
-name: CrCAPIDatabase
-main: pl.crystalek.crcapi.storage.CrCAPIDatabase
-version: 1.0
-author: Crystal
-depend: [ CrCAPICore ]

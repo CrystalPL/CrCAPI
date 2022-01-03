@@ -144,6 +144,6 @@ gradle-app.setting
 .classpath
 
 ### Project structure ###
-api/
+api/CrCAPI.jar
 
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij+all,gradle

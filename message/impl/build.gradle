@@ -1,0 +1,8 @@
+dependencies {
+    shadow project(":core")
+    shadow project(":database")
+    implementation project(":message:api")
+    shadow('org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT')
+}
+
+shadowJar.enabled = false
