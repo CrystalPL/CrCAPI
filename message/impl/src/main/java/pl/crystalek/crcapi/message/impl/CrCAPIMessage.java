@@ -11,12 +11,11 @@ import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.crystalek.crcapi.core.config.ConfigHelper;
-import pl.crystalek.crcapi.message.api.MessageAPI;
+import pl.crystalek.crcapi.message.api.MessageAPIProvider;
 import pl.crystalek.crcapi.message.impl.config.Config;
 import pl.crystalek.crcapi.message.impl.listener.PlayerJoinListener;
 import pl.crystalek.crcapi.message.impl.listener.PlayerQuitListener;
-import pl.crystalek.crcapi.message.impl.manager.LocalizedMessageAPI;
-import pl.crystalek.crcapi.message.impl.manager.SingleMessageAPI;
+import pl.crystalek.crcapi.message.impl.manager.provider.MessageAPIProviderImpl;
 import pl.crystalek.crcapi.message.impl.storage.Provider;
 import pl.crystalek.crcapi.message.impl.storage.Storage;
 import pl.crystalek.crcapi.message.impl.user.UserCache;
@@ -71,8 +70,7 @@ public final class CrCAPIMessage {
         }
 
         final ServicesManager servicesManager = Bukkit.getServicesManager();
-        servicesManager.register(MessageAPI.class, new SingleMessageAPI(plugin), plugin, ServicePriority.Highest);
-        servicesManager.register(MessageAPI.class, new LocalizedMessageAPI(plugin), plugin, ServicePriority.Highest);
+        servicesManager.register(MessageAPIProvider.class, new MessageAPIProviderImpl(), plugin, ServicePriority.Highest);
     }
 
     public void close() {
