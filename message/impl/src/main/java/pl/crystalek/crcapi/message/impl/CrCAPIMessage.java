@@ -8,7 +8,6 @@ import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicePriority;
-import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.crystalek.crcapi.core.config.ConfigHelper;
 import pl.crystalek.crcapi.message.api.MessageAPIProvider;
@@ -69,8 +68,7 @@ public final class CrCAPIMessage {
             Bukkit.getOnlinePlayers().forEach(player -> UserCache.loadLocale(player, provider));
         }
 
-        final ServicesManager servicesManager = Bukkit.getServicesManager();
-        servicesManager.register(MessageAPIProvider.class, new MessageAPIProviderImpl(), plugin, ServicePriority.Highest);
+        Bukkit.getServicesManager().register(MessageAPIProvider.class, new MessageAPIProviderImpl(), plugin, ServicePriority.Highest);
     }
 
     public void close() {
