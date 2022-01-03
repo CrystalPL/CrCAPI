@@ -55,6 +55,10 @@ subprojects {
             libraries(MavenPublication) {
                 from components.java
 
+                if (artifactId.equals('api')) {
+                    artifactId 'message-api'
+                }
+
                 // Add external repositories to published artifacts
                 // ~ btw: pls don't touch this
                 pom.withXml {
