@@ -60,19 +60,4 @@ public abstract class MultiCommand extends SingleCommand {
 
         return new ArrayList<>();
     }
-
-    @Override
-    public abstract String getPermission();
-
-    @Override
-    public abstract boolean isUseConsole();
-
-    @Override
-    public abstract String getCommandUsagePath();
-
-    @Override
-    public abstract int maxArgumentLength();
-
-    @Override
-    public abstract int minArgumentLength();
 }

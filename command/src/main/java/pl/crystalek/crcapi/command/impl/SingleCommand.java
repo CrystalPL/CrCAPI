@@ -72,6 +72,4 @@ public abstract class SingleCommand extends Command {
     public abstract int maxArgumentLength();
 
     public abstract int minArgumentLength();
-
-
 }
