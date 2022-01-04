@@ -74,6 +74,8 @@ public final class CrCAPIMessage {
     }
 
     public void close() {
-        storage.close();
+        if (storage != null) {
+            storage.close();
+        }
     }
 }

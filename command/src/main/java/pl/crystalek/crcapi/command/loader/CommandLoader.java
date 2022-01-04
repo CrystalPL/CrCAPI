@@ -55,7 +55,10 @@ public class CommandLoader {
     private Optional<Class<? extends SingleCommand>> getCommand(final String commandName, final Set<ClassInfo> classList, final ClassLoader classLoader, final JavaPlugin plugin) throws ClassNotFoundException {
         for (final ClassInfo classInfo : classList) {
             if (classInfo.getSimpleName().equalsIgnoreCase(commandName)) {
-                return Optional.of((Class<? extends SingleCommand>) Class.forName(classInfo.getName(), false, classLoader));
+                final Class<?> clazz = Class.forName(classInfo.getName(), false, classLoader);
+                if (clazz.getSuperclass().equals(SingleCommand.class)) {
+                    return Optional.of((Class<? extends SingleCommand>) clazz);
+                }
             }
         }
 
