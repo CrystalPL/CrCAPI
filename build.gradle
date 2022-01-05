@@ -20,15 +20,8 @@ allprojects {
     repositories {
         mavenCentral()
 
-        maven {
-            name = 'spigotmc-repo'
-            url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
-        }
-
-        maven {
-            name = 'sonatype'
-            url = 'https://oss.sonatype.org/content/groups/public/'
-        }
+        maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/groups/public/" }
     }
 
     dependencies {
@@ -40,27 +33,27 @@ allprojects {
         relocate 'net.kyori.examination', 'pl.crystalek.crcapi.lib.examination'
 
         relocate 'com.mongodb', 'pl.crystalek.crcapi.lib.mongodb'
-        relocate 'com.zaxxer', 'pl.crystalek.crcapi.lib.hikari'
+        relocate 'com.zaxxer.hikari', 'pl.crystalek.crcapi.lib.hikari'
         relocate 'com.mysql', 'pl.crystalek.crcapi.lib.mysql'
         relocate 'org.bson', 'pl.crystalek.crcapi.lib.bson'
         relocate 'org.slf4j', 'pl.crystalek.crcapi.lib.slf4j'
         relocate 'com.google.protobuf', 'pl.crystalek.crcapi.lib.protobuf'
         relocate 'google.protobuf', 'pl.crystalek.crcapi.lib.protobuf'
+
+        archiveClassifier.set(null)
     }
 }
 
 subprojects {
     publishing {
         publications {
-            libraries(MavenPublication) {
+            maven(MavenPublication) {
                 from components.java
 
-                if (artifactId.equals('api')) {
-                    artifactId 'message-api'
+                if (it.getArtifactId().equals('api')) {
+                    it.setArtifactId('message-api')
                 }
 
-                // Add external repositories to published artifacts
-                // ~ btw: pls don't touch this
                 pom.withXml {
                     def repositories = asNode().appendNode('repositories')
 
@@ -76,9 +69,7 @@ subprojects {
         }
 
         repositories {
-            maven {
-                url "https://repo.titanvale.net/crc/"
-            }
+            maven { url "https://repo.titanvale.net/crc/" }
         }
     }
 

@@ -1,9 +1,9 @@
 package pl.crystalek.crcapi.message.impl.storage.sqlite;
 
-import com.zaxxer.hikari.HikariDataSource;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import pl.crystalek.crcapi.database.config.DatabaseConfig;
+import pl.crystalek.crcapi.lib.hikari.HikariDataSource;
 import pl.crystalek.crcapi.message.impl.storage.SQLProvider;
 
 import java.util.Locale;

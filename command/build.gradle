@@ -1,5 +1,3 @@
 dependencies {
     shadow project(":message:api")
 }
-
-shadowJar.enabled = false

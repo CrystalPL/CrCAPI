@@ -1,12 +1,12 @@
 package pl.crystalek.crcapi.message.impl.storage;
 
-import com.zaxxer.hikari.HikariDataSource;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang.LocaleUtils;
 import pl.crystalek.crcapi.database.config.DatabaseConfig;
 import pl.crystalek.crcapi.database.provider.sql.BaseSQLProvider;
 import pl.crystalek.crcapi.database.provider.sql.model.SQLFunction;
+import pl.crystalek.crcapi.lib.hikari.HikariDataSource;
 
 import java.sql.ResultSet;
 import java.util.Locale;

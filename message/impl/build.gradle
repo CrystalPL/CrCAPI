@@ -1,8 +1,12 @@
+repositories {
+    maven { url "https://repo.crystalek.pl/crc" }
+}
+
 dependencies {
     shadow project(":core")
-    shadow project(":database")
     implementation project(":message:api")
     shadow('org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT')
+    shadow 'pl.crystalek:database:1.1'
 }
 
 tasks.withType(PublishToMavenRepository).configureEach {
