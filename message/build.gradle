@@ -1,6 +1,6 @@
 subprojects {
     dependencies {
-        api("net.kyori:adventure-platform-bukkit:4.0.1")
+        implementation("net.kyori:adventure-platform-bukkit:4.0.1")
     }
 
 }
@@ -9,4 +9,3 @@ tasks.withType(PublishToMavenRepository).configureEach {
     it.enabled = false
 }
 
-shadowJar.enabled = false

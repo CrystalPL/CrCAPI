@@ -1,3 +1,7 @@
+repositories {
+    maven { url "https://repo.crystalek.pl/crc" }
+}
+
 dependencies {
-    shadow project(":message:api")
+    shadow 'pl.crystalek:message-api:1.1'
 }
