@@ -3,6 +3,7 @@ package pl.crystalek.crcapi.message.api.util;
 import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang.StringUtils;
 
@@ -25,7 +26,8 @@ public class MessageUtil {
     }
 
     public Component replaceOldColorToComponent(final String oldText) {
-        return LegacyComponentSerializer.legacyAmpersand().deserialize(oldText);
+        final MiniMessage miniMessage = MiniMessage.miniMessage();
+        return miniMessage.deserialize(miniMessage.serialize(LegacyComponentSerializer.legacyAmpersand().deserialize(oldText)));
     }
 
     public Component replace(final Component component, final Map<String, Object> replacements) {

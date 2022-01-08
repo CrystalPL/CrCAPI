@@ -1,0 +1,3 @@
+dependencies {
+    implementation "net.kyori:adventure-text-minimessage:4.2.0-SNAPSHOT"
+}
