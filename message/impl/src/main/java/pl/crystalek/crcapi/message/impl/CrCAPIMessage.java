@@ -35,7 +35,7 @@ public final class CrCAPIMessage {
     public void load() {
         bukkitAudiences = BukkitAudiences.create(plugin);
 
-        final ConfigHelper configHelper = new ConfigHelper("config.yml", plugin);
+        final ConfigHelper configHelper = new ConfigHelper(plugin, "config.yml");
         try {
             configHelper.checkExist();
             configHelper.load();
