@@ -1,5 +1,6 @@
 package pl.crystalek.crcapi.core.config;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -14,6 +15,7 @@ public class ConfigHelper {
     protected final JavaPlugin plugin;
     private final String fileName;
     protected File file;
+    @Getter
     protected FileConfiguration configuration;
 
     public void checkExist() throws IOException {

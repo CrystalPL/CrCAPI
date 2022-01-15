@@ -6,8 +6,8 @@ import java.io.IOException;
 
 public final class FileHelper extends ConfigHelper {
 
-    public FileHelper(final String fileName, final JavaPlugin plugin) {
-        super(fileName, plugin);
+    public FileHelper(final JavaPlugin plugin, final String fileName) {
+        super(plugin, fileName);
     }
 
     public void save() throws IOException {

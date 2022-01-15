@@ -21,7 +21,7 @@ public final class SingleMessageLoader extends MessageLoader {
     public SingleMessageLoader(final JavaPlugin plugin) {
         super(plugin);
 
-        this.fileHelper = new FileHelper("messages.yml", plugin);
+        this.fileHelper = new FileHelper(plugin, "messages.yml");
     }
 
     @Override
