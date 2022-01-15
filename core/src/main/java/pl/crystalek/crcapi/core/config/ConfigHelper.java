@@ -1,9 +1,6 @@
 package pl.crystalek.crcapi.core.config;
 
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -11,15 +8,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 
-@FieldDefaults(level = AccessLevel.PACKAGE)
 @RequiredArgsConstructor
 public class ConfigHelper {
 
-    final String fileName;
-    final JavaPlugin plugin;
-    File file;
-    @Getter
-    FileConfiguration configuration;
+    protected final JavaPlugin plugin;
+    private final String fileName;
+    protected File file;
+    protected FileConfiguration configuration;
 
     public void checkExist() throws IOException {
         final File dataFolder = this.plugin.getDataFolder();
