@@ -51,7 +51,7 @@ public abstract class SingleCommand extends Command {
 
     @Override
     public List<String> tabComplete(final CommandSender sender, final String alias, final String[] args) throws IllegalArgumentException {
-        if (!sender.hasPermission(getPermission())) {
+        if (!getPermission().equals("") && !sender.hasPermission(getPermission())) {
             return new ArrayList<>();
         }
 
