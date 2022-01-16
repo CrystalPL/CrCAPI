@@ -30,7 +30,7 @@ public abstract class SingleCommand extends Command {
 
     @Override
     public boolean execute(final CommandSender sender, final String commandLabel, final String[] args) {
-        if (!sender.hasPermission(getPermission())) {
+        if (!getPermission().equals("") && !sender.hasPermission(getPermission())) {
             messageAPI.sendMessage("noPermission", sender, ImmutableMap.of("{PERMISSION}", getPermission()));
             return true;
         }
