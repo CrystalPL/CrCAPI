@@ -71,6 +71,23 @@ public final class Storage<T extends BaseProvider> {
         return true;
     }
 
+    public boolean initProvider(final T mysqlProvider, T sqliteProvider, T mongoProvider) {
+        switch (databaseConfig.getStorageType()) {
+            case MYSQL:
+                provider = mysqlProvider;
+                break;
+            case SQLITE:
+                provider = sqliteProvider;
+                break;
+            case MONGODB:
+                provider = mongoProvider;
+                break;
+        }
+
+        provider.createTable();
+        return true;
+    }
+
     public void close() {
         if (database != null) {
             database.close();
