@@ -14,4 +14,6 @@ public interface IBossBarMessage extends Cloneable {
     BossBar.Overlay getOverlay();
 
     long getStayTime();
+
+    void setProgress(final float progress);
 }

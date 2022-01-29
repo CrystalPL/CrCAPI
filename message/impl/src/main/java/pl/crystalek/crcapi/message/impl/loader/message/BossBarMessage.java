@@ -3,9 +3,8 @@ package pl.crystalek.crcapi.message.impl.loader.message;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
@@ -23,17 +22,22 @@ import java.util.Optional;
 
 @Getter
 @AllArgsConstructor
-@RequiredArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public final class BossBarMessage implements Message, IBossBarMessage {
-    Component bossBarComponent;
+    final Component bossBarComponent;
+    final BossBar.Color color;
+    final BossBar.Overlay overlay;
+    @Setter
     float progress;
-    BossBar.Color color;
-    BossBar.Overlay overlay;
-    @NonFinal
     long stayTime;
-    @NonFinal
     JavaPlugin plugin;
+
+    public BossBarMessage(final Component bossBarComponent, final BossBar.Color color, final BossBar.Overlay overlay, final float progress) {
+        this.bossBarComponent = bossBarComponent;
+        this.color = color;
+        this.overlay = overlay;
+        this.progress = progress;
+    }
 
     public static BossBarMessage loadBossBar(final ConfigurationSection bossBarMessageSection, final JavaPlugin plugin) throws MessageLoadException {
         final ConfigurationSection bossBarSection = bossBarMessageSection.getConfigurationSection("bossBar");
@@ -78,10 +82,10 @@ public final class BossBarMessage implements Message, IBossBarMessage {
             }
 
             stayTime = stayTimeOptional.get();
-            return new BossBarMessage(title, progress, color, overlay, stayTime, plugin);
+            return new BossBarMessage(title, color, overlay, progress, stayTime, plugin);
         }
 
-        return new BossBarMessage(title, progress, color, overlay);
+        return new BossBarMessage(title, color, overlay, progress);
     }
 
     private static void checkFieldExist(final ConfigurationSection titleConfiguration, final String field) throws MessageLoadException {
