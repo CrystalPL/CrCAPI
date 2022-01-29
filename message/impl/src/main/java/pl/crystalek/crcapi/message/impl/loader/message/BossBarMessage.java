@@ -13,8 +13,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.crystalek.crcapi.core.util.NumberUtil;
-import pl.crystalek.crcapi.message.api.Message;
-import pl.crystalek.crcapi.message.api.type.MessageType;
+import pl.crystalek.crcapi.message.api.message.IBossBarMessage;
+import pl.crystalek.crcapi.message.api.message.Message;
 import pl.crystalek.crcapi.message.api.util.MessageUtil;
 import pl.crystalek.crcapi.message.impl.exception.MessageLoadException;
 
@@ -25,9 +25,8 @@ import java.util.Optional;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public final class BossBarMessage implements Message {
-    MessageType messageType = MessageType.BOSSBAR;
-    Component component;
+public final class BossBarMessage implements Message, IBossBarMessage {
+    Component bossBarComponent;
     float progress;
     BossBar.Color color;
     BossBar.Overlay overlay;
@@ -93,7 +92,7 @@ public final class BossBarMessage implements Message {
 
     @Override
     public void sendMessage(final Audience sender, final Map<String, Object> replacements) {
-        final BossBar bossBar = BossBar.bossBar(MessageUtil.replace(component, replacements), progress, color, overlay);
+        final BossBar bossBar = BossBar.bossBar(MessageUtil.replace(bossBarComponent, replacements), progress, color, overlay);
 
         sender.showBossBar(bossBar);
         if (plugin != null) {
@@ -103,7 +102,7 @@ public final class BossBarMessage implements Message {
 
     @Override
     public void sendMessageComponent(final Audience sender, final Map<String, Component> replacements) {
-        final BossBar bossBar = BossBar.bossBar(MessageUtil.replaceComponent(component, replacements), progress, color, overlay);
+        final BossBar bossBar = BossBar.bossBar(MessageUtil.replaceComponent(bossBarComponent, replacements), progress, color, overlay);
 
         sender.showBossBar(bossBar);
         if (plugin != null) {

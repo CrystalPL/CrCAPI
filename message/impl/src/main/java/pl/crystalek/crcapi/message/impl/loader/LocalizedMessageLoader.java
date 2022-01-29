@@ -7,7 +7,7 @@ import org.apache.commons.lang.LocaleUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import pl.crystalek.crcapi.message.api.Message;
+import pl.crystalek.crcapi.message.api.message.Message;
 import pl.crystalek.crcapi.message.impl.config.Config;
 
 import java.io.File;

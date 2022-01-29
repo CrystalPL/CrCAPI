@@ -3,5 +3,5 @@ repositories {
 }
 
 dependencies {
-    shadow 'pl.crystalek:message-api:1.2'
+    shadow 'pl.crystalek:message-api:1.3'
 }

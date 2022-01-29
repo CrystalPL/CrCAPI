@@ -4,9 +4,8 @@ import com.google.common.collect.ImmutableMap;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
-import pl.crystalek.crcapi.message.api.Message;
 import pl.crystalek.crcapi.message.api.MessageAPI;
-import pl.crystalek.crcapi.message.api.type.MessageType;
+import pl.crystalek.crcapi.message.api.message.Message;
 import pl.crystalek.crcapi.message.api.util.MessageUtil;
 import pl.crystalek.crcapi.message.impl.CrCAPIMessage;
 
@@ -19,15 +18,15 @@ abstract class MessageAPIImpl implements MessageAPI {
 
     abstract void sendMessageComponent(final String messagePath, final Audience audience, final Map<String, Component> replacements);
 
-    abstract Optional<Component> getComponent(final String messagePath, final Audience audience, final MessageType messageType);
+    abstract <T> Optional<T> getMessage(final String messagePath, final Audience audience, final Class<T> messageClass);
+
+    @Override
+    public <T> Optional<T> getMessage(final String messagePath, final CommandSender messageReceiver, final Class<T> messageClass) {
+        return getMessage(messagePath, CrCAPIMessage.getBukkitAudiences().sender(messageReceiver), messageClass);
+    }
 
     @Override
     public abstract boolean init();
-
-    @Override
-    public Optional<Component> getComponent(final String messagePath, final CommandSender messageReceiver, final MessageType messageType) {
-        return this.getComponent(messagePath, CrCAPIMessage.getBukkitAudiences().sender(messageReceiver), messageType);
-    }
 
     @Override
     public void sendMessage(final String messagePath, final CommandSender messageReceiver) {
@@ -89,10 +88,10 @@ abstract class MessageAPIImpl implements MessageAPI {
         messageList.forEach(message -> message.sendMessageComponent(audience, replacements));
     }
 
-    Optional<Component> getComponent(final Map<String, List<Message>> messageMap, final String messagePath, final MessageType messageType) {
+    <T> Optional<T> getComponent(final Map<String, List<Message>> messageMap, final String messagePath, final Class<T> messageClass) {
         for (final Message message : messageMap.get(messagePath)) {
-            if (message.getMessageType() == messageType) {
-                return Optional.of(message.getComponent());
+            if (messageClass.isAssignableFrom(message.getClass())) {
+                return Optional.of(messageClass.cast(message));
             }
         }
 

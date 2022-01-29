@@ -9,8 +9,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.configuration.ConfigurationSection;
-import pl.crystalek.crcapi.message.api.Message;
-import pl.crystalek.crcapi.message.api.type.MessageType;
+import pl.crystalek.crcapi.message.api.message.IChatMessage;
+import pl.crystalek.crcapi.message.api.message.Message;
 import pl.crystalek.crcapi.message.api.util.MessageUtil;
 import pl.crystalek.crcapi.message.impl.exception.MessageLoadException;
 
@@ -20,10 +20,9 @@ import java.util.function.Predicate;
 @Getter
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public final class ChatMessage implements Message {
+public final class ChatMessage implements Message, IChatMessage {
     static Predicate<String> CHAT_FORMAT = key -> key.equalsIgnoreCase("hover") || key.equalsIgnoreCase("action") || key.equalsIgnoreCase("message");
-    MessageType messageType = MessageType.CHAT;
-    Component component;
+    Component chatComponent;
 
     public static ChatMessage loadChatMessage(final ConfigurationSection messageConfiguration) throws MessageLoadException {
         if (!messageConfiguration.isConfigurationSection("chat")) {
@@ -77,11 +76,11 @@ public final class ChatMessage implements Message {
 
     @Override
     public void sendMessage(final Audience sender, final Map<String, Object> replacements) {
-        sender.sendMessage(MessageUtil.replace(component, replacements));
+        sender.sendMessage(MessageUtil.replace(chatComponent, replacements));
     }
 
     @Override
     public void sendMessageComponent(final Audience sender, final Map<String, Component> replacements) {
-        sender.sendMessage(MessageUtil.replaceComponent(component, replacements));
+        sender.sendMessage(MessageUtil.replaceComponent(chatComponent, replacements));
     }
 }

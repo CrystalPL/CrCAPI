@@ -2,7 +2,6 @@ package pl.crystalek.crcapi.message.api;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
-import pl.crystalek.crcapi.message.api.type.MessageType;
 
 import java.util.Map;
 import java.util.Optional;
@@ -11,7 +10,7 @@ public interface MessageAPI {
 
     boolean init();
 
-    Optional<Component> getComponent(final String messagePath, final CommandSender messageReceiver, final MessageType messageType);
+    <T> Optional<T> getMessage(final String messagePath, final CommandSender messageReceiver, final Class<T> messageClass);
 
     void sendMessage(final String messagePath, final CommandSender messageReceiver);
 
