@@ -3,7 +3,7 @@ package pl.crystalek.crcapi.message.api.message;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 
-public interface IBossBarMessage extends Cloneable {
+public interface IBossBarMessage {
 
     Component getBossBarComponent();
 
