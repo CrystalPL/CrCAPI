@@ -40,7 +40,7 @@ public final class BossBarMessage implements Message, IBossBarMessage {
     }
 
     public static BossBarMessage loadBossBar(final ConfigurationSection bossBarMessageSection, final JavaPlugin plugin) throws MessageLoadException {
-        final ConfigurationSection bossBarSection = bossBarMessageSection.getConfigurationSection("bossBar");
+        final ConfigurationSection bossBarSection = bossBarMessageSection.getConfigurationSection("bossbar");
         final float progress;
         final BossBar.Color color;
         final BossBar.Overlay overlay;
