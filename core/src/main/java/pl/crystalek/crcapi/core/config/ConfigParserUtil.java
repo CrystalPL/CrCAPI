@@ -15,6 +15,7 @@ import pl.crystalek.crcapi.core.util.NumberUtil;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @UtilityClass
@@ -136,11 +137,76 @@ public class ConfigParserUtil {
         return recipe;
     }
 
-    private Material getMaterial(final String materialName) throws ConfigLoadException {
+    public Material getMaterial(final String materialName) throws ConfigLoadException {
         try {
             return Material.valueOf(materialName.toUpperCase());
         } catch (final IllegalArgumentException exception) {
             throw new ConfigLoadException("Nie odnaleziono przedmiotu: " + materialName);
+        }
+    }
+
+    public boolean getBoolean(final ConfigurationSection configurationSection, final String booleanPath) throws ConfigLoadException {
+        checkFieldExist(configurationSection, booleanPath);
+
+        final String booleanName = configurationSection.getString(booleanPath).toLowerCase();
+        if (!booleanName.equals("true") && !booleanName.equals("false")) {
+            throw new ConfigLoadException("Pole: " + booleanPath + " nie jest wartością true lub false");
+        }
+
+        return Boolean.getBoolean(booleanName);
+    }
+
+    public int getInt(final ConfigurationSection configurationSection, final String intPath) throws ConfigLoadException {
+        checkFieldExist(configurationSection, intPath);
+
+        final Optional<Integer> integerOptional = NumberUtil.getInt(configurationSection.get(intPath));
+        if (!integerOptional.isPresent()) {
+            throw new ConfigLoadException("Pole " + intPath + " nie jest liczbą całkowitą!");
+        }
+
+        return integerOptional.get();
+    }
+
+    public int getInt(final ConfigurationSection configurationSection, final String intPath, final Function<Integer, Boolean> intCondition) throws ConfigLoadException {
+        final int number = getInt(configurationSection, intPath);
+
+        if (intCondition.apply(number)) {
+            throw new ConfigLoadException("Pole " + intPath + " nie jest liczbą całkowitą z zakresu <1, 2_147_483_468>!");
+        }
+
+        return number;
+    }
+
+    public String getString(final ConfigurationSection configurationSection, final String stringPath) throws ConfigLoadException {
+        checkFieldExist(configurationSection, stringPath);
+
+        return configurationSection.getString(stringPath);
+    }
+
+    public long getLong(final ConfigurationSection configurationSection, final String longPath) throws ConfigLoadException {
+        checkFieldExist(configurationSection, longPath);
+
+        final Optional<Long> longOptional = NumberUtil.getLong(configurationSection.get(longPath));
+        if (!longOptional.isPresent()) {
+            throw new ConfigLoadException("Pole " + longPath + " nie jest liczbą całkowitą!");
+        }
+
+        return longOptional.get();
+    }
+
+    public long getLong(final ConfigurationSection configurationSection, final String longPath, final Function<Long, Boolean> longCondition) throws ConfigLoadException {
+        final long number = getLong(configurationSection, longPath);
+
+        if (longCondition.apply(number)) {
+            throw new ConfigLoadException("Pole " + longPath + " nie jest liczbą całkowitą z zakresu <1, 9_223_372_036_854_775_807>!");
+        }
+
+        return number;
+    }
+
+    public void checkFieldExist(final ConfigurationSection databaseConfiguration, final String field) throws ConfigLoadException {
+        if (!databaseConfiguration.contains(field)) {
+            throw new ConfigLoadException("Nie odnaleziono pola: " + field);
         }
     }
 }

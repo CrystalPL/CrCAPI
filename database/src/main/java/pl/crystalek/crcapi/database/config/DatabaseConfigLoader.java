@@ -3,6 +3,7 @@ package pl.crystalek.crcapi.database.config;
 import lombok.experimental.UtilityClass;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
+import pl.crystalek.crcapi.core.config.ConfigParserUtil;
 import pl.crystalek.crcapi.core.config.exception.ConfigLoadException;
 import pl.crystalek.crcapi.database.storage.type.StorageType;
 
@@ -12,21 +13,21 @@ import java.io.File;
 public class DatabaseConfigLoader {
 
     public DatabaseConfig getDatabaseConfig(final ConfigurationSection databaseConfiguration, final JavaPlugin plugin) throws ConfigLoadException {
-        checkFieldExist(databaseConfiguration, "storageType");
+        ConfigParserUtil.checkFieldExist(databaseConfiguration, "storageType");
 
         final ConfigurationSection databaseSettings = databaseConfiguration.getConfigurationSection("settings");
-        checkFieldExist(databaseSettings, "hostname");
-        checkFieldExist(databaseSettings, "port");
-        checkFieldExist(databaseSettings, "database");
-        checkFieldExist(databaseSettings, "username");
-        checkFieldExist(databaseSettings, "password");
-        checkFieldExist(databaseSettings, "useSSL");
-        checkFieldExist(databaseSettings, "poolSize");
-        checkFieldExist(databaseSettings, "connectionTimeout");
-        checkFieldExist(databaseSettings, "prefix");
+        ConfigParserUtil.checkFieldExist(databaseSettings, "hostname");
+        ConfigParserUtil.checkFieldExist(databaseSettings, "port");
+        ConfigParserUtil.checkFieldExist(databaseSettings, "database");
+        ConfigParserUtil.checkFieldExist(databaseSettings, "username");
+        ConfigParserUtil.checkFieldExist(databaseSettings, "password");
+        ConfigParserUtil.checkFieldExist(databaseSettings, "useSSL");
+        ConfigParserUtil.checkFieldExist(databaseSettings, "poolSize");
+        ConfigParserUtil.checkFieldExist(databaseSettings, "connectionTimeout");
+        ConfigParserUtil.checkFieldExist(databaseSettings, "prefix");
 
         final ConfigurationSection sqliteConfiguration = databaseConfiguration.getConfigurationSection("sqlite");
-        checkFieldExist(sqliteConfiguration, "fileName");
+        ConfigParserUtil.checkFieldExist(sqliteConfiguration, "fileName");
 
         final StorageType storageType;
         try {
@@ -48,11 +49,5 @@ public class DatabaseConfigLoader {
         final File sqliteDatabaseLocation = new File(plugin.getDataFolder(), sqliteFileName);
 
         return new DatabaseConfig(storageType, hostname, port, database, username, password, useSSL, poolSize, connectionTimeout, prefix, sqliteDatabaseLocation);
-    }
-
-    private void checkFieldExist(final ConfigurationSection databaseConfiguration, final String field) throws ConfigLoadException {
-        if (!databaseConfiguration.contains(field)) {
-            throw new ConfigLoadException("Nie wykryto pola: " + field);
-        }
     }
 }
