@@ -14,7 +14,7 @@ import java.util.*;
 
 @UtilityClass
 public class CommandLoader {
-    public Optional<Map<Class<? extends SingleCommand>, CommandData>> loadCommands(final ConfigurationSection commandsConfigurationSection, final ClassLoader classLoader, final JavaPlugin plugin) throws ConfigLoadException {
+    public Map<Class<? extends SingleCommand>, CommandData> loadCommands(final ConfigurationSection commandsConfigurationSection, final ClassLoader classLoader, final JavaPlugin plugin) throws ConfigLoadException {
         final Map<Class<? extends SingleCommand>, CommandData> commandDataMap = new HashMap<>();
         final Set<ClassInfo> classList;
         try {
@@ -26,10 +26,7 @@ public class CommandLoader {
         for (final String defaultCommandName : commandsConfigurationSection.getKeys(false)) {
             final ConfigurationSection commandConfigurationSection = commandsConfigurationSection.getConfigurationSection(defaultCommandName);
 
-            final Optional<Class<? extends SingleCommand>> commandClassOptional = getCommand(defaultCommandName, classList, classLoader, plugin);
-            if (!commandClassOptional.isPresent()) {
-                return Optional.empty();
-            }
+            final Class<? extends SingleCommand> commandClassOptional = getCommand(defaultCommandName, classList, classLoader, plugin);
 
             final String commandName = commandConfigurationSection.getString("name");
             final List<String> commandAliases = commandConfigurationSection.contains("aliases")
@@ -43,22 +40,19 @@ public class CommandLoader {
                 for (final String defaultSubCommandName : subCommandConfigurationSection.getKeys(false)) {
                     final List<String> argumentList = getList(subCommandConfigurationSection.get(defaultSubCommandName));
 
-                    final Optional<Class<? extends SingleCommand>> subCommandClassOptional = getCommand(defaultSubCommandName, classList, classLoader, plugin);
-                    if (!subCommandClassOptional.isPresent()) {
-                        return Optional.empty();
-                    }
+                    final Class<? extends SingleCommand> subCommandClassOptional = getCommand(defaultSubCommandName, classList, classLoader, plugin);
 
-                    subCommandMap.put(subCommandClassOptional.get(), argumentList);
+                    subCommandMap.put(subCommandClassOptional, argumentList);
                 }
             }
 
-            commandDataMap.put(commandClassOptional.get(), new CommandData(commandName, commandAliases, subCommandMap));
+            commandDataMap.put(commandClassOptional, new CommandData(commandName, commandAliases, subCommandMap));
         }
 
-        return Optional.of(commandDataMap);
+        return commandDataMap;
     }
 
-    private Optional<Class<? extends SingleCommand>> getCommand(final String commandName, final Set<ClassInfo> classList, final ClassLoader classLoader, final JavaPlugin plugin) throws ConfigLoadException {
+    private Class<? extends SingleCommand> getCommand(final String commandName, final Set<ClassInfo> classList, final ClassLoader classLoader, final JavaPlugin plugin) throws ConfigLoadException {
         for (final ClassInfo classInfo : classList) {
             if (classInfo.getSimpleName().equalsIgnoreCase(commandName)) {
                 final Class<?> clazz;
@@ -70,13 +64,12 @@ public class CommandLoader {
                 }
 
                 if (clazz.getSuperclass().equals(SingleCommand.class)) {
-                    return Optional.of((Class<? extends SingleCommand>) clazz);
+                    return (Class<? extends SingleCommand>) clazz;
                 }
             }
         }
 
-        plugin.getLogger().severe("Not found class: " + commandName);
-        return Optional.empty();
+        throw new ConfigLoadException("Not found class: " + commandName);
     }
 
     private List<String> getList(final Object objectList) {
