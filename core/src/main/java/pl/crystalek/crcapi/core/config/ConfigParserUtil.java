@@ -153,7 +153,7 @@ public class ConfigParserUtil {
             throw new ConfigLoadException("Pole: " + booleanPath + " nie jest wartością true lub false");
         }
 
-        return Boolean.getBoolean(booleanName);
+        return Boolean.parseBoolean(booleanName);
     }
 
     public int getInt(final ConfigurationSection configurationSection, final String intPath) throws ConfigLoadException {
