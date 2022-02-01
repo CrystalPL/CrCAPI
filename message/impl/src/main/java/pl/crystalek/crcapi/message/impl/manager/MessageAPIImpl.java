@@ -58,16 +58,6 @@ abstract class MessageAPIImpl implements MessageAPI {
         sendMessageComponent(messagePath, CrCAPIMessage.getBukkitAudiences().players(), replacements);
     }
 
-    @Override
-    public void broadcast(final String messagePath, final Map<String, Object> replacements) {
-        sendMessage(messagePath, CrCAPIMessage.getBukkitAudiences().players(), replacements);
-    }
-
-    @Override
-    public void broadcast(final String messagePath) {
-        sendMessage(messagePath, CrCAPIMessage.getBukkitAudiences().players(), ImmutableMap.of());
-    }
-
     void sendMessage(final Map<String, List<Message>> messageMap, final String messagePath, final Audience audience, final Map<String, Object> replacements) {
         final List<Message> messageList = messageMap.get(messagePath);
         if (messageList == null) {

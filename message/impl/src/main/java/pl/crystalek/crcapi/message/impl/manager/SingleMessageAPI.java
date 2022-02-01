@@ -1,11 +1,13 @@
 package pl.crystalek.crcapi.message.impl.manager;
 
+import com.google.common.collect.ImmutableMap;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.crystalek.crcapi.message.api.message.Message;
+import pl.crystalek.crcapi.message.impl.CrCAPIMessage;
 import pl.crystalek.crcapi.message.impl.loader.SingleMessageLoader;
 
 import java.util.List;
@@ -42,5 +44,15 @@ public final class SingleMessageAPI extends MessageAPIImpl {
         messageMap = messageLoader.getMessageMap();
 
         return init;
+    }
+
+    @Override
+    public void broadcast(final String messagePath, final Map<String, Object> replacements) {
+        sendMessage(messagePath, CrCAPIMessage.getBukkitAudiences().players(), replacements);
+    }
+
+    @Override
+    public void broadcast(final String messagePath) {
+        sendMessage(messagePath, CrCAPIMessage.getBukkitAudiences().players(), ImmutableMap.of());
     }
 }

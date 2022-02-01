@@ -1,5 +1,6 @@
 package pl.crystalek.crcapi.message.impl.manager;
 
+import com.google.common.collect.ImmutableMap;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import net.kyori.adventure.audience.Audience;
@@ -8,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import pl.crystalek.crcapi.message.impl.loader.LocalizedMessageLoader;
 import pl.crystalek.crcapi.message.impl.user.UserCache;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -37,5 +39,17 @@ public final class LocalizedMessageAPI extends MessageAPIImpl {
     @Override
     public boolean init() {
         return messageLoader.init();
+    }
+
+    @Override
+    public void broadcast(final String messagePath, final Map<String, Object> replacements) {
+        for (final Map.Entry<Audience, Locale> entry : UserCache.getUserLocaleMap().entrySet()) {
+            sendMessage(messageLoader.getPlayerMessageMap(entry.getValue()), messagePath, entry.getKey(), replacements);
+        }
+    }
+
+    @Override
+    public void broadcast(final String messagePath) {
+        broadcast(messagePath, ImmutableMap.of());
     }
 }
