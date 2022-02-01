@@ -4,12 +4,15 @@ import com.google.common.collect.ImmutableMap;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import pl.crystalek.crcapi.message.api.MessageAPI;
 import pl.crystalek.crcapi.message.api.message.Message;
 import pl.crystalek.crcapi.message.api.util.MessageUtil;
 import pl.crystalek.crcapi.message.impl.CrCAPIMessage;
+import pl.crystalek.crcapi.message.impl.user.UserCache;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -56,6 +59,16 @@ abstract class MessageAPIImpl implements MessageAPI {
     @Override
     public void broadcastComponent(final String messagePath, final Map<String, Component> replacements) {
         sendMessageComponent(messagePath, CrCAPIMessage.getBukkitAudiences().players(), replacements);
+    }
+
+    @Override
+    public void setLocale(final Player player, final Locale locale) {
+        UserCache.setLocale(player, locale);
+    }
+
+    @Override
+    public Locale getLocale(final Player player) {
+        return UserCache.getLocale(CrCAPIMessage.getBukkitAudiences().player(player));
     }
 
     void sendMessage(final Map<String, List<Message>> messageMap, final String messagePath, final Audience audience, final Map<String, Object> replacements) {

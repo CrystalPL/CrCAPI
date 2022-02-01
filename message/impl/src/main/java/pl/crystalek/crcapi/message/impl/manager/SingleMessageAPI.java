@@ -11,6 +11,7 @@ import pl.crystalek.crcapi.message.impl.CrCAPIMessage;
 import pl.crystalek.crcapi.message.impl.loader.SingleMessageLoader;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -54,5 +55,10 @@ public final class SingleMessageAPI extends MessageAPIImpl {
     @Override
     public void broadcast(final String messagePath) {
         sendMessage(messagePath, CrCAPIMessage.getBukkitAudiences().players(), ImmutableMap.of());
+    }
+
+    @Override
+    public List<Locale> getSupportedLanguages() {
+        throw new UnsupportedOperationException("you muse use LocalizedMessage to get supported languages");
     }
 }

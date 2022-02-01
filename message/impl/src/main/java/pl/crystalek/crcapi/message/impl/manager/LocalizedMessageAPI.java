@@ -9,9 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import pl.crystalek.crcapi.message.impl.loader.LocalizedMessageLoader;
 import pl.crystalek.crcapi.message.impl.user.UserCache;
 
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public final class LocalizedMessageAPI extends MessageAPIImpl {
@@ -51,5 +49,10 @@ public final class LocalizedMessageAPI extends MessageAPIImpl {
     @Override
     public void broadcast(final String messagePath) {
         broadcast(messagePath, ImmutableMap.of());
+    }
+
+    @Override
+    public List<Locale> getSupportedLanguages() {
+        return new ArrayList<>(messageLoader.getLocaleMessageMap().keySet());
     }
 }

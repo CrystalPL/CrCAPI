@@ -2,7 +2,10 @@ package pl.crystalek.crcapi.message.api;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -27,4 +30,11 @@ public interface MessageAPI {
     void broadcast(final String messagePath, final Map<String, Object> replacements);
 
     void broadcast(final String messagePath);
+
+    void setLocale(final Player player, final Locale locale);
+
+    Locale getLocale(final Player player);
+
+    //throw UnsupportedOperationException if you do not use LocalizedMessage
+    List<Locale> getSupportedLanguages();
 }

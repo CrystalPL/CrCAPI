@@ -1,8 +1,6 @@
 package pl.crystalek.crcapi.message.impl.user;
 
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.experimental.FieldDefaults;
 import lombok.experimental.UtilityClass;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -18,12 +16,11 @@ import java.util.Optional;
 import java.util.function.Function;
 
 @UtilityClass
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserCache {
     @Getter
-    Map<Audience, Locale> userLocaleMap = new HashMap<>();
-    BukkitAudiences bukkitAudiences;
-    Function<Player, String> getLocaleFunction;
+    private final Map<Audience, Locale> userLocaleMap = new HashMap<>();
+    private final BukkitAudiences bukkitAudiences;
+    private Function<Player, String> getLocaleFunction;
 
     static {
         bukkitAudiences = CrCAPIMessage.getBukkitAudiences();
