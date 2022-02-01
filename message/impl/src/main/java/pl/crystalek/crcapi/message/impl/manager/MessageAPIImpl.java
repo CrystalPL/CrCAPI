@@ -3,6 +3,7 @@ package pl.crystalek.crcapi.message.impl.manager;
 import com.google.common.collect.ImmutableMap;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import pl.crystalek.crcapi.message.api.MessageAPI;
@@ -25,7 +26,7 @@ abstract class MessageAPIImpl implements MessageAPI {
 
     @Override
     public <T> Optional<T> getMessage(final String messagePath, final CommandSender messageReceiver, final Class<T> messageClass) {
-        return getMessage(messagePath, CrCAPIMessage.getBukkitAudiences().sender(messageReceiver), messageClass);
+        return getMessage(messagePath, CrCAPIMessage.getInstance().getBukkitAudiences().sender(messageReceiver), messageClass);
     }
 
     @Override
@@ -33,42 +34,44 @@ abstract class MessageAPIImpl implements MessageAPI {
 
     @Override
     public void sendMessage(final String messagePath, final CommandSender messageReceiver) {
-        sendMessage(messagePath, CrCAPIMessage.getBukkitAudiences().sender(messageReceiver), ImmutableMap.of());
+        sendMessage(messagePath, CrCAPIMessage.getInstance().getBukkitAudiences().sender(messageReceiver), ImmutableMap.of());
     }
 
     @Override
     public void sendMessage(final String messagePath, final CommandSender messageReceiver, final Map<String, Object> replacements) {
-        sendMessage(messagePath, CrCAPIMessage.getBukkitAudiences().sender(messageReceiver), replacements);
+        sendMessage(messagePath, CrCAPIMessage.getInstance().getBukkitAudiences().sender(messageReceiver), replacements);
     }
 
     @Override
     public void sendMessageComponent(final String messagePath, final CommandSender messageReceiver, final Map<String, Component> replacements) {
-        sendMessageComponent(messagePath, CrCAPIMessage.getBukkitAudiences().sender(messageReceiver), replacements);
+        sendMessageComponent(messagePath, CrCAPIMessage.getInstance().getBukkitAudiences().sender(messageReceiver), replacements);
     }
 
     @Override
     public void sendMessage(final Component component, final CommandSender messageReceiver, final Map<String, Component> replacements) {
-        CrCAPIMessage.getBukkitAudiences().sender(messageReceiver).sendMessage(MessageUtil.replaceComponent(component, replacements));
+        CrCAPIMessage.getInstance().getBukkitAudiences().sender(messageReceiver).sendMessage(MessageUtil.replaceComponent(component, replacements));
     }
 
     @Override
     public void sendMessageComponent(final Component component, final CommandSender messageReceiver, final Map<String, Object> replacements) {
-        CrCAPIMessage.getBukkitAudiences().sender(messageReceiver).sendMessage(MessageUtil.replace(component, replacements));
+        CrCAPIMessage.getInstance().getBukkitAudiences().sender(messageReceiver).sendMessage(MessageUtil.replace(component, replacements));
     }
 
     @Override
     public void broadcastComponent(final String messagePath, final Map<String, Component> replacements) {
-        sendMessageComponent(messagePath, CrCAPIMessage.getBukkitAudiences().players(), replacements);
+        sendMessageComponent(messagePath, CrCAPIMessage.getInstance().getBukkitAudiences().players(), replacements);
     }
 
     @Override
     public void setLocale(final Player player, final Locale locale) {
         UserCache.setLocale(player, locale);
+        final Runnable runnable = () -> CrCAPIMessage.getInstance().getStorage().getProvider().setPlayerLocale(player.getUniqueId(), locale);
+        Bukkit.getScheduler().runTaskAsynchronously(CrCAPIMessage.getInstance().getPlugin(), runnable);
     }
 
     @Override
     public Locale getLocale(final Player player) {
-        return UserCache.getLocale(CrCAPIMessage.getBukkitAudiences().player(player));
+        return UserCache.getLocale(CrCAPIMessage.getInstance().getBukkitAudiences().player(player));
     }
 
     void sendMessage(final Map<String, List<Message>> messageMap, final String messagePath, final Audience audience, final Map<String, Object> replacements) {

@@ -23,7 +23,7 @@ public class UserCache {
     private Function<Player, String> getLocaleFunction;
 
     static {
-        bukkitAudiences = CrCAPIMessage.getBukkitAudiences();
+        bukkitAudiences = CrCAPIMessage.getInstance().getBukkitAudiences();
         try {
             Player.Spigot.class.getMethod("getLocale");
 

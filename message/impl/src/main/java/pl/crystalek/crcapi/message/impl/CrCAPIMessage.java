@@ -24,15 +24,18 @@ import pl.crystalek.crcapi.message.impl.user.UserCache;
 
 import java.io.IOException;
 
+@Getter
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public final class CrCAPIMessage {
     @Getter
-    static BukkitAudiences bukkitAudiences;
+    static CrCAPIMessage instance;
     final JavaPlugin plugin;
+    BukkitAudiences bukkitAudiences;
     Storage<Provider> storage;
 
     public void load() {
+        instance = this;
         bukkitAudiences = BukkitAudiences.create(plugin);
 
         final ConfigHelper configHelper = new ConfigHelper(plugin, "config.yml");

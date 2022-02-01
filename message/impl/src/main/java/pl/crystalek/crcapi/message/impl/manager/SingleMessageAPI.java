@@ -49,12 +49,12 @@ public final class SingleMessageAPI extends MessageAPIImpl {
 
     @Override
     public void broadcast(final String messagePath, final Map<String, Object> replacements) {
-        sendMessage(messagePath, CrCAPIMessage.getBukkitAudiences().players(), replacements);
+        sendMessage(messagePath, CrCAPIMessage.getInstance().getBukkitAudiences().players(), replacements);
     }
 
     @Override
     public void broadcast(final String messagePath) {
-        sendMessage(messagePath, CrCAPIMessage.getBukkitAudiences().players(), ImmutableMap.of());
+        sendMessage(messagePath, CrCAPIMessage.getInstance().getBukkitAudiences().players(), ImmutableMap.of());
     }
 
     @Override
