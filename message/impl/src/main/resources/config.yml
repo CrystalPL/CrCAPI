@@ -12,7 +12,7 @@ database:
     port: "3306"
 
     # database — database name
-    database: "chillcode"
+    database: "minecraft"
 
     # username — database username
     username: "root"
