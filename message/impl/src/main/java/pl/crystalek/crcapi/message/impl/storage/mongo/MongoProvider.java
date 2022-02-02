@@ -11,9 +11,7 @@ import pl.crystalek.crcapi.lib.mongodb.client.MongoDatabase;
 import pl.crystalek.crcapi.lib.mongodb.client.model.ReplaceOptions;
 import pl.crystalek.crcapi.message.impl.storage.Provider;
 
-import java.util.Locale;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public final class MongoProvider extends BaseMongoProvider implements Provider {
@@ -48,5 +46,20 @@ public final class MongoProvider extends BaseMongoProvider implements Provider {
                 .append("language_tag", locale.toString());
 
         userLocaleCollection.replaceOne(new Document("_id", playerUUID.toString()), document, replaceOptions);
+    }
+
+    @Override
+    public Map<UUID, Locale> getUserLocaleMap() {
+        final Map<UUID, Locale> userLocaleMap = new HashMap<>();
+
+        for (final Document document : userLocaleCollection.find()) {
+            final String languageTag = document.get("language_tag", String.class);
+            final Locale locale = LocaleUtils.toLocale(languageTag);
+            final UUID uuid = UUID.fromString(document.get("_id", String.class));
+
+            userLocaleMap.put(uuid, locale);
+        }
+
+        return userLocaleMap;
     }
 }

@@ -5,7 +5,10 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import pl.crystalek.crcapi.message.impl.CrCAPIMessage;
 import pl.crystalek.crcapi.message.impl.loader.LocalizedMessageLoader;
 import pl.crystalek.crcapi.message.impl.user.UserCache;
 
@@ -41,7 +44,7 @@ public final class LocalizedMessageAPI extends MessageAPIImpl {
 
     @Override
     public void broadcast(final String messagePath, final Map<String, Object> replacements) {
-        for (final Map.Entry<Audience, Locale> entry : UserCache.getUserLocaleMap().entrySet()) {
+        for (final Map.Entry<Audience, Locale> entry : UserCache.getAudienceLocaleMap().entrySet()) {
             sendMessage(messageLoader.getPlayerMessageMap(entry.getValue()), messagePath, entry.getKey(), replacements);
         }
     }
@@ -49,6 +52,18 @@ public final class LocalizedMessageAPI extends MessageAPIImpl {
     @Override
     public void broadcast(final String messagePath) {
         broadcast(messagePath, ImmutableMap.of());
+    }
+
+    @Override
+    public void setLocale(final Player player, final Locale locale) {
+        UserCache.setLocale(player, locale);
+        final Runnable runnable = () -> CrCAPIMessage.getInstance().getStorage().getProvider().setPlayerLocale(player.getUniqueId(), locale);
+        Bukkit.getScheduler().runTaskAsynchronously(CrCAPIMessage.getInstance().getPlugin(), runnable);
+    }
+
+    @Override
+    public Locale getLocale(final Player player) {
+        return UserCache.getLocale(CrCAPIMessage.getInstance().getBukkitAudiences().player(player));
     }
 
     @Override

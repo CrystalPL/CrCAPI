@@ -31,8 +31,10 @@ public interface MessageAPI {
 
     void broadcast(final String messagePath);
 
+    //throw UnsupportedOperationException if you do not use LocalizedMessage
     void setLocale(final Player player, final Locale locale);
 
+    //throw UnsupportedOperationException if you do not use LocalizedMessage
     Locale getLocale(final Player player);
 
     //throw UnsupportedOperationException if you do not use LocalizedMessage

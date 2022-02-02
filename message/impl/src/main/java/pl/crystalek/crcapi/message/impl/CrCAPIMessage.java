@@ -64,13 +64,11 @@ public final class CrCAPIMessage {
                 return;
             }
 
-            final Provider provider = storage.getProvider();
-
             final PluginManager pluginManager = Bukkit.getPluginManager();
-            pluginManager.registerEvents(new PlayerJoinListener(plugin, provider), plugin);
+            pluginManager.registerEvents(new PlayerJoinListener(), plugin);
             pluginManager.registerEvents(new PlayerQuitListener(), plugin);
 
-            Bukkit.getOnlinePlayers().forEach(player -> UserCache.loadLocale(player, provider));
+            Bukkit.getOnlinePlayers().forEach(UserCache::loadLocale);
         }
 
         Bukkit.getServicesManager().register(MessageAPIProvider.class, new MessageAPIProviderImpl(), plugin, ServicePriority.Highest);

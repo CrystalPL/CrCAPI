@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.crystalek.crcapi.message.api.message.Message;
 import pl.crystalek.crcapi.message.impl.CrCAPIMessage;
@@ -55,6 +56,16 @@ public final class SingleMessageAPI extends MessageAPIImpl {
     @Override
     public void broadcast(final String messagePath) {
         sendMessage(messagePath, CrCAPIMessage.getInstance().getBukkitAudiences().players(), ImmutableMap.of());
+    }
+
+    @Override
+    public void setLocale(final Player player, final Locale locale) {
+        throw new UnsupportedOperationException("you muse use LocalizedMessage to set player locale");
+    }
+
+    @Override
+    public Locale getLocale(final Player player) {
+        throw new UnsupportedOperationException("you muse use LocalizedMessage to get player locale");
     }
 
     @Override

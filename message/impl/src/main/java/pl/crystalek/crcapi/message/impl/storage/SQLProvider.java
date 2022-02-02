@@ -9,18 +9,18 @@ import pl.crystalek.crcapi.database.provider.sql.model.SQLFunction;
 import pl.crystalek.crcapi.lib.hikari.HikariDataSource;
 
 import java.sql.ResultSet;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public abstract class SQLProvider extends BaseSQLProvider implements Provider {
     String getPlayerLocale;
+    String getMapLocales;
 
     public SQLProvider(final DatabaseConfig databaseConfig, final HikariDataSource database) {
         super(databaseConfig, database);
 
         this.getPlayerLocale = String.format("SELECT language_tag FROM %slocaleMap WHERE uuid = ? LIMIT 1;", databaseConfig.getPrefix());
+        this.getMapLocales = String.format("SELECT * FROM %slocaleMap", databaseConfig.getPrefix());
     }
 
     @Override
@@ -47,5 +47,27 @@ public abstract class SQLProvider extends BaseSQLProvider implements Provider {
         };
 
         return executeQueryAndOpenConnection(getPlayerLocale, function, playerUUID.toString());
+    }
+
+    @Override
+    public Map<UUID, Locale> getUserLocaleMap() {
+        final SQLFunction<ResultSet, Map<UUID, Locale>> function = resultSet -> {
+            if (resultSet == null || !resultSet.next()) {
+                return new HashMap<>();
+            }
+
+            final Map<UUID, Locale> userLocaleMap = new HashMap<>();
+            do {
+                final String languageTag = resultSet.getString("language_tag");
+                final Locale locale = LocaleUtils.toLocale(languageTag);
+                final UUID uuid = UUID.fromString(resultSet.getString("uuid"));
+
+                userLocaleMap.put(uuid, locale);
+            } while (resultSet.next());
+
+            return userLocaleMap;
+        };
+
+        return executeQueryAndOpenConnection(getMapLocales, function);
     }
 }
