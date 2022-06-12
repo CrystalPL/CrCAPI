@@ -170,7 +170,7 @@ public class ConfigParserUtil {
     public int getInt(final ConfigurationSection configurationSection, final String intPath, final Function<Integer, Boolean> intCondition) throws ConfigLoadException {
         final int number = getInt(configurationSection, intPath);
 
-        if (intCondition.apply(number)) {
+        if (!intCondition.apply(number)) {
             throw new ConfigLoadException("Pole " + intPath + " nie spełnia wymaganych warunków!");
         }
 
@@ -197,7 +197,7 @@ public class ConfigParserUtil {
     public long getLong(final ConfigurationSection configurationSection, final String longPath, final Function<Long, Boolean> longCondition) throws ConfigLoadException {
         final long number = getLong(configurationSection, longPath);
 
-        if (longCondition.apply(number)) {
+        if (!longCondition.apply(number)) {
             throw new ConfigLoadException("Pole " + longPath + " nie spełnia wymaganych warunków!");
         }
 
@@ -218,7 +218,7 @@ public class ConfigParserUtil {
     public double getDouble(final ConfigurationSection configurationSection, final String doublePath, final Function<Double, Boolean> doubleCondition) throws ConfigLoadException {
         final double number = getDouble(configurationSection, doublePath);
 
-        if (doubleCondition.apply(number)) {
+        if (!doubleCondition.apply(number)) {
             throw new ConfigLoadException("Pole " + doublePath + " nie spełnia wymaganych warunków!");
         }
 
