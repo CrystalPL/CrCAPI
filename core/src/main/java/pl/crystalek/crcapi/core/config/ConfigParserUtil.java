@@ -161,7 +161,7 @@ public class ConfigParserUtil {
 
         final Optional<Integer> integerOptional = NumberUtil.getInt(configurationSection.get(intPath));
         if (!integerOptional.isPresent()) {
-            throw new ConfigLoadException("Pole " + intPath + " nie jest liczbą całkowitą!");
+            throw new ConfigLoadException("Pole " + intPath + " nie spełnia wymaganych warunków!");
         }
 
         return integerOptional.get();
@@ -171,7 +171,7 @@ public class ConfigParserUtil {
         final int number = getInt(configurationSection, intPath);
 
         if (intCondition.apply(number)) {
-            throw new ConfigLoadException("Pole " + intPath + " nie jest liczbą całkowitą z zakresu <1, 2_147_483_468>!");
+            throw new ConfigLoadException("Pole " + intPath + " nie spełnia wymaganych warunków!");
         }
 
         return number;
@@ -198,7 +198,28 @@ public class ConfigParserUtil {
         final long number = getLong(configurationSection, longPath);
 
         if (longCondition.apply(number)) {
-            throw new ConfigLoadException("Pole " + longPath + " nie jest liczbą całkowitą z zakresu <1, 9_223_372_036_854_775_807>!");
+            throw new ConfigLoadException("Pole " + longPath + " nie spełnia wymaganych warunków!");
+        }
+
+        return number;
+    }
+
+    public double getDouble(final ConfigurationSection configurationSection, final String doublePath) throws ConfigLoadException {
+        checkFieldExist(configurationSection, doublePath);
+
+        final Optional<Double> doubleOptional = NumberUtil.getDouble(configurationSection.get(doublePath));
+        if (!doubleOptional.isPresent()) {
+            throw new ConfigLoadException("Pole " + doublePath + " nie jest liczbą zmiennoprzecinkową!");
+        }
+
+        return doubleOptional.get();
+    }
+
+    public double getDouble(final ConfigurationSection configurationSection, final String doublePath, final Function<Double, Boolean> doubleCondition) throws ConfigLoadException {
+        final double number = getDouble(configurationSection, doublePath);
+
+        if (doubleCondition.apply(number)) {
+            throw new ConfigLoadException("Pole " + doublePath + " nie spełnia wymaganych warunków!");
         }
 
         return number;
