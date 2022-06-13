@@ -3,7 +3,9 @@ package pl.crystalek.crcapi.message.impl.manager;
 import com.google.common.collect.ImmutableMap;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import pl.crystalek.crcapi.message.api.MessageAPI;
 import pl.crystalek.crcapi.message.api.message.Message;
 import pl.crystalek.crcapi.message.api.util.MessageUtil;
@@ -31,6 +33,16 @@ abstract class MessageAPIImpl implements MessageAPI {
     @Override
     public void sendMessage(final String messagePath, final CommandSender messageReceiver) {
         sendMessage(messagePath, CrCAPIMessage.getInstance().getBukkitAudiences().sender(messageReceiver), ImmutableMap.of());
+    }
+
+    @Override
+    public void sendMessage(final String messagePath, final String messageReceiver) {
+        final Player player = Bukkit.getPlayer(messageReceiver);
+        if (player == null) {
+            return;
+        }
+
+        sendMessage(messagePath, player);
     }
 
     @Override
