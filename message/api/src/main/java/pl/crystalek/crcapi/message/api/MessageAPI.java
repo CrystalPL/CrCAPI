@@ -19,6 +19,8 @@ public interface MessageAPI {
 
     void sendMessage(final String messagePath, final String messageReceiver);
 
+    void sendMessage(final String messagePath, final String messageReceiver, final Map<String, Object> replacements);
+
     void sendMessage(final String messagePath, final CommandSender messageReceiver, final Map<String, Object> replacements);
 
     void sendMessageComponent(final String messagePath, final CommandSender messageReceiver, final Map<String, Component> replacements);

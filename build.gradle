@@ -6,7 +6,7 @@ plugins {
 
 allprojects {
     group = 'pl.crystalek'
-    version = '1.4.6'
+    version = '1.4.7'
 
     apply plugin: 'java-library'
     apply plugin: 'com.github.johnrengelman.shadow'

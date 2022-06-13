@@ -46,6 +46,16 @@ abstract class MessageAPIImpl implements MessageAPI {
     }
 
     @Override
+    public void sendMessage(final String messagePath, final String messageReceiver, final Map<String, Object> replacements) {
+        final Player player = Bukkit.getPlayer(messageReceiver);
+        if (player == null) {
+            return;
+        }
+
+        sendMessage(messagePath, player, replacements);
+    }
+
+    @Override
     public void sendMessage(final String messagePath, final CommandSender messageReceiver, final Map<String, Object> replacements) {
         sendMessage(messagePath, CrCAPIMessage.getInstance().getBukkitAudiences().sender(messageReceiver), replacements);
     }
