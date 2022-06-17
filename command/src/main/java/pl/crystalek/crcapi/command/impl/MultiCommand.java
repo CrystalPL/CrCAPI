@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public abstract class MultiCommand extends Command {
+public abstract class MultiCommand extends SingleCommand {
     Map<String, Command> subCommandMap = new HashMap<>();
     Set<String> argumentList = new HashSet<>();
 
