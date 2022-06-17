@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import pl.crystalek.crcapi.command.impl.SingleCommand;
+import pl.crystalek.crcapi.command.impl.Command;
 
 import java.util.List;
 import java.util.Map;
@@ -15,9 +15,9 @@ import java.util.Map;
 public final class CommandData {
     String commandName;
     List<String> commandAliases;
-    Map<Class<? extends SingleCommand>, List<String>> subCommandMap;
+    Map<Class<? extends Command>, List<String>> subCommandMap;
 
-    public List<String> getArgumentList(final Class<? extends SingleCommand> subCommandClass) {
+    public List<String> getArgumentList(final Class<? extends Command> subCommandClass) {
         return subCommandMap.get(subCommandClass);
     }
 }

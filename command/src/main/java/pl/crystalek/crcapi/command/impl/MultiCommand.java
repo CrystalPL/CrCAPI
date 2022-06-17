@@ -10,15 +10,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public abstract class MultiCommand extends SingleCommand {
-    Map<String, SingleCommand> subCommandMap = new HashMap<>();
+public abstract class MultiCommand extends Command {
+    Map<String, Command> subCommandMap = new HashMap<>();
     Set<String> argumentList = new HashSet<>();
 
-    public MultiCommand(final MessageAPI messageAPI, final Map<Class<? extends SingleCommand>, CommandData> commandDataMap) {
+    public MultiCommand(final MessageAPI messageAPI, final Map<Class<? extends Command>, CommandData> commandDataMap) {
         super(messageAPI, commandDataMap);
     }
 
-    protected void registerSubCommand(final SingleCommand subCommand) {
+    protected void registerSubCommand(final Command subCommand) {
         final List<String> argumentList = commandData.getArgumentList(subCommand.getClass());
         argumentList.forEach(argument -> subCommandMap.put(argument, subCommand));
 

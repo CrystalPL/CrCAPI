@@ -4,9 +4,8 @@ import com.google.common.reflect.ClassPath;
 import com.google.common.reflect.ClassPath.ClassInfo;
 import lombok.experimental.UtilityClass;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.plugin.java.JavaPlugin;
+import pl.crystalek.crcapi.command.impl.Command;
 import pl.crystalek.crcapi.command.impl.MultiCommand;
-import pl.crystalek.crcapi.command.impl.SingleCommand;
 import pl.crystalek.crcapi.command.model.CommandData;
 import pl.crystalek.crcapi.core.config.exception.ConfigLoadException;
 
@@ -15,8 +14,8 @@ import java.util.*;
 
 @UtilityClass
 public class CommandLoader {
-    public Map<Class<? extends SingleCommand>, CommandData> loadCommands(final ConfigurationSection commandsConfigurationSection, final ClassLoader classLoader, final JavaPlugin plugin) throws ConfigLoadException {
-        final Map<Class<? extends SingleCommand>, CommandData> commandDataMap = new HashMap<>();
+    public Map<Class<? extends Command>, CommandData> loadCommands(final ConfigurationSection commandsConfigurationSection, final ClassLoader classLoader) throws ConfigLoadException {
+        final Map<Class<? extends Command>, CommandData> commandDataMap = new HashMap<>();
         final Set<ClassInfo> classList;
         try {
             classList = ClassPath.from(classLoader).getAllClasses();
@@ -27,33 +26,37 @@ public class CommandLoader {
         for (final String defaultCommandName : commandsConfigurationSection.getKeys(false)) {
             final ConfigurationSection commandConfigurationSection = commandsConfigurationSection.getConfigurationSection(defaultCommandName);
 
-            final Class<? extends SingleCommand> commandClassOptional = getCommand(defaultCommandName, classList, classLoader, plugin);
+            final Class<? extends Command> commandClass = getCommand(defaultCommandName, classList, classLoader);
 
             final String commandName = commandConfigurationSection.getString("name");
             final List<String> commandAliases = commandConfigurationSection.contains("aliases")
                     ? getList(commandConfigurationSection.get("aliases"))
                     : new ArrayList<>();
 
-            final Map<Class<? extends SingleCommand>, List<String>> subCommandMap = new HashMap<>();
+            final Map<Class<? extends Command>, List<String>> subCommandMap = new HashMap<>();
             if (commandConfigurationSection.contains("subCommands")) {
+                if (!commandClass.getSuperclass().equals(MultiCommand.class)) {
+                    throw new ConfigLoadException("Head class must be extend MultiCommand: " + commandClass.getSimpleName());
+                }
+
                 final ConfigurationSection subCommandConfigurationSection = commandConfigurationSection.getConfigurationSection("subCommands");
 
                 for (final String defaultSubCommandName : subCommandConfigurationSection.getKeys(false)) {
                     final List<String> argumentList = getList(subCommandConfigurationSection.get(defaultSubCommandName));
 
-                    final Class<? extends SingleCommand> subCommandClassOptional = getCommand(defaultSubCommandName, classList, classLoader, plugin);
+                    final Class<? extends Command> subCommandClass = getCommand(defaultSubCommandName, classList, classLoader);
 
-                    subCommandMap.put(subCommandClassOptional, argumentList);
+                    subCommandMap.put(subCommandClass, argumentList);
                 }
             }
 
-            commandDataMap.put(commandClassOptional, new CommandData(commandName, commandAliases, subCommandMap));
+            commandDataMap.put(commandClass, new CommandData(commandName, commandAliases, subCommandMap));
         }
 
         return commandDataMap;
     }
 
-    private Class<? extends SingleCommand> getCommand(final String commandName, final Set<ClassInfo> classList, final ClassLoader classLoader, final JavaPlugin plugin) throws ConfigLoadException {
+    private Class<? extends Command> getCommand(final String commandName, final Set<ClassInfo> classList, final ClassLoader classLoader) throws ConfigLoadException {
         for (final ClassInfo classInfo : classList) {
             if (classInfo.getSimpleName().equalsIgnoreCase(commandName)) {
                 final Class<?> clazz;
@@ -63,8 +66,8 @@ public class CommandLoader {
                     throw new ConfigLoadException("Not found class: " + commandName);
                 }
 
-                if (clazz.getSuperclass().equals(SingleCommand.class) || clazz.getSuperclass().equals(MultiCommand.class)) {
-                    return (Class<? extends SingleCommand>) clazz;
+                if (Command.class.isAssignableFrom(clazz)) {
+                    return (Class<? extends Command>) clazz;
                 }
             }
         }
