@@ -5,6 +5,7 @@ import com.google.common.reflect.ClassPath.ClassInfo;
 import lombok.experimental.UtilityClass;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
+import pl.crystalek.crcapi.command.impl.MultiCommand;
 import pl.crystalek.crcapi.command.impl.SingleCommand;
 import pl.crystalek.crcapi.command.model.CommandData;
 import pl.crystalek.crcapi.core.config.exception.ConfigLoadException;
@@ -57,13 +58,12 @@ public class CommandLoader {
             if (classInfo.getSimpleName().equalsIgnoreCase(commandName)) {
                 final Class<?> clazz;
                 try {
-
                     clazz = Class.forName(classInfo.getName(), false, classLoader);
                 } catch (final ClassNotFoundException exception) {
                     throw new ConfigLoadException("Not found class: " + commandName);
                 }
 
-                if (clazz.getSuperclass().equals(SingleCommand.class)) {
+                if (clazz.getSuperclass().equals(SingleCommand.class) || clazz.getSuperclass().equals(MultiCommand.class)) {
                     return (Class<? extends SingleCommand>) clazz;
                 }
             }

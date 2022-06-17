@@ -225,8 +225,8 @@ public class ConfigParserUtil {
         return number;
     }
 
-    public void checkFieldExist(final ConfigurationSection databaseConfiguration, final String field) throws ConfigLoadException {
-        if (!databaseConfiguration.contains(field)) {
+    public void checkFieldExist(final ConfigurationSection configurationSection, final String field) throws ConfigLoadException {
+        if (!configurationSection.contains(field)) {
             throw new ConfigLoadException("Nie odnaleziono pola: " + field);
         }
     }
