@@ -33,7 +33,7 @@ public abstract class MultiCommand extends SingleCommand {
 
     @Override
     public void execute(final CommandSender sender, final String[] args) {
-        if (!argumentList.contains(args[0].toLowerCase())) {
+        if (!subCommandMap.containsKey(args[0].toLowerCase())) {
             messageAPI.sendMessage(getCommandUsagePath(), sender);
             return;
         }
