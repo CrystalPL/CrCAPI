@@ -19,10 +19,16 @@ public abstract class MultiCommand extends SingleCommand {
     }
 
     protected void registerSubCommand(final Command subCommand) {
+        registerSubCommand(subCommand, true);
+    }
+
+    public void registerSubCommand(final Command subCommand, final boolean addToArgumentList) {
         final List<String> argumentList = commandData.getArgumentList(subCommand.getClass());
         argumentList.forEach(argument -> subCommandMap.put(argument, subCommand));
 
-        this.argumentList.addAll(argumentList);
+        if (addToArgumentList) {
+            this.argumentList.addAll(argumentList);
+        }
     }
 
     @Override
