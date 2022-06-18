@@ -225,6 +225,12 @@ public class ConfigParserUtil {
         return number;
     }
 
+    public List<String> getStringList(final ConfigurationSection configurationSection, final String stringListPath) throws ConfigLoadException {
+        checkFieldExist(configurationSection, stringListPath);
+
+        return configurationSection.getStringList(stringListPath);
+    }
+
     public void checkFieldExist(final ConfigurationSection configurationSection, final String field) throws ConfigLoadException {
         if (!configurationSection.contains(field)) {
             throw new ConfigLoadException("Nie odnaleziono pola: " + field);
