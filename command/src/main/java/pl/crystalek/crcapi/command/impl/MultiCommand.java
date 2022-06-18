@@ -38,7 +38,7 @@ public abstract class MultiCommand extends SingleCommand {
             return;
         }
 
-        subCommandMap.get(args[0].toLowerCase()).execute(sender, args);
+        subCommandMap.get(args[0].toLowerCase()).execute(sender, null, args);
     }
 
     @Override
