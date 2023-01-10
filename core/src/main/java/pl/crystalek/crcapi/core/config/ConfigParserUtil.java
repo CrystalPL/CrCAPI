@@ -131,7 +131,7 @@ public class ConfigParserUtil {
 
     public Recipe getRecipe(final ConfigurationSection recipeConfiguration, final Recipe recipe) throws ConfigLoadException {
         for (int i = 0; i < 9; i++) {
-            recipe.setItem(i, getMaterial(recipeConfiguration.getString(String.valueOf(i + 1))));
+            recipe.setItem(i, getMaterial(getString(recipeConfiguration, String.valueOf(i + 1))));
         }
 
         return recipe;
