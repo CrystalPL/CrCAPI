@@ -1,52 +1,58 @@
 package pl.crystalek.crcapi.message.impl.manager;
 
-import com.google.common.collect.ImmutableMap;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import pl.crystalek.crcapi.message.api.MessageAPI;
 import pl.crystalek.crcapi.message.api.message.Message;
+import pl.crystalek.crcapi.message.api.replacement.Replacement;
 import pl.crystalek.crcapi.message.api.util.MessageUtil;
 import pl.crystalek.crcapi.message.impl.CrCAPIMessage;
+import pl.crystalek.crcapi.message.impl.loader.MessageLoader;
+import pl.crystalek.crcapi.message.impl.user.UserCache;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
-abstract class MessageAPIImpl implements MessageAPI {
-    abstract void sendMessage(final String messagePath, final Audience audience, final Map<String, Object> replacements);
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+public class MessageAPIImpl implements MessageAPI {
+    MessageLoader messageLoader;
 
-    abstract void sendMessageComponent(final String messagePath, final Audience audience, final Map<String, Component> replacements);
+    public MessageAPIImpl(final JavaPlugin plugin) {
+        this.messageLoader = new MessageLoader(plugin);
+    }
 
-    abstract <T> Optional<T> getMessage(final String messagePath, final Audience audience, final Class<T> messageClass);
+    @Override
+    public boolean init() {
+        return messageLoader.init();
+    }
 
     @Override
     public <T> Optional<T> getMessage(final String messagePath, final CommandSender messageReceiver, final Class<T> messageClass) {
-        return getMessage(messagePath, CrCAPIMessage.getInstance().getBukkitAudiences().sender(messageReceiver), messageClass);
-    }
+        final Audience audience = CrCAPIMessage.getInstance().getBukkitAudiences().sender(messageReceiver);
+        final Locale locale = UserCache.getLocale(audience);
 
-    @Override
-    public abstract boolean init();
+        final List<Message> messageList = messageLoader.getPlayerMessageMap(locale).get(messagePath);
+        for (final Message message : messageList) {
+            if (!messageClass.isAssignableFrom(message.getClass())) {
+                continue;
+            }
 
-    @Override
-    public void sendMessage(final String messagePath, final CommandSender messageReceiver) {
-        sendMessage(messagePath, CrCAPIMessage.getInstance().getBukkitAudiences().sender(messageReceiver), ImmutableMap.of());
-    }
-
-    @Override
-    public void sendMessage(final String messagePath, final String messageReceiver) {
-        final Player player = Bukkit.getPlayer(messageReceiver);
-        if (player == null) {
-            return;
+            return Optional.of(messageClass.cast(message));
         }
 
-        sendMessage(messagePath, player);
+        return Optional.empty();
     }
 
     @Override
-    public void sendMessage(final String messagePath, final String messageReceiver, final Map<String, Object> replacements) {
+    public void sendMessage(final String messagePath, final String messageReceiver, final Replacement... replacements) {
         final Player player = Bukkit.getPlayer(messageReceiver);
         if (player == null) {
             return;
@@ -56,57 +62,67 @@ abstract class MessageAPIImpl implements MessageAPI {
     }
 
     @Override
-    public void sendMessage(final String messagePath, final CommandSender messageReceiver, final Map<String, Object> replacements) {
-        sendMessage(messagePath, CrCAPIMessage.getInstance().getBukkitAudiences().sender(messageReceiver), replacements);
+    public void sendMessage(final Component component, final CommandSender messageReceiver, final Replacement... replacements) {
+        final Audience audience = CrCAPIMessage.getInstance().getBukkitAudiences().sender(messageReceiver);
+        sendMessage(component, audience, replacements);
     }
 
     @Override
-    public void sendMessageComponent(final String messagePath, final CommandSender messageReceiver, final Map<String, Component> replacements) {
-        sendMessageComponent(messagePath, CrCAPIMessage.getInstance().getBukkitAudiences().sender(messageReceiver), replacements);
+    public void sendMessage(final Component component, final String messageReceiver, final Replacement... replacements) {
+        final Player player = Bukkit.getPlayer(messageReceiver);
+        if (player == null) {
+            return;
+        }
+
+        sendMessage(component, player, replacements);
     }
 
     @Override
-    public void sendMessage(final Component component, final CommandSender messageReceiver, final Map<String, Component> replacements) {
-        CrCAPIMessage.getInstance().getBukkitAudiences().sender(messageReceiver).sendMessage(MessageUtil.replaceComponent(component, replacements));
+    public void sendMessage(final String messagePath, final CommandSender messageReceiver, final Replacement... replacements) {
+        final Audience audience = CrCAPIMessage.getInstance().getBukkitAudiences().sender(messageReceiver);
+        sendMessage(messagePath, audience, replacements);
     }
 
     @Override
-    public void sendMessageComponent(final Component component, final CommandSender messageReceiver, final Map<String, Object> replacements) {
-        CrCAPIMessage.getInstance().getBukkitAudiences().sender(messageReceiver).sendMessage(MessageUtil.replace(component, replacements));
+    public void broadcast(final String messagePath, final Replacement... replacements) {
+        final Audience audience = CrCAPIMessage.getInstance().getBukkitAudiences().players();
+        sendMessage(messagePath, audience, replacements);
     }
 
     @Override
-    public void broadcastComponent(final String messagePath, final Map<String, Component> replacements) {
-        sendMessageComponent(messagePath, CrCAPIMessage.getInstance().getBukkitAudiences().players(), replacements);
+    public void broadcast(final Component component, final Replacement... replacements) {
+        final Audience audience = CrCAPIMessage.getInstance().getBukkitAudiences().players();
+        sendMessage(component, audience, replacements);
     }
 
-    void sendMessage(final Map<String, List<Message>> messageMap, final String messagePath, final Audience audience, final Map<String, Object> replacements) {
-        final List<Message> messageList = messageMap.get(messagePath);
+    @Override
+    public void setLocale(final Player player, final Locale locale) {
+
+    }
+
+    @Override
+    public Locale getLocale(final Player player) {
+        return null;
+    }
+
+    @Override
+    public List<Locale> getSupportedLanguages() {
+        return null;
+    }
+
+    private void sendMessage(final Component component, final Audience audience, final Replacement... replacements) {
+        audience.sendMessage(MessageUtil.replace(component, replacements));
+    }
+
+    private void sendMessage(final String messagePath, final Audience audience, final Replacement... replacements) {
+        final Locale locale = UserCache.getLocale(audience);
+        final Map<String, List<Message>> playerMessageMap = messageLoader.getPlayerMessageMap(locale);
+        final List<Message> messageList = playerMessageMap.get(messagePath);
         if (messageList == null) {
             audience.sendMessage(Component.text("Nie odnaleziono wiadomości: " + messagePath + ". Zgłoś błąd administratorowi."));
             return;
         }
 
         messageList.forEach(message -> message.sendMessage(audience, replacements));
-    }
-
-    void sendMessageComponent(final Map<String, List<Message>> messageMap, final String messagePath, final Audience audience, final Map<String, Component> replacements) {
-        final List<Message> messageList = messageMap.get(messagePath);
-        if (messageList == null) {
-            audience.sendMessage(Component.text("Nie odnaleziono wiadomości: " + messagePath + ". Zgłoś błąd administratorowi."));
-            return;
-        }
-
-        messageList.forEach(message -> message.sendMessageComponent(audience, replacements));
-    }
-
-    <T> Optional<T> getComponent(final Map<String, List<Message>> messageMap, final String messagePath, final Class<T> messageClass) {
-        for (final Message message : messageMap.get(messagePath)) {
-            if (messageClass.isAssignableFrom(message.getClass())) {
-                return Optional.of(messageClass.cast(message));
-            }
-        }
-
-        return Optional.empty();
     }
 }

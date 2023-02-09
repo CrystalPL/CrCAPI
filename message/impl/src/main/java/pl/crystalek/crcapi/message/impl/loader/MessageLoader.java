@@ -4,46 +4,80 @@ import com.google.common.collect.ImmutableSet;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang.LocaleUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.crystalek.crcapi.message.api.message.Message;
+import pl.crystalek.crcapi.message.impl.config.Config;
 import pl.crystalek.crcapi.message.impl.exception.MessageLoadException;
 import pl.crystalek.crcapi.message.impl.loader.message.ActionBarMessage;
 import pl.crystalek.crcapi.message.impl.loader.message.BossBarMessage;
 import pl.crystalek.crcapi.message.impl.loader.message.ChatMessage;
 import pl.crystalek.crcapi.message.impl.loader.message.TitleMessage;
 
-import java.util.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
-@FieldDefaults(makeFinal = true, level = AccessLevel.PROTECTED)
 @RequiredArgsConstructor
-abstract class MessageLoader {
+@FieldDefaults(makeFinal = true, level = AccessLevel.PROTECTED)
+public class MessageLoader {
+    Map<Locale, Map<String, List<Message>>> localeMessageMap = new HashMap<>();
     JavaPlugin plugin;
 
-    abstract boolean init();
+    public Map<String, List<Message>> getPlayerMessageMap(final Locale locale) {
+        final Map<String, List<Message>> messageMap = localeMessageMap.get(locale);
+        if (messageMap != null) {
+            return messageMap;
+        }
 
-    Map<String, List<Message>> loadMessage(final FileConfiguration configuration) {
-        final Set<String> configNameMessageSection = ImmutableSet.of("chat", "actionbar", "title", "bossbar");
+        return localeMessageMap.get(Config.getDefaultLocale());
+    }
+
+    private Map<String, List<Message>> loadMessage(final ConfigurationSection configurationSection) {
         final Map<String, List<Message>> messageMap = new HashMap<>();
+        final Set<String> nameSettings = ImmutableSet.of("chat", "actionbar", "title", "bossbar");
 
-        for (final String configurationSectionName : configuration.getKeys(false)) {
-            final ConfigurationSection messageConfigurationSection = configuration.getConfigurationSection(configurationSectionName);
-
-            final Set<String> keys = messageConfigurationSection.getKeys(false);
-            if (keys.stream().noneMatch(configNameMessageSection::contains)) {
-                for (final String subMessageConfigurationSectionName : keys) {
-                    final ConfigurationSection subMessageConfigurationSection = messageConfigurationSection.getConfigurationSection(subMessageConfigurationSectionName);
-
-                    messageMap.put(configurationSectionName + "." + subMessageConfigurationSectionName, getMessage(subMessageConfigurationSection));
-                }
-            } else {
-                messageMap.put(configurationSectionName, getMessage(messageConfigurationSection));
+        for (final String messageName : configurationSection.getKeys(false)) {
+            if (!nameSettings.contains(messageName)) {
+                messageMap.putAll(loadMessage(configurationSection.getConfigurationSection(messageName)));
+                continue;
             }
+
+            final List<Message> messageList = getMessage(configurationSection);
+            messageMap.put(configurationSection.getCurrentPath(), messageList);
         }
 
         return messageMap;
     }
+
+//    private Map<String, List<Message>> loadMessage(final FileConfiguration configuration) {
+//        final Set<String> configNameMessageSection = ImmutableSet.of("chat", "actionbar", "title", "bossbar");
+//        final Map<String, List<Message>> messageMap = new HashMap<>();
+//
+//        for (final String configurationSectionName : configuration.getKeys(false)) {
+//            final ConfigurationSection messageConfigurationSection = configuration.getConfigurationSection(configurationSectionName);
+//
+//            final Set<String> keys = messageConfigurationSection.getKeys(false);
+//            if (keys.stream().noneMatch(configNameMessageSection::contains)) {
+//                for (final String subMessageConfigurationSectionName : keys) {
+//                    final ConfigurationSection subMessageConfigurationSection = messageConfigurationSection.getConfigurationSection(subMessageConfigurationSectionName);
+//
+//                    messageMap.put(configurationSectionName + "." + subMessageConfigurationSectionName, getMessage(subMessageConfigurationSection));
+//                }
+//            } else {
+//                messageMap.put(configurationSectionName, getMessage(messageConfigurationSection));
+//            }
+//        }
+//
+//        return messageMap;
+//    }
 
     private List<Message> getMessage(final ConfigurationSection messageConfiguration) {
         final List<Message> messageList = new ArrayList<>();
@@ -88,5 +122,67 @@ abstract class MessageLoader {
         }
 
         return messageList;
+    }
+
+    public boolean init() {
+        final File dataFolder = plugin.getDataFolder();
+        if (!dataFolder.exists() && !dataFolder.mkdirs()) {
+            plugin.getLogger().severe("Failed to create plugin directory!");
+            Bukkit.getPluginManager().disablePlugin(plugin);
+            return false;
+        }
+
+        final File messageFolder = new File(dataFolder, "lang");
+        if (!messageFolder.exists() && !messageFolder.mkdirs()) {
+            plugin.getLogger().severe("Failed to create lang directory!");
+            Bukkit.getPluginManager().disablePlugin(plugin);
+            return false;
+        }
+
+        final File[] languages = messageFolder.listFiles();
+        if (languages == null || languages.length == 0) {
+            plugin.getLogger().severe("Not found messages files!");
+            Bukkit.getPluginManager().disablePlugin(plugin);
+            return false;
+        }
+
+        for (final File messageFile : languages) {
+            final Locale locale = LocaleUtils.toLocale(removeExtension(messageFile.getName()));
+            try {
+                if (locale.getCountry().isEmpty() || locale.getCountry().equals(" ")) {
+                    throw new IllegalArgumentException();
+                }
+            } catch (final IllegalArgumentException exception) {
+                plugin.getLogger().severe("Not found language: " + messageFile.getName());
+                Bukkit.getPluginManager().disablePlugin(plugin);
+                return false;
+            }
+
+            final Map<String, List<Message>> localeMessageMap = loadMessage(YamlConfiguration.loadConfiguration(messageFile));
+            this.localeMessageMap.put(locale, localeMessageMap);
+            plugin.getLogger().info("Loaded language: " + removeExtension(messageFile.getName()));
+        }
+
+        return true;
+    }
+
+    private String removeExtension(final String name) {
+        String separator = System.getProperty("file.separator");
+        String filename;
+
+        // Remove the path upto the filename.
+        int lastSeparatorIndex = name.lastIndexOf(separator);
+        if (lastSeparatorIndex == -1) {
+            filename = name;
+        } else {
+            filename = name.substring(lastSeparatorIndex + 1);
+        }
+
+        // Remove the extension.
+        int extensionIndex = filename.lastIndexOf(".");
+        if (extensionIndex == -1)
+            return filename;
+
+        return filename.substring(0, extensionIndex);
     }
 }

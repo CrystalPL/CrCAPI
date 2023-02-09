@@ -4,7 +4,5 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public interface MessageAPIProvider {
 
-    MessageAPI getSingleMessage(final JavaPlugin plugin);
-
-    MessageAPI getLocalizedMessage(final JavaPlugin plugin);
+    MessageAPI getMessage(final JavaPlugin plugin);
 }

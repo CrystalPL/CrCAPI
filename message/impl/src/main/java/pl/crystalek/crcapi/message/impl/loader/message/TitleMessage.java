@@ -11,11 +11,11 @@ import org.bukkit.configuration.ConfigurationSection;
 import pl.crystalek.crcapi.core.util.NumberUtil;
 import pl.crystalek.crcapi.message.api.message.ITitleMessage;
 import pl.crystalek.crcapi.message.api.message.Message;
+import pl.crystalek.crcapi.message.api.replacement.Replacement;
 import pl.crystalek.crcapi.message.api.util.MessageUtil;
 import pl.crystalek.crcapi.message.impl.exception.MessageLoadException;
 
 import java.time.Duration;
-import java.util.Map;
 import java.util.Optional;
 
 @Getter
@@ -51,8 +51,8 @@ public final class TitleMessage implements Message, ITitleMessage {
             fadeOut = getTitleTime(titleSection, "fadeOut");
         }
 
-        final Component titleComponent = MessageUtil.replaceOldColorToComponent(titleSection.getString("title"));
-        final Component subTitleComponent = MessageUtil.replaceOldColorToComponent(titleSection.getString("subtitle"));
+        final Component titleComponent = MessageUtil.convertTextAsComponent(titleSection.getString("title"));
+        final Component subTitleComponent = MessageUtil.convertTextAsComponent(titleSection.getString("subtitle"));
 
         return new TitleMessage(titleComponent, subTitleComponent, Title.Times.of(fadeIn, stay, fadeOut));
     }
@@ -67,14 +67,8 @@ public final class TitleMessage implements Message, ITitleMessage {
     }
 
     @Override
-    public void sendMessage(final Audience sender, final Map<String, Object> replacements) {
+    public void sendMessage(final Audience sender, final Replacement... replacements) {
         final Title title = Title.title(MessageUtil.replace(this.titleComponent, replacements), MessageUtil.replace(subTitleComponent, replacements), times);
-        sender.showTitle(title);
-    }
-
-    @Override
-    public void sendMessageComponent(final Audience sender, final Map<String, Component> replacements) {
-        final Title title = Title.title(MessageUtil.replaceComponent(this.titleComponent, replacements), MessageUtil.replaceComponent(subTitleComponent, replacements), times);
         sender.showTitle(title);
     }
 }
