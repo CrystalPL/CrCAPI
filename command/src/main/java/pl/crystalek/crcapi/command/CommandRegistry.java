@@ -10,6 +10,9 @@ import org.bukkit.command.CommandMap;
 
 import java.lang.reflect.Field;
 
+/**
+ * A utility class providing methods for registering commands with the Bukkit command map.
+ */
 @UtilityClass
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class CommandRegistry {
@@ -26,6 +29,11 @@ public class CommandRegistry {
         }
     }
 
+    /**
+     * Registers the specified command with the Bukkit command map.
+     *
+     * @param command the command to register
+     */
     public void register(final Command command) {
         commandMap.register(command.getName(), command);
     }

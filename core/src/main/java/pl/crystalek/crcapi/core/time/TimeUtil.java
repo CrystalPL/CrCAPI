@@ -5,7 +5,15 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class TimeUtil {
 
-    public String getDateInString(long timeMillis, final String delimiter, final boolean shortForm) {
+    /**
+     * Converts a time value in milliseconds to a formatted string representation.
+     *
+     * @param timeMillis the time value in milliseconds
+     * @param delimiter  the delimiter string to use between time unit values
+     * @param shortForm  whether to use short or long forms for time unit names
+     * @return the formatted string representation of the time value
+     */
+    public String getFormattedTime(long timeMillis, final String delimiter, final boolean shortForm) {
         if (timeMillis < 1000) {
             return "0";
         }

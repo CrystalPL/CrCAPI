@@ -11,7 +11,6 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 public class ConfigHelper {
-
     protected final JavaPlugin plugin;
     private final String fileName;
     protected File file;

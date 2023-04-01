@@ -4,74 +4,84 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
-import pl.crystalek.crcapi.core.config.ConfigHelper;
+import pl.crystalek.crcapi.core.config.exception.ConfigLoadException;
 import pl.crystalek.crcapi.database.storage.Storage;
 import pl.crystalek.crcapi.message.api.MessageAPIProvider;
 import pl.crystalek.crcapi.message.impl.config.Config;
 import pl.crystalek.crcapi.message.impl.listener.PlayerJoinListener;
 import pl.crystalek.crcapi.message.impl.listener.PlayerQuitListener;
-import pl.crystalek.crcapi.message.impl.manager.provider.MessageAPIProviderImpl;
+import pl.crystalek.crcapi.message.impl.locale.LocaleCache;
+import pl.crystalek.crcapi.message.impl.mesage.MessageAPIProviderImpl;
 import pl.crystalek.crcapi.message.impl.storage.Provider;
 import pl.crystalek.crcapi.message.impl.storage.mongo.MongoProvider;
-import pl.crystalek.crcapi.message.impl.storage.mysql.MySQLProvider;
-import pl.crystalek.crcapi.message.impl.storage.sqlite.SQLiteProvider;
-import pl.crystalek.crcapi.message.impl.user.UserCache;
+import pl.crystalek.crcapi.message.impl.storage.sql.SQLProvider;
 
 import java.io.IOException;
+import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Getter
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public final class CrCAPIMessage {
-    @Getter
-    static CrCAPIMessage instance;
-    final JavaPlugin plugin;
-    BukkitAudiences bukkitAudiences;
+    final JavaPlugin apiPlugin;
     Storage<Provider> storage;
 
     public void load() {
-        instance = this;
-        bukkitAudiences = BukkitAudiences.create(plugin);
+        final BukkitAudiences bukkitAudiences = BukkitAudiences.create(apiPlugin);
 
-        final ConfigHelper configHelper = new ConfigHelper(plugin, "config.yml");
+        final Config config = new Config(apiPlugin, "config.yml");
         try {
-            configHelper.checkExist();
-            configHelper.load();
+            config.checkExist();
+            config.load();
         } catch (final IOException exception) {
-            plugin.getLogger().severe("Nie udało się utworzyć pliku konfiguracyjnego..");
-            plugin.getLogger().severe("Wyłączanie pluginu");
+            apiPlugin.getLogger().severe("Nie udało się utworzyć pliku konfiguracyjnego..");
+            apiPlugin.getLogger().severe("Wyłączanie pluginu..");
+            Bukkit.getPluginManager().disablePlugin(apiPlugin);
             exception.printStackTrace();
-            Bukkit.getPluginManager().disablePlugin(plugin);
-        }
-
-        final Config config = new Config(configHelper.getConfiguration(), plugin);
-        if (!config.load()) {
-            plugin.getLogger().severe("Wyłączanie pluginu");
-            Bukkit.getPluginManager().disablePlugin(plugin);
             return;
         }
 
-        if (config.isLocalizedMessageEnable()) {
-            storage = new Storage<>(config.getDatabaseConfig(), plugin);
-            if (!storage.initDatabase() || !storage.initProvider(MySQLProvider.class, SQLiteProvider.class, MongoProvider.class)) {
-                plugin.getLogger().severe("Wyłączanie pluginu");
-                Bukkit.getPluginManager().disablePlugin(plugin);
-                return;
-            }
-
-            final PluginManager pluginManager = Bukkit.getPluginManager();
-            pluginManager.registerEvents(new PlayerJoinListener(), plugin);
-            pluginManager.registerEvents(new PlayerQuitListener(), plugin);
-
-            Bukkit.getOnlinePlayers().forEach(UserCache::loadLocale);
+        try {
+            config.loadConfig();
+        } catch (final ConfigLoadException exception) {
+            apiPlugin.getLogger().severe(exception.getMessage());
+            apiPlugin.getLogger().severe("Wyłączanie pluginu..");
+            Bukkit.getPluginManager().disablePlugin(apiPlugin);
+            return;
         }
 
-        Bukkit.getServicesManager().register(MessageAPIProvider.class, new MessageAPIProviderImpl(), plugin, ServicePriority.Highest);
+        storage = new Storage<>(config.getDatabaseConfig(), apiPlugin);
+        if (!storage.initDatabase() || !storage.initProvider(SQLProvider.class, SQLProvider.class, MongoProvider.class)) {
+            apiPlugin.getLogger().severe("Wyłączanie pluginu");
+            Bukkit.getPluginManager().disablePlugin(apiPlugin);
+            return;
+        }
+
+        final Provider provider = storage.getProvider();
+
+        final Map<UUID, Locale> usersLocaleMap = provider.getPlayersLocaleMap(Bukkit.getOnlinePlayers());
+        final Map<Audience, Locale> audienceLocaleMap = usersLocaleMap.entrySet().stream()
+                .collect(Collectors.toMap(
+                        entry -> bukkitAudiences.player(entry.getKey()),
+                        Map.Entry::getValue
+                ));
+
+        final LocaleCache localeCache = new LocaleCache(audienceLocaleMap, bukkitAudiences, provider, apiPlugin, config);
+
+        final PluginManager pluginManager = Bukkit.getPluginManager();
+        pluginManager.registerEvents(new PlayerJoinListener(localeCache), apiPlugin);
+        pluginManager.registerEvents(new PlayerQuitListener(localeCache), apiPlugin);
+
+        Bukkit.getServicesManager().register(MessageAPIProvider.class, new MessageAPIProviderImpl(localeCache, provider, config, bukkitAudiences), apiPlugin, ServicePriority.Highest);
     }
 
     public void close() {

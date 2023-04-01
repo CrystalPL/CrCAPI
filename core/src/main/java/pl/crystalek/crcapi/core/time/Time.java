@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 enum Time {
 
     YEAR("rok", "lata", "lat", "y", 31_536_000_000L),
-    MONTH("miesiąc", "miesiace", "miesiecy", "m", 2_592_000_000L),
+    MONTH("miesiąc", "miesiące", "miesięcy", "m", 2_592_000_000L),
     WEEK("tydzień", "tygodnie", "tygodni", "w", 604_800_000L),
     DAY("dzień", "dni", "dni", "d", 86_400_000L),
     HOUR("godzinę", "godziny", "godzin", "h", 3_600_000L),

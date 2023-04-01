@@ -2,11 +2,8 @@ package pl.crystalek.crcapi.message.api;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import pl.crystalek.crcapi.message.api.replacement.Replacement;
 
-import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 public interface MessageAPI {
@@ -80,24 +77,4 @@ public interface MessageAPI {
      * @param replacements The replacements to apply to the message.
      */
     void broadcast(final Component component, final Replacement... replacements);
-
-    /**
-     * @param player The {@link Player} whose locale is being set.
-     * @param locale The {@link Locale} to be set for the player.
-     *               This method sets the locale for the specified player. The locale is used to determine the language of messages to be sent to the player.
-     */
-    void setLocale(final Player player, final Locale locale);
-
-    /**
-     * @param player The {@link Player} whose locale is being retrieved.
-     * @return The {@link Locale} of the player.
-     * This method retrieves the locale for the specified player. The locale is used to determine the language of messages to be sent to the player.
-     */
-    Locale getLocale(final Player player);
-
-    /**
-     * @return A list of {@link Locale} objects representing the supported languages.
-     * This method returns a list of locales representing the supported languages.
-     */
-    List<Locale> getSupportedLanguages();
 }

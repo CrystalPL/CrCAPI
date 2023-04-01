@@ -1,4 +1,4 @@
-package pl.crystalek.crcapi.message.impl.loader;
+package pl.crystalek.crcapi.message.impl.mesage;
 
 import com.google.common.collect.ImmutableSet;
 import lombok.AccessLevel;
@@ -12,10 +12,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import pl.crystalek.crcapi.message.api.message.Message;
 import pl.crystalek.crcapi.message.impl.config.Config;
 import pl.crystalek.crcapi.message.impl.exception.MessageLoadException;
-import pl.crystalek.crcapi.message.impl.loader.message.ActionBarMessage;
-import pl.crystalek.crcapi.message.impl.loader.message.BossBarMessage;
-import pl.crystalek.crcapi.message.impl.loader.message.ChatMessage;
-import pl.crystalek.crcapi.message.impl.loader.message.TitleMessage;
+import pl.crystalek.crcapi.message.impl.mesage.impl.ActionBarMessage;
+import pl.crystalek.crcapi.message.impl.mesage.impl.BossBarMessage;
+import pl.crystalek.crcapi.message.impl.mesage.impl.ChatMessage;
+import pl.crystalek.crcapi.message.impl.mesage.impl.TitleMessage;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,6 +30,7 @@ import java.util.Set;
 public class MessageLoader {
     Map<Locale, Map<String, List<Message>>> localeMessageMap = new HashMap<>();
     JavaPlugin plugin;
+    Config config;
 
     public Map<String, List<Message>> getPlayerMessageMap(final Locale locale) {
         final Map<String, List<Message>> messageMap = localeMessageMap.get(locale);
@@ -37,7 +38,7 @@ public class MessageLoader {
             return messageMap;
         }
 
-        return localeMessageMap.get(Config.getDefaultLocale());
+        return localeMessageMap.get(config.getDefaultLanguage());
     }
 
     private Map<String, List<Message>> loadMessage(final ConfigurationSection configurationSection) {
@@ -56,28 +57,6 @@ public class MessageLoader {
 
         return messageMap;
     }
-
-//    private Map<String, List<Message>> loadMessage(final FileConfiguration configuration) {
-//        final Set<String> configNameMessageSection = ImmutableSet.of("chat", "actionbar", "title", "bossbar");
-//        final Map<String, List<Message>> messageMap = new HashMap<>();
-//
-//        for (final String configurationSectionName : configuration.getKeys(false)) {
-//            final ConfigurationSection messageConfigurationSection = configuration.getConfigurationSection(configurationSectionName);
-//
-//            final Set<String> keys = messageConfigurationSection.getKeys(false);
-//            if (keys.stream().noneMatch(configNameMessageSection::contains)) {
-//                for (final String subMessageConfigurationSectionName : keys) {
-//                    final ConfigurationSection subMessageConfigurationSection = messageConfigurationSection.getConfigurationSection(subMessageConfigurationSectionName);
-//
-//                    messageMap.put(configurationSectionName + "." + subMessageConfigurationSectionName, getMessage(subMessageConfigurationSection));
-//                }
-//            } else {
-//                messageMap.put(configurationSectionName, getMessage(messageConfigurationSection));
-//            }
-//        }
-//
-//        return messageMap;
-//    }
 
     private List<Message> getMessage(final ConfigurationSection messageConfiguration) {
         final List<Message> messageList = new ArrayList<>();
@@ -160,7 +139,7 @@ public class MessageLoader {
 
             final Map<String, List<Message>> localeMessageMap = loadMessage(YamlConfiguration.loadConfiguration(messageFile));
             this.localeMessageMap.put(locale, localeMessageMap);
-            plugin.getLogger().info("Loaded language: " + removeExtension(messageFile.getName()));
+            Bukkit.getLogger().info("[CrCAPI] Loaded language: " + removeExtension(messageFile.getName()));
         }
 
         return true;

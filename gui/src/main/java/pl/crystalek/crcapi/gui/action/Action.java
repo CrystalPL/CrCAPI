@@ -1,17 +1,9 @@
 package pl.crystalek.crcapi.gui.action;
 
-import lombok.*;
-import lombok.experimental.FieldDefaults;
-import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryEvent;
 
-import java.util.function.Consumer;
+@FunctionalInterface
+public interface Action<T extends InventoryEvent> {
 
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@RequiredArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-public final class Action {
-    final Consumer<InventoryClickEvent> action;
-    boolean actionAllowedInPlayerInventory;
+    void execute(final T event);
 }

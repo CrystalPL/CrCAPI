@@ -1,8 +1,9 @@
-package pl.crystalek.crcapi.message.impl.manager;
+package pl.crystalek.crcapi.message.impl.mesage;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -12,9 +13,8 @@ import pl.crystalek.crcapi.message.api.MessageAPI;
 import pl.crystalek.crcapi.message.api.message.Message;
 import pl.crystalek.crcapi.message.api.replacement.Replacement;
 import pl.crystalek.crcapi.message.api.util.MessageUtil;
-import pl.crystalek.crcapi.message.impl.CrCAPIMessage;
-import pl.crystalek.crcapi.message.impl.loader.MessageLoader;
-import pl.crystalek.crcapi.message.impl.user.UserCache;
+import pl.crystalek.crcapi.message.impl.config.Config;
+import pl.crystalek.crcapi.message.impl.locale.LocaleCache;
 
 import java.util.List;
 import java.util.Locale;
@@ -24,9 +24,13 @@ import java.util.Optional;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class MessageAPIImpl implements MessageAPI {
     MessageLoader messageLoader;
+    LocaleCache localeCache;
+    BukkitAudiences bukkitAudiences;
 
-    public MessageAPIImpl(final JavaPlugin plugin) {
-        this.messageLoader = new MessageLoader(plugin);
+    public MessageAPIImpl(final JavaPlugin plugin, final LocaleCache localeCache, final Config config, final BukkitAudiences bukkitAudiences) {
+        this.bukkitAudiences = bukkitAudiences;
+        this.messageLoader = new MessageLoader(plugin, config);
+        this.localeCache = localeCache;
     }
 
     @Override
@@ -36,8 +40,8 @@ public class MessageAPIImpl implements MessageAPI {
 
     @Override
     public <T> Optional<T> getMessage(final String messagePath, final CommandSender messageReceiver, final Class<T> messageClass) {
-        final Audience audience = CrCAPIMessage.getInstance().getBukkitAudiences().sender(messageReceiver);
-        final Locale locale = UserCache.getLocale(audience);
+        final Audience audience = bukkitAudiences.sender(messageReceiver);
+        final Locale locale = localeCache.getLocale(audience);
 
         final List<Message> messageList = messageLoader.getPlayerMessageMap(locale).get(messagePath);
         for (final Message message : messageList) {
@@ -63,7 +67,7 @@ public class MessageAPIImpl implements MessageAPI {
 
     @Override
     public void sendMessage(final Component component, final CommandSender messageReceiver, final Replacement... replacements) {
-        final Audience audience = CrCAPIMessage.getInstance().getBukkitAudiences().sender(messageReceiver);
+        final Audience audience = bukkitAudiences.sender(messageReceiver);
         sendMessage(component, audience, replacements);
     }
 
@@ -79,35 +83,22 @@ public class MessageAPIImpl implements MessageAPI {
 
     @Override
     public void sendMessage(final String messagePath, final CommandSender messageReceiver, final Replacement... replacements) {
-        final Audience audience = CrCAPIMessage.getInstance().getBukkitAudiences().sender(messageReceiver);
+        final Audience audience = bukkitAudiences.sender(messageReceiver);
         sendMessage(messagePath, audience, replacements);
     }
 
     @Override
     public void broadcast(final String messagePath, final Replacement... replacements) {
-        final Audience audience = CrCAPIMessage.getInstance().getBukkitAudiences().players();
-        sendMessage(messagePath, audience, replacements);
+        for (final Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            sendMessage(messagePath, onlinePlayer, replacements);
+        }
     }
 
     @Override
     public void broadcast(final Component component, final Replacement... replacements) {
-        final Audience audience = CrCAPIMessage.getInstance().getBukkitAudiences().players();
-        sendMessage(component, audience, replacements);
-    }
-
-    @Override
-    public void setLocale(final Player player, final Locale locale) {
-
-    }
-
-    @Override
-    public Locale getLocale(final Player player) {
-        return null;
-    }
-
-    @Override
-    public List<Locale> getSupportedLanguages() {
-        return null;
+        for (final Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            sendMessage(component, onlinePlayer, replacements);
+        }
     }
 
     private void sendMessage(final Component component, final Audience audience, final Replacement... replacements) {
@@ -115,7 +106,7 @@ public class MessageAPIImpl implements MessageAPI {
     }
 
     private void sendMessage(final String messagePath, final Audience audience, final Replacement... replacements) {
-        final Locale locale = UserCache.getLocale(audience);
+        final Locale locale = localeCache.getLocale(audience);
         final Map<String, List<Message>> playerMessageMap = messageLoader.getPlayerMessageMap(locale);
         final List<Message> messageList = playerMessageMap.get(messagePath);
         if (messageList == null) {

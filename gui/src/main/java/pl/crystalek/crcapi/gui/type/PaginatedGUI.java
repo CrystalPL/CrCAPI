@@ -6,14 +6,18 @@ import lombok.experimental.FieldDefaults;
 import org.bukkit.inventory.ItemStack;
 import pl.crystalek.crcapi.gui.item.GUIItem;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public final class PaginatedGUI extends BaseGUI {
     final Map<Integer, GUIItem> staticGuiElement = new HashMap<>();
     final Map<Integer, GUIItem> actualPageItemMap = new HashMap<>();
-    @Getter
-    final List<GUIItem> guiItemList = new LinkedList<>();
+    @Getter final List<GUIItem> guiItemList = new LinkedList<>();
     @Getter
     int pageNumber;
     int actualPage = 1;
@@ -23,16 +27,32 @@ public final class PaginatedGUI extends BaseGUI {
         super(title, rows);
     }
 
+    /**
+     * Removes the specified GUIItem from the GUI.
+     *
+     * @param guiItem the GUIItem to be removed
+     */
     @Override
     public void removeItem(final GUIItem guiItem) {
         removeItem(guiItem, false);
     }
 
+    /**
+     * Removes the GUIItem at the specified slot from the GUI.
+     *
+     * @param slot the slot of the GUIItem to be removed
+     */
     @Override
     public void removeItem(final int slot) {
         removeItem(slot, false);
     }
 
+    /**
+     * Removes the specified GUIItem from the GUI and rebuilds it if specified.
+     *
+     * @param guiItem the GUIItem to be removed
+     * @param reBuild whether to rebuild the GUI after removing the item
+     */
     public void removeItem(final GUIItem guiItem, final boolean reBuild) {
         guiItemList.remove(guiItem);
         inventory.remove(guiItem.getItem());
@@ -50,6 +70,12 @@ public final class PaginatedGUI extends BaseGUI {
         }
     }
 
+    /**
+     * Removes the GUIItem at the specified slot from the GUI and rebuilds it if specified.
+     *
+     * @param slot    the slot of the GUIItem to be removed
+     * @param reBuild whether to rebuild the GUI after removing the item
+     */
     public void removeItem(final int slot, final boolean reBuild) {
         final GUIItem removedGuiItem = actualPageItemMap.remove(slot);
         if (removedGuiItem != null) {
@@ -62,6 +88,9 @@ public final class PaginatedGUI extends BaseGUI {
         }
     }
 
+    /**
+     * Fills the empty slots of the GUI with the filler GUIItem.
+     */
     @Override
     public void fill() {
         if (slotCount == actualPageItemMap.size()) {
@@ -77,18 +106,34 @@ public final class PaginatedGUI extends BaseGUI {
         }
     }
 
+    /**
+     * Sets the {@link GUIItem} for the given slot in the staticGuiElement map.
+     *
+     * @param slot    The slot to set the {@link GUIItem}.
+     * @param guiItem The {@link GUIItem} to set.
+     */
     @Override
     public void setItem(final int slot, final GUIItem guiItem) {
         staticGuiElement.put(slot, guiItem);
     }
 
-    //zwraca item o podanym slocie z aktualnej strony
+    /**
+     * Returns the {@link GUIItem} at the given slot from the current page.
+     *
+     * @param slot The slot to get the {@link GUIItem}.
+     * @return An {@link Optional} containing the {@link GUIItem} if it exists, or an empty {@link Optional} if it does not.
+     */
     @Override
     public Optional<GUIItem> getItem(final int slot) {
         return Optional.ofNullable(actualPageItemMap.get(slot));
     }
 
-    //zwraca numer slotu, gdzie jest podany przedmiot z aktualnej strony
+    /**
+     * Returns the slot number where the given {@link GUIItem} is located on the current page.
+     *
+     * @param guiItem The {@link GUIItem} to search for.
+     * @return An {@link Optional} containing the slot number if the {@link GUIItem} is found, or an empty {@link Optional} if it is not found.
+     */
     @Override
     public Optional<Integer> getSlot(final GUIItem guiItem) {
         for (final Map.Entry<Integer, GUIItem> entry : actualPageItemMap.entrySet()) {
@@ -100,7 +145,12 @@ public final class PaginatedGUI extends BaseGUI {
         return Optional.empty();
     }
 
-    //update item from all gui items list
+    /**
+     * Updates an existing {@link GUIItem} with a new one, both in the {@link #guiItemList} and the {@link #actualPageItemMap}.
+     *
+     * @param oldItem The old {@link GUIItem} to replace.
+     * @param newItem The new {@link GUIItem} to set in place of the old one.
+     */
     public void update(final GUIItem oldItem, final GUIItem newItem) {
         for (int i = 0; i < guiItemList.size(); i++) {
             final GUIItem guiItem = guiItemList.get(i);
@@ -116,7 +166,12 @@ public final class PaginatedGUI extends BaseGUI {
         }
     }
 
-    //update item on actual page
+    /**
+     * Updates an existing {@link GUIItem} at the given slot.
+     *
+     * @param slot    the slot of the item to update
+     * @param guiItem the {@link GUIItem} to update
+     */
     @Override
     public void update(final int slot, final GUIItem guiItem) {
         final ItemStack item = inventory.getItem(slot + 1);
@@ -130,6 +185,9 @@ public final class PaginatedGUI extends BaseGUI {
         actualPageItemMap.put(slot - 1, guiItem);
     }
 
+    /**
+     * Builds the inventory GUI with the current list of {@link GUIItem}s and displays the current page.
+     */
     @Override
     public void build() {
         maxItemOnPage = slotCount - staticGuiElement.size();
@@ -143,11 +201,21 @@ public final class PaginatedGUI extends BaseGUI {
         goTo(actualPage);
     }
 
+    /**
+     * Adds a new {@link GUIItem} to the inventory GUI.
+     *
+     * @param guiItem the {@link GUIItem} to add
+     */
     @Override
     public void addItem(final GUIItem guiItem) {
         guiItemList.add(guiItem);
     }
 
+    /**
+     * Navigates to the specified page in the inventory GUI and displays the corresponding {@link GUIItem}s.
+     *
+     * @param page the page number to navigate to
+     */
     public void goTo(final int page) {
         inventory.clear();
         actualPageItemMap.clear();
@@ -173,6 +241,9 @@ public final class PaginatedGUI extends BaseGUI {
         }
     }
 
+    /**
+     * Navigates to the next page in the inventory GUI and displays the corresponding {@link GUIItem}s.
+     */
     public void next() {
         if (actualPage + 1 > pageNumber) {
             return;
@@ -182,6 +253,9 @@ public final class PaginatedGUI extends BaseGUI {
         goTo(actualPage);
     }
 
+    /**
+     * Navigates to the previous page in the inventory GUI and displays the corresponding {@link GUIItem}s.
+     */
     public void previous() {
         if (actualPage - 1 <= 0) {
             return;

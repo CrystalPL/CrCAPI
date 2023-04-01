@@ -3,19 +3,28 @@ package pl.crystalek.crcapi.message.impl.storage.mongo;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang.LocaleUtils;
+import org.bukkit.entity.Player;
 import pl.crystalek.crcapi.database.config.DatabaseConfig;
 import pl.crystalek.crcapi.database.provider.mongo.BaseMongoProvider;
 import pl.crystalek.crcapi.lib.bson.Document;
+import pl.crystalek.crcapi.lib.bson.conversions.Bson;
 import pl.crystalek.crcapi.lib.mongodb.client.MongoCollection;
 import pl.crystalek.crcapi.lib.mongodb.client.MongoDatabase;
-import pl.crystalek.crcapi.lib.mongodb.client.model.ReplaceOptions;
+import pl.crystalek.crcapi.lib.mongodb.client.model.Updates;
 import pl.crystalek.crcapi.message.impl.storage.Provider;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public final class MongoProvider extends BaseMongoProvider implements Provider {
-    final ReplaceOptions replaceOptions = new ReplaceOptions().upsert(true);
     MongoCollection<Document> userLocaleCollection;
 
     public MongoProvider(final DatabaseConfig databaseConfig, final MongoDatabase mongoDatabase) {
@@ -24,7 +33,17 @@ public final class MongoProvider extends BaseMongoProvider implements Provider {
 
     @Override
     public void createTable() {
-        this.userLocaleCollection = mongoDatabase.getCollection(String.format("%slocaleMap", databaseConfig.getPrefix()));
+        final String collectionName = String.format("%slocaleMap", databaseConfig.getPrefix());
+
+        this.userLocaleCollection = mongoDatabase.getCollection(collectionName);
+    }
+
+    @Override
+    public void createPlayer(final UUID playerUUID, final Locale locale) {
+        final Document document = new Document("_id", playerUUID.toString())
+                .append("language_tag", locale.toString());
+
+        userLocaleCollection.insertOne(document);
     }
 
     @Override
@@ -41,18 +60,44 @@ public final class MongoProvider extends BaseMongoProvider implements Provider {
     }
 
     @Override
-    public void setPlayerLocale(final UUID playerUUID, final Locale locale) {
-        final Document document = new Document("_id", playerUUID.toString())
-                .append("language_tag", locale.toString());
+    public boolean setPlayerLocale(final UUID playerUUID, final Locale locale) {
+        final Document document = new Document("_id", playerUUID.toString());
 
-        userLocaleCollection.replaceOne(new Document("_id", playerUUID.toString()), document, replaceOptions);
+        if (userLocaleCollection.find(document).first() == null) {
+            return false;
+        }
+
+        final Bson update = Updates.set("language_tag", locale.toString());
+        userLocaleCollection.updateOne(document, update);
+        return true;
     }
 
     @Override
-    public Map<UUID, Locale> getUserLocaleMap() {
+    public Map<UUID, Locale> getPlayersLocaleMap() {
         final Map<UUID, Locale> userLocaleMap = new HashMap<>();
 
         for (final Document document : userLocaleCollection.find()) {
+            final String languageTag = document.get("language_tag", String.class);
+            final Locale locale = LocaleUtils.toLocale(languageTag);
+            final UUID uuid = UUID.fromString(document.get("_id", String.class));
+
+            userLocaleMap.put(uuid, locale);
+        }
+
+        return userLocaleMap;
+    }
+
+    @Override
+    public Map<UUID, Locale> getPlayersLocaleMap(final Collection<? extends Player> players) {
+        final ConcurrentHashMap<UUID, Locale> userLocaleMap = new ConcurrentHashMap<>();
+
+        final List<String> uuidList = players.stream()
+                .map(Player::getUniqueId)
+                .map(UUID::toString)
+                .collect(Collectors.toList());
+
+        final Document searchUuids = new Document("$in", uuidList);
+        for (final Document document : userLocaleCollection.find(new Document("_id", searchUuids))) {
             final String languageTag = document.get("language_tag", String.class);
             final Locale locale = LocaleUtils.toLocale(languageTag);
             final UUID uuid = UUID.fromString(document.get("_id", String.class));

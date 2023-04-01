@@ -1,4 +1,4 @@
-package pl.crystalek.crcapi.message.impl.loader.message;
+package pl.crystalek.crcapi.message.impl.mesage.impl;
 
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -10,7 +10,13 @@ import pl.crystalek.crcapi.command.model.CommandData;
 import pl.crystalek.crcapi.core.config.exception.ConfigLoadException;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @UtilityClass
 public class CommandLoader {
@@ -76,6 +82,6 @@ public class CommandLoader {
     }
 
     private List<String> getList(final Object objectList) {
-        return objectList instanceof String ? Arrays.asList((String) objectList) : (List<String>) objectList;
+        return objectList instanceof String ? Collections.singletonList((String) objectList) : (List<String>) objectList;
     }
 }

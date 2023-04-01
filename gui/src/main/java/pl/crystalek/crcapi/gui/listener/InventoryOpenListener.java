@@ -2,28 +2,29 @@ package pl.crystalek.crcapi.gui.listener;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.InventoryHolder;
 import pl.crystalek.crcapi.gui.action.Action;
 import pl.crystalek.crcapi.gui.type.BaseGUI;
 
 import java.util.Optional;
 
-public final class InventoryDragListener implements Listener {
+public class InventoryOpenListener implements Listener {
 
     @EventHandler
-    public void onInventoryDrag(final InventoryDragEvent event) {
+    public void onOpen(final InventoryOpenEvent event) {
         final InventoryHolder inventoryHolder = event.getInventory().getHolder();
         if (!(inventoryHolder instanceof BaseGUI)) {
             return;
         }
 
+
         final BaseGUI baseGUI = (BaseGUI) inventoryHolder;
-        final Optional<Action<InventoryDragEvent>> dragAction = baseGUI.getActionManager().getAction(InventoryDragEvent.class);
-        if (!dragAction.isPresent()) {
+        final Optional<Action<InventoryOpenEvent>> openAction = baseGUI.getActionManager().getAction(InventoryOpenEvent.class);
+        if (!openAction.isPresent()) {
             return;
         }
 
-        dragAction.get().execute(event);
+        openAction.get().execute(event);
     }
 }

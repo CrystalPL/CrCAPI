@@ -15,6 +15,12 @@ import java.util.stream.Collectors;
 public class ColorUtil {
     static final Pattern HEX_COLOR_PATTERN = Pattern.compile("&(#[a-fA-F0-9]{6})");
 
+    /**
+     * Colors the specified text, including support for hex color codes.
+     *
+     * @param text the text to color
+     * @return the colored text
+     */
     public String color(final String text) {
         String newText = text;
 
@@ -27,6 +33,12 @@ public class ColorUtil {
         return ChatColor.translateAlternateColorCodes('&', newText);
     }
 
+    /**
+     * Colors a list of text, including support for hex color codes.
+     *
+     * @param list the list of text to color
+     * @return the colored {@link List} of text
+     */
     public List<String> color(final List<String> list) {
         return list.stream().map(ColorUtil::color).collect(Collectors.toList());
     }

@@ -10,7 +10,7 @@ import pl.crystalek.crcapi.message.api.util.MessageUtil;
 @Getter
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class Replacement {
+public final class Replacement {
     String from;
     Component to;
 
