@@ -1,80 +1,64 @@
 package pl.crystalek.crcapi.gui.action;
 
-import org.bukkit.event.Event;
-import org.bukkit.event.inventory.InventoryAction;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryEvent;
 
-import java.util.EnumMap;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public final class ActionManager {
-    final Map<InventoryAction, Action> inventoryActionEventMap = new EnumMap<>(InventoryAction.class);
+    Map<Class<? extends InventoryEvent>, Action<?>> actionMap = new HashMap<>();
 
-    public Optional<Action> getAction(final InventoryAction action) {
-        return Optional.ofNullable(inventoryActionEventMap.get(action));
+    public ActionManager() {
+        actionMap.put(InventoryClickEvent.class, new ClickActionManager());
     }
 
-    public void addAction(final InventoryAction action, final Action event) {
-        inventoryActionEventMap.put(action, event);
+    /**
+     * Retrieves the action associated with the specified inventory event class.
+     *
+     * @param inventoryEventClass the class of the inventory event for which to retrieve the associated action
+     * @param <T>                 the type of inventory event for which to retrieve the action
+     * @return an optional containing the action associated with the specified inventory event class, or an empty optional if no action is associated
+     */
+    public <T extends InventoryEvent> Optional<Action<T>> getAction(final Class<T> inventoryEventClass) {
+        return Optional.ofNullable((Action<T>) actionMap.get(inventoryEventClass));
     }
 
-    private void disableAction(final Map<InventoryAction, Boolean> actionMap) {
-        final Consumer<InventoryClickEvent> inventoryClickEvent = event -> {
-            event.setCancelled(true);
-            event.setResult(Event.Result.DENY);
-        };
-
-        actionMap.forEach((key, value) -> addAction(key, new Action(inventoryClickEvent, value)));
-    }
-
-    public void disableAllAction(final boolean disableActionInPlayerInventory) {
-        final Map<InventoryAction, Boolean> actionMap = new HashMap<>();
-        for (final InventoryAction action : InventoryAction.values()) {
-            actionMap.put(action, !disableActionInPlayerInventory);
+    /**
+     * Sets the action to be associated with the specified inventory event class.
+     *
+     * @param inventoryEventClass the class of the inventory event for which to set the associated action
+     * @param action              the action to be associated with the specified inventory event class
+     * @param <T>                 the type of inventory event for which to set the action
+     * @throws IllegalArgumentException if the specified inventory event class is {@link  InventoryClickEvent}, since this class has its own dedicated action manager
+     */
+    public <T extends InventoryEvent> void setAction(final Class<T> inventoryEventClass, final Action<T> action) throws IllegalArgumentException {
+        if (inventoryEventClass.isAssignableFrom(InventoryClickEvent.class)) {
+            throw new IllegalArgumentException("cannot set action to InventoryClickEvent, use ClickActionManager");
         }
 
-        actionMap.put(InventoryAction.COLLECT_TO_CURSOR, false);
-        actionMap.put(InventoryAction.MOVE_TO_OTHER_INVENTORY, false);
-        disableAction(actionMap);
+        actionMap.put(inventoryEventClass, action);
     }
 
-    public void disableTakeItem() {
-        final EnumSet<InventoryAction> takeItemActionSet = EnumSet.of(
-                InventoryAction.PICKUP_ONE,
-                InventoryAction.PICKUP_SOME,
-                InventoryAction.PICKUP_HALF,
-                InventoryAction.PICKUP_ALL,
-                InventoryAction.COLLECT_TO_CURSOR,
-                InventoryAction.HOTBAR_SWAP,
-                InventoryAction.MOVE_TO_OTHER_INVENTORY,
-                InventoryAction.DROP_ALL_SLOT,
-                InventoryAction.DROP_ONE_SLOT,
-                InventoryAction.DROP_ALL_CURSOR,
-                InventoryAction.DROP_ONE_CURSOR);
-
-        final Map<InventoryAction, Boolean> actionMap = new HashMap<>();
-        for (final InventoryAction action : takeItemActionSet) {
-            actionMap.put(action, true);
-        }
-
-        disableAction(actionMap);
+    /**
+     * Retrieves the {@link ClickActionManager} to manage the click actions.
+     *
+     * @return the {@link ClickActionManager}
+     */
+    public ClickActionManager getClickActionManager() {
+        return (ClickActionManager) actionMap.get(InventoryClickEvent.class);
     }
 
-    public void disablePlaceItem() {
-        final EnumSet<InventoryAction> placeItemActionSet = EnumSet.of(
-                InventoryAction.PLACE_ONE,
-                InventoryAction.PLACE_SOME,
-                InventoryAction.PLACE_ALL);
-
-        final Map<InventoryAction, Boolean> actionMap = new HashMap<>();
-        for (final InventoryAction action : placeItemActionSet) {
-            actionMap.put(action, true);
-        }
-
-        disableAction(actionMap);
+    /**
+     * Disables all actions associated with the InventoryClickEvent.
+     *
+     * @param disableInPlayerInventory whether to disable actions in player inventories as well
+     */
+    public void disableAllActions(final boolean disableInPlayerInventory) {
+        getClickActionManager().disableAllActions(disableInPlayerInventory);
     }
 }

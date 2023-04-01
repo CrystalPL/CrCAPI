@@ -1,4 +1,4 @@
-package pl.crystalek.crcapi.message.impl.loader.message;
+package pl.crystalek.crcapi.message.impl.mesage.impl;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -11,10 +11,10 @@ import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.configuration.ConfigurationSection;
 import pl.crystalek.crcapi.message.api.message.IChatMessage;
 import pl.crystalek.crcapi.message.api.message.Message;
+import pl.crystalek.crcapi.message.api.replacement.Replacement;
 import pl.crystalek.crcapi.message.api.util.MessageUtil;
 import pl.crystalek.crcapi.message.impl.exception.MessageLoadException;
 
-import java.util.Map;
 import java.util.function.Predicate;
 
 @Getter
@@ -26,7 +26,7 @@ public final class ChatMessage implements Message, IChatMessage {
 
     public static ChatMessage loadChatMessage(final ConfigurationSection messageConfiguration) throws MessageLoadException {
         if (!messageConfiguration.isConfigurationSection("chat")) {
-            final Component singleChatMessage = MessageUtil.replaceOldColorToComponent(MessageUtil.getStringMessage(messageConfiguration.get("chat")));
+            final Component singleChatMessage = MessageUtil.convertTextAsComponent(MessageUtil.formatStringMessage(messageConfiguration.get("chat")));
             return new ChatMessage(singleChatMessage);
         }
 
@@ -47,11 +47,11 @@ public final class ChatMessage implements Message, IChatMessage {
     }
 
     private static Component getMessageComponent(final ConfigurationSection messageSectionConfiguration) throws MessageLoadException {
-        Component chatMessage = MessageUtil.replaceOldColorToComponent(MessageUtil.getStringMessage(messageSectionConfiguration.get("message")));
+        Component chatMessage = MessageUtil.convertTextAsComponent(MessageUtil.formatStringMessage(messageSectionConfiguration.get("message")));
 
         //check if the message has hover event
         if (messageSectionConfiguration.contains("hover")) {
-            chatMessage = chatMessage.hoverEvent(HoverEvent.showText(MessageUtil.replaceOldColorToComponent(MessageUtil.getStringMessage(messageSectionConfiguration.get("hover")))));
+            chatMessage = chatMessage.hoverEvent(HoverEvent.showText(MessageUtil.convertTextAsComponent(MessageUtil.formatStringMessage(messageSectionConfiguration.get("hover")))));
         }
 
         //check if the message has click event
@@ -75,12 +75,7 @@ public final class ChatMessage implements Message, IChatMessage {
     }
 
     @Override
-    public void sendMessage(final Audience sender, final Map<String, Object> replacements) {
+    public void sendMessage(final Audience sender, final Replacement... replacements) {
         sender.sendMessage(MessageUtil.replace(chatComponent, replacements));
-    }
-
-    @Override
-    public void sendMessageComponent(final Audience sender, final Map<String, Component> replacements) {
-        sender.sendMessage(MessageUtil.replaceComponent(chatComponent, replacements));
     }
 }

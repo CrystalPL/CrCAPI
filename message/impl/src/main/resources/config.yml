@@ -1,12 +1,11 @@
-# used if useLocalizedMessage is true
 database:
   # storage type: SQLite, MongoDB, MYSQL
-  storageType: MYSQL
+  storageType: SQLite
 
   # settings section, responsible for connection configuration, if you use MYSQL/MongoDB
   settings:
     # hostname - database hot
-    hostname: "127.0.0.1"
+    hostname: "localhost"
 
     # port — database port
     port: "3306"
@@ -15,10 +14,10 @@ database:
     database: "minecraft"
 
     # username — database username
-    username: "root"
+    username: "admin"
 
     # password — database password
-    password: "admin"
+    password: "root"
 
     # useSSL - czy whether to use SSL while connecting with z database
     useSSL: "false"
@@ -39,6 +38,5 @@ database:
 # used if there are no messages defined for the language used by the player
 defaultLanguage: pl_PL
 
-# used if whatever plugin use localized-message
-# causes connecting with database and run listeners
-useLocalizedMessage: false
+# language using by console
+consoleLanguage: pl_PL

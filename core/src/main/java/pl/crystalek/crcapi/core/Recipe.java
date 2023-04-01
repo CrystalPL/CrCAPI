@@ -1,6 +1,7 @@
 package pl.crystalek.crcapi.core;
 
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.bukkit.Bukkit;
@@ -22,11 +23,7 @@ public final class Recipe {
         this.ingredients[slot] = material;
     }
 
-    public void registerRecipe(final Plugin plugin) {
-        if (plugin == null) {
-            throw new NullPointerException("plugin cannot be null");
-        }
-
+    public void registerRecipe(@NonNull final Plugin plugin) {
         ShapedRecipe recipe;
         try {
             Class.forName("org.bukkit.NamespacedKey");

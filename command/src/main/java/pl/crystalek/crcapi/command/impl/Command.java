@@ -1,12 +1,12 @@
 package pl.crystalek.crcapi.command.impl;
 
-import com.google.common.collect.ImmutableMap;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import pl.crystalek.crcapi.command.model.CommandData;
 import pl.crystalek.crcapi.message.api.MessageAPI;
+import pl.crystalek.crcapi.message.api.replacement.Replacement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public abstract class Command extends org.bukkit.command.Command {
     @Override
     public boolean execute(final CommandSender sender, final String commandLabel, final String[] args) {
         if (!getPermission().equals("") && !sender.hasPermission(getPermission())) {
-            messageAPI.sendMessage("noPermission", sender, ImmutableMap.of("{PERMISSION}", getPermission()));
+            messageAPI.sendMessage("noPermission", sender, Replacement.of("{PERMISSION}", getPermission()));
             return true;
         }
 

@@ -7,17 +7,17 @@ import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang.StringUtils;
+import pl.crystalek.crcapi.message.api.replacement.Replacement;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @UtilityClass
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class MessageUtil {
-    final Map<String, String> COLORS_MAPPER = new ImmutableMap.Builder<String, String>()
+    Map<String, String> COLORS_MAPPER = new ImmutableMap.Builder<String, String>()
             .put("&0", "<black>")
             .put("&1", "<dark_blue>")
             .put("&2", "<dark_green>")
@@ -48,47 +48,55 @@ public class MessageUtil {
             .put("&r", "<r>")
             .build();
 
-    public String getStringMessage(final Object objectMessage) {
+    /**
+     * Formats the given text object as a single string.
+     *
+     * @param textObject the text to be formatted
+     * @return the text as a single string
+     */
+    public String formatStringMessage(final Object textObject) {
         String chatMessageString;
-        if (objectMessage instanceof String) {
-            chatMessageString = (String) objectMessage;
+        if (textObject instanceof String) {
+            chatMessageString = (String) textObject;
         } else {
-            final List<String> chatMessageListString = (ArrayList<String>) objectMessage;
+            final List<String> chatMessageListString = (ArrayList<String>) textObject;
             chatMessageString = StringUtils.join(chatMessageListString, "\n");
         }
 
         return chatMessageString;
     }
 
-    public Component replaceOldColorToComponent(final String oldText) {
+    /**
+     * Converts the given oldText string to a {@link Component}. It replaces the old color codes with the corresponding Adventure color codes
+     *
+     * @param oldText the message to be converted
+     * @return the converted message as a {@link Component}
+     */
+    public Component convertTextAsComponent(final String oldText) {
         String replaceText = oldText;
         for (final Map.Entry<String, String> entry : COLORS_MAPPER.entrySet()) {
             replaceText = replaceText.replace(entry.getKey(), entry.getValue());
         }
 
         final MiniMessage miniMessage = MiniMessage.miniMessage();
-        return miniMessage.deserialize(miniMessage.serialize(LegacyComponentSerializer.legacyAmpersand().deserialize(replaceText)));
+        return miniMessage.deserialize(replaceText);
     }
 
-    public Component replace(final Component component, final Map<String, Object> replacements) {
-        Component newComponent = component;
-
-        for (final Map.Entry<String, Object> entry : replacements.entrySet()) {
-            final TextReplacementConfig replacement = TextReplacementConfig.builder().matchLiteral(entry.getKey()).replacement(entry.getValue().toString()).build();
-            newComponent = newComponent.replaceText(replacement);
+    /**
+     * Replaces the text in the provided {@link Component} with the given {@link Replacement} objects.
+     *
+     * @param component    the {@link Component} that contains the text to be replaced
+     * @param replacements an array of {@link Replacement} objects that specify the text to be replaced and its replacement
+     * @return the updated {@link Component} with the replaced text
+     */
+    public Component replace(Component component, final Replacement... replacements) {
+        for (final Replacement replacement : replacements) {
+            component = component.replaceText(TextReplacementConfig.builder()
+                    .matchLiteral(replacement.getFrom())
+                    .replacement(replacement.getTo())
+                    .build());
         }
 
-        return newComponent;
-    }
-
-    public Component replaceComponent(final Component component, final Map<String, Component> replacements) {
-        Component newComponent = component;
-
-        for (final Map.Entry<String, Component> entry : replacements.entrySet()) {
-            final TextReplacementConfig replacement = TextReplacementConfig.builder().matchLiteral(entry.getKey()).replacement(entry.getValue()).build();
-            newComponent = newComponent.replaceText(replacement);
-        }
-
-        return newComponent;
+        return component;
     }
 }

@@ -1,4 +1,4 @@
-package pl.crystalek.crcapi.message.impl.loader.message;
+package pl.crystalek.crcapi.message.impl.mesage.impl;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -9,9 +9,8 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.ConfigurationSection;
 import pl.crystalek.crcapi.message.api.message.IActionBarMessage;
 import pl.crystalek.crcapi.message.api.message.Message;
+import pl.crystalek.crcapi.message.api.replacement.Replacement;
 import pl.crystalek.crcapi.message.api.util.MessageUtil;
-
-import java.util.Map;
 
 @Getter
 @RequiredArgsConstructor
@@ -21,18 +20,13 @@ public final class ActionBarMessage implements Message, IActionBarMessage {
 
     public static ActionBarMessage loadActionBar(final ConfigurationSection actionBarMessageSection) {
         final String actionBar = actionBarMessageSection.getString("actionbar");
-        final Component component = MessageUtil.replaceOldColorToComponent(actionBar);
+        final Component component = MessageUtil.convertTextAsComponent(actionBar);
 
         return new ActionBarMessage(component);
     }
 
     @Override
-    public void sendMessage(final Audience sender, final Map<String, Object> replacements) {
+    public void sendMessage(final Audience sender, final Replacement... replacements) {
         sender.sendActionBar(MessageUtil.replace(actionBarComponent, replacements));
-    }
-
-    @Override
-    public void sendMessageComponent(final Audience sender, final Map<String, Component> replacements) {
-        sender.sendActionBar(MessageUtil.replaceComponent(actionBarComponent, replacements));
     }
 }

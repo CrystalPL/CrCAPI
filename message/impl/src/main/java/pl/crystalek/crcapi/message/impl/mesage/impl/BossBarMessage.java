@@ -1,4 +1,4 @@
-package pl.crystalek.crcapi.message.impl.loader.message;
+package pl.crystalek.crcapi.message.impl.mesage.impl;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -14,10 +14,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import pl.crystalek.crcapi.core.util.NumberUtil;
 import pl.crystalek.crcapi.message.api.message.IBossBarMessage;
 import pl.crystalek.crcapi.message.api.message.Message;
+import pl.crystalek.crcapi.message.api.replacement.Replacement;
 import pl.crystalek.crcapi.message.api.util.MessageUtil;
 import pl.crystalek.crcapi.message.impl.exception.MessageLoadException;
 
-import java.util.Map;
 import java.util.Optional;
 
 @Getter
@@ -51,7 +51,7 @@ public final class BossBarMessage implements Message, IBossBarMessage {
         checkFieldExist(bossBarSection, "color");
         checkFieldExist(bossBarSection, "overlay");
 
-        final Component title = MessageUtil.replaceOldColorToComponent(bossBarSection.getString("title"));
+        final Component title = MessageUtil.convertTextAsComponent(bossBarSection.getString("title"));
 
         final Optional<Float> progressOptional = NumberUtil.getFloat(bossBarSection.get("progress"));
         if (!progressOptional.isPresent()) {
@@ -95,18 +95,8 @@ public final class BossBarMessage implements Message, IBossBarMessage {
     }
 
     @Override
-    public void sendMessage(final Audience sender, final Map<String, Object> replacements) {
+    public void sendMessage(final Audience sender, final Replacement... replacements) {
         final BossBar bossBar = BossBar.bossBar(MessageUtil.replace(bossBarComponent, replacements), progress, color, overlay);
-
-        sender.showBossBar(bossBar);
-        if (plugin != null) {
-            Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> sender.hideBossBar(bossBar), stayTime);
-        }
-    }
-
-    @Override
-    public void sendMessageComponent(final Audience sender, final Map<String, Component> replacements) {
-        final BossBar bossBar = BossBar.bossBar(MessageUtil.replaceComponent(bossBarComponent, replacements), progress, color, overlay);
 
         sender.showBossBar(bossBar);
         if (plugin != null) {

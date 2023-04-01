@@ -18,9 +18,19 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * A utility class providing methods for retrieving values from configuration and performing validation checks.
+ */
 @UtilityClass
 public class ConfigParserUtil {
 
+    /**
+     * Returns an ItemStack object parsed from a ConfigurationSection object.
+     *
+     * @param itemConfiguration The ConfigurationSection object containing the item data.
+     * @return An ItemStack object parsed from the ConfigurationSection.
+     * @throws ConfigLoadException If an error occurs while parsing the item data.
+     */
     public ItemStack getItem(final ConfigurationSection itemConfiguration) throws ConfigLoadException {
         if (!itemConfiguration.contains("material")) {
             throw new ConfigLoadException("Nie wykryto pola material!");
@@ -94,6 +104,13 @@ public class ConfigParserUtil {
         return itemBuilder.build();
     }
 
+    /**
+     * Returns a Location object parsed from a ConfigurationSection object.
+     *
+     * @param locationConfiguration The ConfigurationSection object containing the location data.
+     * @return A Location object parsed from the ConfigurationSection.
+     * @throws ConfigLoadException If an error occurs while parsing the location data.
+     */
     public Location getLocation(final ConfigurationSection locationConfiguration) throws ConfigLoadException {
         final String worldName = locationConfiguration.getString("world");
         final World world = Bukkit.getWorld(worldName);
@@ -129,14 +146,29 @@ public class ConfigParserUtil {
         return new Location(world, xOptional.get(), yOptional.get(), zOptional.get(), yawOptional.get(), pitchOptional.get());
     }
 
+    /**
+     * Returns a Recipe object with its item array populated with materials parsed from a ConfigurationSection object.
+     *
+     * @param recipeConfiguration The ConfigurationSection object containing the recipe data.
+     * @param recipe              The Recipe object to be populated with the parsed materials.
+     * @return A Recipe object with its item array populated with the parsed materials.
+     * @throws ConfigLoadException If an error occurs while parsing the recipe data.
+     */
     public Recipe getRecipe(final ConfigurationSection recipeConfiguration, final Recipe recipe) throws ConfigLoadException {
         for (int i = 0; i < 9; i++) {
-            recipe.setItem(i, getMaterial(recipeConfiguration.getString(String.valueOf(i + 1))));
+            recipe.setItem(i, getMaterial(getString(recipeConfiguration, String.valueOf(i + 1))));
         }
 
         return recipe;
     }
 
+    /**
+     * Returns a Material object parsed from a String.
+     *
+     * @param materialName The name of the material to be parsed.
+     * @return A Material object parsed from the provided String.
+     * @throws ConfigLoadException If the provided String does not correspond to a valid Material.
+     */
     public Material getMaterial(final String materialName) throws ConfigLoadException {
         try {
             return Material.valueOf(materialName.toUpperCase());
@@ -145,6 +177,14 @@ public class ConfigParserUtil {
         }
     }
 
+    /**
+     * Retrieves a boolean value from the given ConfigurationSection object with the specified path.
+     *
+     * @param configurationSection The ConfigurationSection to retrieve the boolean value from.
+     * @param booleanPath          The path to the boolean value.
+     * @return The boolean value.
+     * @throws ConfigLoadException If the specified path does not exist in the ConfigurationSection, or if the value is not "true" or "false".
+     */
     public boolean getBoolean(final ConfigurationSection configurationSection, final String booleanPath) throws ConfigLoadException {
         checkFieldExist(configurationSection, booleanPath);
 
@@ -156,6 +196,14 @@ public class ConfigParserUtil {
         return Boolean.parseBoolean(booleanName);
     }
 
+    /**
+     * Retrieves an integer value from the given ConfigurationSection object with the specified path.
+     *
+     * @param configurationSection The ConfigurationSection to retrieve the integer value from.
+     * @param intPath              The path to the integer value.
+     * @return The integer value.
+     * @throws ConfigLoadException If the specified path does not exist in the ConfigurationSection, or if the value is not a valid integer.
+     */
     public int getInt(final ConfigurationSection configurationSection, final String intPath) throws ConfigLoadException {
         checkFieldExist(configurationSection, intPath);
 
@@ -167,6 +215,15 @@ public class ConfigParserUtil {
         return integerOptional.get();
     }
 
+    /**
+     * Retrieves an integer value from the given ConfigurationSection object with the specified path and applies the specified condition to it.
+     *
+     * @param configurationSection The ConfigurationSection to retrieve the integer value from.
+     * @param intPath              The path to the integer value.
+     * @param intCondition         The condition to apply to the integer value.
+     * @return The integer value.
+     * @throws ConfigLoadException If the specified path does not exist in the ConfigurationSection, or if the value is not a valid integer, or if the condition is not met.
+     */
     public int getInt(final ConfigurationSection configurationSection, final String intPath, final Function<Integer, Boolean> intCondition) throws ConfigLoadException {
         final int number = getInt(configurationSection, intPath);
 
@@ -177,12 +234,28 @@ public class ConfigParserUtil {
         return number;
     }
 
+    /**
+     * Retrieves a string value from the given ConfigurationSection object with the specified path.
+     *
+     * @param configurationSection The ConfigurationSection to retrieve the string value from.
+     * @param stringPath           The path to the string value.
+     * @return The string value.
+     * @throws ConfigLoadException If the specified path does not exist in the ConfigurationSection.
+     */
     public String getString(final ConfigurationSection configurationSection, final String stringPath) throws ConfigLoadException {
         checkFieldExist(configurationSection, stringPath);
 
         return configurationSection.getString(stringPath);
     }
 
+    /**
+     * Retrieves a long value from the given ConfigurationSection object with the specified path.
+     *
+     * @param configurationSection The ConfigurationSection to retrieve the long value from.
+     * @param longPath             The path to the long value.
+     * @return The long value.
+     * @throws ConfigLoadException If the specified path does not exist in the ConfigurationSection, or if the value is not a valid long.
+     */
     public long getLong(final ConfigurationSection configurationSection, final String longPath) throws ConfigLoadException {
         checkFieldExist(configurationSection, longPath);
 
@@ -194,6 +267,15 @@ public class ConfigParserUtil {
         return longOptional.get();
     }
 
+    /**
+     * Retrieves a long value from the given ConfigurationSection object with the specified path and applies the specified condition to it.
+     *
+     * @param configurationSection The ConfigurationSection to retrieve the long value from.
+     * @param longPath             The path to the long value.
+     * @param longCondition        The condition to apply to the long value.
+     * @return The long value.
+     * @throws ConfigLoadException If the specified path does not exist in the ConfigurationSection, or if the value is not a valid long, or if the condition is not met.
+     */
     public long getLong(final ConfigurationSection configurationSection, final String longPath, final Function<Long, Boolean> longCondition) throws ConfigLoadException {
         final long number = getLong(configurationSection, longPath);
 
@@ -204,6 +286,14 @@ public class ConfigParserUtil {
         return number;
     }
 
+    /**
+     * Retrieves a double value from the specified ConfigurationSection at the given path.
+     *
+     * @param configurationSection the ConfigurationSection to retrieve the value from
+     * @param doublePath           the path to the double value in the ConfigurationSection
+     * @return the double value at the given path
+     * @throws ConfigLoadException if the specified path does not exist or the value at the path is not a valid double
+     */
     public double getDouble(final ConfigurationSection configurationSection, final String doublePath) throws ConfigLoadException {
         checkFieldExist(configurationSection, doublePath);
 
@@ -215,6 +305,16 @@ public class ConfigParserUtil {
         return doubleOptional.get();
     }
 
+    /**
+     * Retrieves a double value from the specified ConfigurationSection at the given path, and applies a condition to it.
+     *
+     * @param configurationSection the ConfigurationSection to retrieve the value from
+     * @param doublePath           the path to the double value in the ConfigurationSection
+     * @param doubleCondition      a function to apply to the retrieved double value
+     * @return the double value at the given path if it satisfies the condition
+     * @throws ConfigLoadException if the specified path does not exist, the value at the path is not a valid double,
+     *                             or the retrieved value does not satisfy the specified condition
+     */
     public double getDouble(final ConfigurationSection configurationSection, final String doublePath, final Function<Double, Boolean> doubleCondition) throws ConfigLoadException {
         final double number = getDouble(configurationSection, doublePath);
 
@@ -225,12 +325,27 @@ public class ConfigParserUtil {
         return number;
     }
 
+    /**
+     * Retrieves a list of strings from the specified ConfigurationSection at the given path.
+     *
+     * @param configurationSection the ConfigurationSection to retrieve the value from
+     * @param stringListPath       the path to the list of strings in the ConfigurationSection
+     * @return the list of strings at the given path
+     * @throws ConfigLoadException if the specified path does not exist
+     */
     public List<String> getStringList(final ConfigurationSection configurationSection, final String stringListPath) throws ConfigLoadException {
         checkFieldExist(configurationSection, stringListPath);
 
         return configurationSection.getStringList(stringListPath);
     }
 
+    /**
+     * Checks if the specified field exists in the given ConfigurationSection.
+     *
+     * @param configurationSection the ConfigurationSection to check
+     * @param field                the field to check for existence
+     * @throws ConfigLoadException if the specified field does not exist in the ConfigurationSection
+     */
     public void checkFieldExist(final ConfigurationSection configurationSection, final String field) throws ConfigLoadException {
         if (!configurationSection.contains(field)) {
             throw new ConfigLoadException("Nie odnaleziono pola: " + field);
