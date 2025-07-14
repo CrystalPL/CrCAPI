@@ -15,7 +15,7 @@ import java.lang.reflect.Field;
  */
 @UtilityClass
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class CommandRegistry {
+public class BukkitCommandRegistry {
     @Getter
     CommandMap commandMap;
 

@@ -7,3 +7,6 @@ include 'command'
 include 'message:impl'
 include 'message:api'
 
+
+include 'command:api'
+include 'command:impl'
