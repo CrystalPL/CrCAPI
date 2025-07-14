@@ -3,7 +3,8 @@ repositories {
     maven { url "https://repo.crystalek.pl/crc" }
 }
 
-dependencies {
-    shadow 'pl.crystalek:message-api:1.6.2'
-    shadow 'pl.crystalek:core:1.6.2'
+subprojects {
+    dependencies {
+        compileOnly 'pl.crystalek:message-api:1.6.2'
+    }
 }
