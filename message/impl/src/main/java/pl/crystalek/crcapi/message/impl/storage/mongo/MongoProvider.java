@@ -1,16 +1,16 @@
 package pl.crystalek.crcapi.message.impl.storage.mongo;
 
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Updates;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang.LocaleUtils;
+import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bukkit.entity.Player;
 import pl.crystalek.crcapi.database.config.DatabaseConfig;
 import pl.crystalek.crcapi.database.provider.mongo.BaseMongoProvider;
-import pl.crystalek.crcapi.lib.bson.Document;
-import pl.crystalek.crcapi.lib.bson.conversions.Bson;
-import pl.crystalek.crcapi.lib.mongodb.client.MongoCollection;
-import pl.crystalek.crcapi.lib.mongodb.client.MongoDatabase;
-import pl.crystalek.crcapi.lib.mongodb.client.model.Updates;
 import pl.crystalek.crcapi.message.impl.storage.Provider;
 
 import java.util.Collection;

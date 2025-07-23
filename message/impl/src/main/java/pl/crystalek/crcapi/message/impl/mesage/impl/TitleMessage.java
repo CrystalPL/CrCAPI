@@ -28,7 +28,6 @@ public final class TitleMessage implements Message, ITitleMessage {
 
     public static TitleMessage loadTitleMessage(final ConfigurationSection titleConfiguration) throws MessageLoadException {
         final ConfigurationSection titleSection = titleConfiguration.getConfigurationSection("title");
-
         final boolean containsTitle = titleSection.contains("title");
         final boolean containsSubtitle = titleSection.contains("subtitle");
         if (!containsTitle && !containsSubtitle) {

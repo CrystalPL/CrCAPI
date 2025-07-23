@@ -1,25 +1,22 @@
-package pl.crystalek.crcapi.command.annotation;
+package pl.crystalek.crcapi.command.api.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * Annotation used to define command metadata
- */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Command {
+public @interface SubCommand {
     /**
-     * The name of the command
+     * The main command class which this class is a subcommand of
      */
-    String name();
+    Class<?> parentCommand();
 
     /**
-     * Command aliases
+     * The name of the subcommand
      */
-    String[] aliases() default {};
+    String name() default "";
 
     /**
      * The permission required to use the command

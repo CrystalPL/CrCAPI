@@ -1,13 +1,8 @@
-repositories {
-    mavenLocal()
-    maven { url "https://repo.crystalek.pl/crc" }
-}
-
 dependencies {
-    shadow project(":core")
-    implementation project(":message:api")
-    shadow('org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT')
-    shadow 'pl.crystalek:database:1.6.2'
+    api project(":message:message-api")
+    compileOnly project(":core")
+    compileOnly project(":database")
+    api("net.kyori:adventure-platform-bukkit:4.4.0")
 }
 
 tasks.withType(PublishToMavenRepository).configureEach {

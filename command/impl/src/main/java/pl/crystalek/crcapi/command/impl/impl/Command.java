@@ -1,4 +1,4 @@
-package pl.crystalek.crcapi.command.impl;
+package pl.crystalek.crcapi.command.impl.impl;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -6,8 +6,8 @@ import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import pl.crystalek.crcapi.command.CommandExecutor;
-import pl.crystalek.crcapi.command.model.BaseCommandModel;
+import pl.crystalek.crcapi.command.api.CommandExecutor;
+import pl.crystalek.crcapi.command.impl.model.BaseCommandModel;
 import pl.crystalek.crcapi.message.api.MessageAPI;
 import pl.crystalek.crcapi.message.api.replacement.Replacement;
 

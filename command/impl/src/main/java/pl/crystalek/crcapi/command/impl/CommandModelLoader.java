@@ -1,14 +1,14 @@
-package pl.crystalek.crcapi.command;
+package pl.crystalek.crcapi.command.impl;
 
 import com.google.common.reflect.ClassPath;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import pl.crystalek.crcapi.command.annotation.Command;
-import pl.crystalek.crcapi.command.annotation.SubCommand;
-import pl.crystalek.crcapi.command.model.CommandModel;
-import pl.crystalek.crcapi.command.model.SubCommandModel;
-import pl.crystalek.crcapi.command.util.ClassUtils;
+import pl.crystalek.crcapi.command.api.annotation.Command;
+import pl.crystalek.crcapi.command.api.annotation.SubCommand;
+import pl.crystalek.crcapi.command.impl.model.CommandModel;
+import pl.crystalek.crcapi.command.impl.model.SubCommandModel;
+import pl.crystalek.crcapi.command.impl.util.ClassUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -46,7 +46,7 @@ public class CommandModelLoader {
 
             if (clazz.isAnnotationPresent(SubCommand.class)) {
                 final SubCommand subCommand = clazz.getAnnotation(SubCommand.class);
-                final SubCommandModel subCommandModel = getSubCommandModel(subCommand);
+                final SubCommandModel subCommandModel = getSubCommandModel(subCommand, clazz);
                 if (subCommandModelMap.containsKey(subCommand.parentCommand())) {
                     subCommandModelMap.get(subCommand.parentCommand()).add(subCommandModel);
                 } else {
@@ -81,7 +81,7 @@ public class CommandModelLoader {
         return new CommandModel(permission, useConsole, minArgs, maxArgs, commandUsagePath, Arrays.asList(aliases), name);
     }
 
-    private SubCommandModel getSubCommandModel(final SubCommand subCommand) {
+    private SubCommandModel getSubCommandModel(final SubCommand subCommand, final Class<?> subCommandClass) {
         final int maxArgs = subCommand.maxArgs();
         final int minArgs = subCommand.minArgs();
         final String name = subCommand.name();
@@ -89,6 +89,6 @@ public class CommandModelLoader {
         final boolean useConsole = subCommand.useConsole();
         final String commandUsagePath = subCommand.commandUsagePath();
 
-        return new SubCommandModel(permission, useConsole, minArgs, maxArgs, name, commandUsagePath, subCommand.getClass());
+        return new SubCommandModel(permission, useConsole, minArgs, maxArgs, name, commandUsagePath, subCommandClass);
     }
 }

@@ -1,9 +1,9 @@
-package pl.crystalek.crcapi.command.config;
+package pl.crystalek.crcapi.command.impl.config;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
-import pl.crystalek.crcapi.command.CommandExecutor;
+import pl.crystalek.crcapi.command.api.CommandExecutor;
 
 import java.util.List;
 

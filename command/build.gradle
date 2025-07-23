@@ -1,10 +1,14 @@
-repositories {
-    mavenLocal()
-    maven { url "https://repo.crystalek.pl/crc" }
-}
-
 subprojects {
     dependencies {
-        compileOnly 'pl.crystalek:message-api:1.6.2'
+        compileOnly project(":message:message-api")
+        compileOnly('org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT')
     }
+}
+
+tasks.withType(PublishToMavenRepository).configureEach {
+    it.enabled = false
+}
+
+tasks.withType(PublishToMavenLocal).configureEach {
+    it.enabled = false
 }

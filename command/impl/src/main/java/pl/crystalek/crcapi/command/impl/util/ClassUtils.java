@@ -1,4 +1,4 @@
-package pl.crystalek.crcapi.command.util;
+package pl.crystalek.crcapi.command.impl.util;
 
 import com.google.common.reflect.ClassPath;
 import lombok.experimental.UtilityClass;
@@ -24,7 +24,7 @@ public class ClassUtils {
         try {
             final Class<?> clazz = Class.forName(className, false, classLoader);
             return Optional.of(clazz);
-        } catch (final ClassNotFoundException exception) {
+        } catch (final ClassNotFoundException | NoClassDefFoundError exception) {
             return Optional.empty();
         }
     }

@@ -1,12 +1,16 @@
 rootProject.name = 'CrCAPI'
-include 'core'
-include 'gui'
-include 'database'
-include 'message'
-include 'command'
-include 'message:impl'
-include 'message:api'
 
+this.setupSubproject("core")
+this.setupSubproject("gui")
+this.setupSubproject("database")
 
-include 'command:api'
-include 'command:impl'
+this.setupSubproject("message:api")
+this.setupSubproject("message:impl")
+
+this.setupSubproject("command:api")
+this.setupSubproject("command:impl")
+
+def setupSubproject(String project, String name = null) {
+    include "$project"
+    findProject(":$project")?.name = name ?: project.replace(":", "-")
+}

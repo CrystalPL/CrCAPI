@@ -1,12 +1,12 @@
-package pl.crystalek.crcapi.command.config;
+package pl.crystalek.crcapi.command.impl.config;
 
 import com.google.common.reflect.ClassPath;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.bukkit.configuration.ConfigurationSection;
-import pl.crystalek.crcapi.command.CommandExecutor;
-import pl.crystalek.crcapi.command.util.ClassUtils;
+import pl.crystalek.crcapi.command.api.CommandExecutor;
+import pl.crystalek.crcapi.command.impl.util.ClassUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,7 +62,7 @@ public class ConfigCommandLoader {
             return new ArrayList<>();
         }
 
-        if (!commandClass.getSuperclass().equals(CommandExecutor.class)) {
+        if (!CommandExecutor.class.isAssignableFrom(commandClass)) {
             logger.log(Level.SEVERE, "Head class must be extend CommandExecutor: " + commandClass.getSimpleName());
             return new ArrayList<>();
         }

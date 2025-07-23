@@ -1,5 +1,6 @@
 package pl.crystalek.crcapi.message.impl.storage.sql;
 
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang.LocaleUtils;
@@ -7,7 +8,6 @@ import org.bukkit.entity.Player;
 import pl.crystalek.crcapi.database.config.DatabaseConfig;
 import pl.crystalek.crcapi.database.provider.sql.BaseSQLProvider;
 import pl.crystalek.crcapi.database.provider.sql.model.SQLFunction;
-import pl.crystalek.crcapi.lib.hikari.HikariDataSource;
 import pl.crystalek.crcapi.message.impl.storage.Provider;
 
 import java.sql.ResultSet;
@@ -47,9 +47,9 @@ public class SQLProvider extends BaseSQLProvider implements Provider {
     @Override
     public void createTable() {
         final String userLocaleTable = String.format("CREATE TABLE IF NOT EXISTS %slocaleMap (\n" +
-                "    uuid CHAR(36) NOT NULL UNIQUE PRIMARY KEY NOT NULL,\n" +
-                "    language_tag TEXT NOT NULL\n" +
-                ");", databaseConfig.getPrefix());
+                                                     "    uuid CHAR(36) NOT NULL UNIQUE PRIMARY KEY NOT NULL,\n" +
+                                                     "    language_tag TEXT NOT NULL\n" +
+                                                     ");", databaseConfig.getPrefix());
 
         executeUpdateAndOpenConnection(userLocaleTable);
     }

@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -51,56 +52,65 @@ public class MessageLoader {
                 continue;
             }
 
-            final List<Message> messageList = getMessage(configurationSection);
-            messageMap.put(configurationSection.getCurrentPath(), messageList);
+            final Optional<Message> messageOptional = getMessage(configurationSection, messageName);
+            if (!messageOptional.isPresent()) {
+                continue;
+            }
+
+            final String currentPath = configurationSection.getCurrentPath();
+            final Message message = messageOptional.get();
+            if (messageMap.containsKey(currentPath)) {
+                messageMap.get(currentPath).add(message);
+            } else {
+                final List<Message> messageList = new ArrayList<>();
+                messageList.add(message);
+                messageMap.put(currentPath, messageList);
+            }
         }
 
         return messageMap;
     }
 
-    private List<Message> getMessage(final ConfigurationSection messageConfiguration) {
-        final List<Message> messageList = new ArrayList<>();
-
+    private Optional<Message> getMessage(final ConfigurationSection messageConfiguration, final String settingsName) {
         //chat configurer
-        if (messageConfiguration.contains("chat")) {
+        if (settingsName.equals("chat")) {
             try {
-                final ChatMessage chatMessage = ChatMessage.loadChatMessage(messageConfiguration);
-                messageList.add(chatMessage);
+                return Optional.of(ChatMessage.loadChatMessage(messageConfiguration));
             } catch (final MessageLoadException exception) {
                 plugin.getLogger().severe("Wystąpił problem podczas ładowania wiadomości wysyłanej na czacie w sekcji: " + messageConfiguration.getName());
                 plugin.getLogger().severe(exception.getMessage());
+                return Optional.empty();
             }
         }
 
         //actionbar configurer
-        if (messageConfiguration.contains("actionbar")) {
-            final ActionBarMessage actionBarMessage = ActionBarMessage.loadActionBar(messageConfiguration);
-            messageList.add(actionBarMessage);
+        if (settingsName.equals("actionbar")) {
+            return Optional.of(ActionBarMessage.loadActionBar(messageConfiguration));
         }
 
         //title configurer
-        if (messageConfiguration.contains("title")) {
+        if (settingsName.equals("title")) {
             try {
-                final TitleMessage titleMessage = TitleMessage.loadTitleMessage(messageConfiguration);
-                messageList.add(titleMessage);
+                return Optional.of(TitleMessage.loadTitleMessage(messageConfiguration));
             } catch (final MessageLoadException exception) {
                 plugin.getLogger().severe("Wystąpił problem podczas ładowania wiadomości wyświetlanej na środku ekranu w sekcji: " + messageConfiguration.getName());
                 plugin.getLogger().severe(exception.getMessage());
+                return Optional.empty();
             }
         }
 
         //bossbar configurer
-        if (messageConfiguration.contains("bossbar")) {
+        if (settingsName.equals("bossbar")) {
             try {
-                final BossBarMessage bossBarMessage = BossBarMessage.loadBossBar(messageConfiguration, plugin);
-                messageList.add(bossBarMessage);
+                return Optional.of(BossBarMessage.loadBossBar(messageConfiguration, plugin));
             } catch (final MessageLoadException exception) {
                 plugin.getLogger().severe(exception.getMessage());
                 plugin.getLogger().severe("Wystąpił problem podczas ładowania wiadomości wyświetlanej na pasku smoka w sekcji: " + messageConfiguration.getName());
+                return Optional.empty();
             }
         }
 
-        return messageList;
+        return Optional.empty();
     }
 
     public boolean init() {

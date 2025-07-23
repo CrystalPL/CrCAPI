@@ -1,13 +1,15 @@
-package pl.crystalek.crcapi.command;
+package pl.crystalek.crcapi.command.impl;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import pl.crystalek.crcapi.command.impl.BukkitCommand;
-import pl.crystalek.crcapi.command.impl.Command;
-import pl.crystalek.crcapi.command.impl.MultiCommand;
-import pl.crystalek.crcapi.command.model.CommandModel;
-import pl.crystalek.crcapi.command.model.SubCommandModel;
+import pl.crystalek.crcapi.command.api.BukkitCommandRegistry;
+import pl.crystalek.crcapi.command.api.CommandExecutor;
+import pl.crystalek.crcapi.command.impl.impl.BukkitCommand;
+import pl.crystalek.crcapi.command.impl.impl.Command;
+import pl.crystalek.crcapi.command.impl.impl.MultiCommand;
+import pl.crystalek.crcapi.command.impl.model.CommandModel;
+import pl.crystalek.crcapi.command.impl.model.SubCommandModel;
 import pl.crystalek.crcapi.message.api.MessageAPI;
 
 import java.util.HashMap;
@@ -39,7 +41,7 @@ public class CommandRegistry {
                 return;
             }
 
-            final CommandExecutor commandExecutor = subCommandMap.isEmpty() ? objectByClassOptional.get() : new MultiCommand(commandModel, messageAPI, subCommandMap);
+            final CommandExecutor commandExecutor = subCommandMap.isEmpty() ? objectByClassOptional.get() : getMultiCommand(commandModel, subCommandMap);
             final BukkitCommand bukkitCommand = new BukkitCommand(commandModel.getName(), commandModel.getAliases(), commandExecutor);
             BukkitCommandRegistry.register(bukkitCommand);
         }
@@ -66,8 +68,13 @@ public class CommandRegistry {
     private Optional<CommandExecutor> getObjectByClass(final Class<?> clazz) {
         return commandObjectList.stream()
                 .filter(obj -> obj.getClass().equals(clazz))
-                .filter(obj -> obj.getClass().isAssignableFrom(CommandExecutor.class))
+                .filter(obj -> obj instanceof CommandExecutor)
                 .map(obj -> ((CommandExecutor) obj))
                 .findFirst();
+    }
+
+    private Command getMultiCommand(final CommandModel commandModel, final Map<String, Command> subCommandMap) {
+        final MultiCommand multiCommand = new MultiCommand(commandModel, messageAPI, subCommandMap);
+        return new Command(messageAPI, commandModel, multiCommand);
     }
 }

@@ -1,4 +1,4 @@
-package pl.crystalek.crcapi.command.model;
+package pl.crystalek.crcapi.command.impl.model;
 
 
 import lombok.AccessLevel;

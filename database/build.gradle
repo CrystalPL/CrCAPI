@@ -1,8 +1,9 @@
 dependencies {
-    implementation('com.zaxxer:HikariCP:4.0.3')
-    implementation('org.mongodb:mongodb-driver-sync:4.3.2')
-    implementation('mysql:mysql-connector-java:8.0.26')
-    implementation('org.slf4j:slf4j-simple:1.7.33')
+    api('com.zaxxer:HikariCP:4.0.3')
+    api('org.mongodb:mongodb-driver-sync:4.3.2')
+    api('mysql:mysql-connector-java:8.0.26')
+    api('org.slf4j:slf4j-simple:1.7.33')
 
-    shadow project(":core")
+    compileOnly('org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT')
+    compileOnly project(":core")
 }

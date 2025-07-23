@@ -6,7 +6,7 @@ plugins {
 
 allprojects {
     group = 'pl.crystalek'
-    version = '1.7.8'
+    version = '1.8.0'
 
     apply plugin: 'java-library'
     apply plugin: 'com.github.johnrengelman.shadow'
@@ -24,14 +24,9 @@ allprojects {
         maven { url "https://oss.sonatype.org/content/groups/public/" }
     }
 
-    dependencies {
-        shadow('org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT')
-    }
-
     shadowJar {
         relocate 'net.kyori', 'pl.crystalek.crcapi.lib.adventure'
         relocate 'net.kyori.examination', 'pl.crystalek.crcapi.lib.examination'
-
         relocate 'com.mongodb', 'pl.crystalek.crcapi.lib.mongodb'
         relocate 'com.zaxxer.hikari', 'pl.crystalek.crcapi.lib.hikari'
         relocate 'com.mysql', 'pl.crystalek.crcapi.lib.mysql'
@@ -49,10 +44,6 @@ subprojects {
         publications {
             maven(MavenPublication) {
                 from components.java
-
-                if (it.getArtifactId().equals('api')) {
-                    it.setArtifactId('message-api')
-                }
 
                 pom.withXml {
                     def repositories = asNode().appendNode('repositories')
@@ -85,10 +76,14 @@ subprojects {
 
 dependencies {
     implementation project(":database")
-    implementation project(":command")
     implementation project(":core")
     implementation project(":gui")
-    implementation project(":message:impl")
+    implementation project(":message:message-impl")
+    implementation project(":command:command-impl")
+}
+
+dependencies {
+    compileOnly('org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT')
 }
 
 shadowJar {

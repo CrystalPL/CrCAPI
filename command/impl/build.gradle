@@ -1,5 +1,5 @@
 dependencies {
-    implementation project(":command:api")
+    api project(":command:command-api")
 }
 
 tasks.withType(PublishToMavenRepository).configureEach {

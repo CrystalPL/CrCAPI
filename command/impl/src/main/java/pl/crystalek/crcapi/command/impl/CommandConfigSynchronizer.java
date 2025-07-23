@@ -1,12 +1,12 @@
-package pl.crystalek.crcapi.command;
+package pl.crystalek.crcapi.command.impl;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import pl.crystalek.crcapi.command.config.ConfigBaseCommandData;
-import pl.crystalek.crcapi.command.config.ConfigCommandData;
-import pl.crystalek.crcapi.command.model.CommandModel;
-import pl.crystalek.crcapi.command.model.SubCommandModel;
+import pl.crystalek.crcapi.command.impl.config.ConfigBaseCommandData;
+import pl.crystalek.crcapi.command.impl.config.ConfigCommandData;
+import pl.crystalek.crcapi.command.impl.model.CommandModel;
+import pl.crystalek.crcapi.command.impl.model.SubCommandModel;
 
 import java.util.List;
 import java.util.Map;

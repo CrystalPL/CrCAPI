@@ -1,11 +1,11 @@
-package pl.crystalek.crcapi.command.impl;
+package pl.crystalek.crcapi.command.impl.impl;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.CommandSender;
-import pl.crystalek.crcapi.command.CommandExecutor;
-import pl.crystalek.crcapi.command.model.CommandModel;
+import pl.crystalek.crcapi.command.api.CommandExecutor;
+import pl.crystalek.crcapi.command.impl.model.CommandModel;
 import pl.crystalek.crcapi.message.api.MessageAPI;
 
 import java.util.ArrayList;
