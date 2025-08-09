@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public final class CrCAPIMessage {
     final JavaPlugin apiPlugin;
-    Storage<Provider> storage;
+    Storage storage;
 
     public void load() {
         final BukkitAudiences bukkitAudiences = BukkitAudiences.create(apiPlugin);
@@ -59,14 +59,18 @@ public final class CrCAPIMessage {
             return;
         }
 
-        storage = new Storage<>(config.getDatabaseConfig(), apiPlugin);
-        if (!storage.initDatabase() || !storage.initProvider(SQLProvider.class, SQLProvider.class, MongoProvider.class)) {
+        storage = new Storage(config.getDatabaseConfig(), apiPlugin);
+        if (!storage.initDatabase()) {
             apiPlugin.getLogger().severe("Wyłączanie pluginu");
             Bukkit.getPluginManager().disablePlugin(apiPlugin);
             return;
         }
-
-        final Provider provider = storage.getProvider();
+        final Provider provider = storage.initProvider(SQLProvider.class, SQLProvider.class, MongoProvider.class);
+        if (provider == null) {
+            apiPlugin.getLogger().severe("Wyłączanie pluginu");
+            Bukkit.getPluginManager().disablePlugin(apiPlugin);
+            return;
+        }
 
         final Map<UUID, Locale> usersLocaleMap = provider.getPlayersLocaleMap(Bukkit.getOnlinePlayers());
         final Map<Audience, Locale> audienceLocaleMap = usersLocaleMap.entrySet().stream()

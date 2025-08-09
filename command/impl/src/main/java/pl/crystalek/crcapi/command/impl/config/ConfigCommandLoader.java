@@ -5,7 +5,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.bukkit.configuration.ConfigurationSection;
-import pl.crystalek.crcapi.command.api.CommandExecutor;
+import pl.crystalek.crcapi.command.api.config.ConfigBaseCommandData;
+import pl.crystalek.crcapi.command.api.config.ConfigCommandData;
 import pl.crystalek.crcapi.command.impl.util.ClassUtils;
 
 import java.util.ArrayList;
@@ -34,16 +35,16 @@ public class ConfigCommandLoader {
     }
 
     private Optional<ConfigCommandData> getCommandData(final String commandClassName) {
-        final Optional<Class<? extends CommandExecutor>> commandClassOptional = getCommandClass(commandClassName);
+        final Optional<Class<?>> commandClassOptional = getCommandClass(commandClassName);
         if (!commandClassOptional.isPresent()) {
             return Optional.empty();
         }
 
         final ConfigurationSection commandConfigurationSection = commandsConfigurationSection.getConfigurationSection(commandClassName);
-        final Class<? extends CommandExecutor> commandClass = commandClassOptional.get();
+        final Class<?> commandClass = commandClassOptional.get();
         final String commandName = commandConfigurationSection.getString("name");
         final List<String> commandAliases = getCommandAliases(commandConfigurationSection);
-        final List<ConfigBaseCommandData> subCommandDataList = loadSubCommands(commandClass, commandConfigurationSection);
+        final List<ConfigBaseCommandData> subCommandDataList = loadSubCommands(commandConfigurationSection);
 
         return Optional.of(new ConfigCommandData(commandName, commandClass, commandAliases, subCommandDataList));
     }
@@ -57,13 +58,8 @@ public class ConfigCommandLoader {
         return new ArrayList<>();
     }
 
-    private List<ConfigBaseCommandData> loadSubCommands(final Class<? extends CommandExecutor> commandClass, final ConfigurationSection commandConfigurationSection) {
+    private List<ConfigBaseCommandData> loadSubCommands(final ConfigurationSection commandConfigurationSection) {
         if (!commandConfigurationSection.contains("subCommands")) {
-            return new ArrayList<>();
-        }
-
-        if (!CommandExecutor.class.isAssignableFrom(commandClass)) {
-            logger.log(Level.SEVERE, "Head class must be extend CommandExecutor: " + commandClass.getSimpleName());
             return new ArrayList<>();
         }
 
@@ -80,13 +76,12 @@ public class ConfigCommandLoader {
         return getCommandClass(subCommandName).map(it -> new ConfigBaseCommandData(argumentName, it));
     }
 
-    private Optional<Class<? extends CommandExecutor>> getCommandClass(final String commandClassName) {
+    private Optional<Class<?>> getCommandClass(final String commandClassName) {
         final Optional<? extends Class<?>> classOptional = allClasses.stream()
                 .filter(it -> it.getSimpleName().equalsIgnoreCase(commandClassName))
                 .map(clazz -> ClassUtils.getClassByClassInfo(clazz, classLoader))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .filter(CommandExecutor.class::isAssignableFrom)
                 .findFirst();
 
         if (!classOptional.isPresent()) {
@@ -95,6 +90,6 @@ public class ConfigCommandLoader {
         }
 
         final Class<?> clazz = classOptional.get();
-        return Optional.of((Class<? extends CommandExecutor>) clazz);
+        return Optional.of(clazz);
     }
 }

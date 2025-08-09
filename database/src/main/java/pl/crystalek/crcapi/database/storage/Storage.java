@@ -18,13 +18,11 @@ import java.lang.reflect.InvocationTargetException;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public final class Storage<T extends BaseProvider> {
+public final class Storage {
     final DatabaseConfig databaseConfig;
     final JavaPlugin plugin;
     @Getter
     Database database;
-    @Getter
-    T provider;
 
     public boolean initDatabase() {
         switch (databaseConfig.getStorageType()) {
@@ -48,7 +46,8 @@ public final class Storage<T extends BaseProvider> {
         }
     }
 
-    public boolean initProvider(final Class<? extends T> mysqlProviderClass, final Class<? extends T> sqliteProviderClass, final Class<? extends T> mongoProviderClass) {
+    public <T extends BaseProvider> T initProvider(final Class<? extends T> mysqlProviderClass, final Class<? extends T> sqliteProviderClass, final Class<? extends T> mongoProviderClass) {
+        final T provider;
         try {
             switch (databaseConfig.getStorageType()) {
                 case MYSQL:
@@ -60,18 +59,22 @@ public final class Storage<T extends BaseProvider> {
                 case MONGODB:
                     provider = mongoProviderClass.getDeclaredConstructor(DatabaseConfig.class, MongoDatabase.class).newInstance(databaseConfig, ((MongoStorage) database).getDatabase());
                     break;
+                default:
+                    throw new IllegalArgumentException("Unknown storage type");
             }
-        } catch (final NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException exception) {
+        } catch (final NoSuchMethodException | InstantiationException | IllegalAccessException |
+                       InvocationTargetException exception) {
             exception.printStackTrace();
             plugin.getLogger().severe("Wystąpił problem podczas próby inicjacji bazy danych.");
-            return false;
+            return null;
         }
 
         provider.createTable();
-        return true;
+        return provider;
     }
 
-    public boolean initProvider(final T mysqlProvider, T sqliteProvider, T mongoProvider) {
+    public <T extends BaseProvider> T initProvider(final T mysqlProvider, T sqliteProvider, T mongoProvider) {
+        final T provider;
         switch (databaseConfig.getStorageType()) {
             case MYSQL:
                 provider = mysqlProvider;
@@ -82,10 +85,12 @@ public final class Storage<T extends BaseProvider> {
             case MONGODB:
                 provider = mongoProvider;
                 break;
+            default:
+                throw new IllegalArgumentException("Unknown storage type");
         }
 
         provider.createTable();
-        return true;
+        return provider;
     }
 
     public void close() {

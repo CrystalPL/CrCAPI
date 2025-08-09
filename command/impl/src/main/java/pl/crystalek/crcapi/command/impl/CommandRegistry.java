@@ -27,31 +27,23 @@ public class CommandRegistry {
     Logger logger;
 
     public void registerCommands() {
-        for (final Map.Entry<Class<?>, CommandModel> entry : commandModelMap.entrySet()) {
-            final Class<?> commandClass = entry.getKey();
-            final Optional<CommandExecutor> objectByClassOptional = getObjectByClass(commandClass);
-            if (!objectByClassOptional.isPresent()) {
-                logger.severe("Not found object for: " + commandClass.getName());
-                continue;
-            }
-
-            final CommandModel commandModel = entry.getValue();
+        commandModelMap.forEach((commandClass, commandModel) -> {
             final Map<String, Command> subCommandMap = getSubCommandMap(commandModel);
             if (subCommandMap.size() != commandModel.getSubCommands().size()) {
                 return;
             }
 
-            final CommandExecutor commandExecutor = subCommandMap.isEmpty() ? objectByClassOptional.get() : getMultiCommand(commandModel, subCommandMap);
+            final CommandExecutor commandExecutor = getCommandExecutor(commandClass, commandModel, subCommandMap);
             final BukkitCommand bukkitCommand = new BukkitCommand(commandModel.getName(), commandModel.getAliases(), commandExecutor);
             BukkitCommandRegistry.register(bukkitCommand);
-        }
+        });
     }
 
     private Map<String, Command> getSubCommandMap(final CommandModel commandModel) {
         final List<SubCommandModel> subCommands = commandModel.getSubCommands();
         final Map<String, Command> subCommandMap = new HashMap<>();
         for (final SubCommandModel subCommand : subCommands) {
-            final Optional<CommandExecutor> subCommandObjectOptional = getObjectByClass(subCommand.getSubCommandClass());
+            final Optional<CommandExecutor> subCommandObjectOptional = getObjectByClass(subCommand.getSubCommandClass()).map(obj -> (CommandExecutor) obj);
             if (!subCommandObjectOptional.isPresent()) {
                 logger.severe("Not found object for: " + subCommand.getSubCommandClass().getName());
                 break;
@@ -65,11 +57,26 @@ public class CommandRegistry {
         return subCommandMap;
     }
 
-    private Optional<CommandExecutor> getObjectByClass(final Class<?> clazz) {
+    private CommandExecutor getCommandExecutor(final Class<?> commandClass, final CommandModel commandModel, final Map<String, Command> subCommandMap) {
+        final CommandExecutor commandExecutor;
+        if (subCommandMap.isEmpty()) {
+            final Optional<Object> objectByClassOptional = getObjectByClass(commandClass);
+            if (!objectByClassOptional.isPresent()) {
+                logger.severe("Not found object for: " + commandClass.getName());
+                return null;
+            }
+
+            commandExecutor = (CommandExecutor) objectByClassOptional.get();
+        } else {
+            commandExecutor = getMultiCommand(commandModel, subCommandMap);
+        }
+
+        return commandExecutor;
+    }
+
+    private Optional<Object> getObjectByClass(final Class<?> clazz) {
         return commandObjectList.stream()
                 .filter(obj -> obj.getClass().equals(clazz))
-                .filter(obj -> obj instanceof CommandExecutor)
-                .map(obj -> ((CommandExecutor) obj))
                 .findFirst();
     }
 

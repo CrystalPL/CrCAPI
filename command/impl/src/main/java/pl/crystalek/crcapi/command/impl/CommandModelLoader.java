@@ -47,10 +47,11 @@ public class CommandModelLoader {
             if (clazz.isAnnotationPresent(SubCommand.class)) {
                 final SubCommand subCommand = clazz.getAnnotation(SubCommand.class);
                 final SubCommandModel subCommandModel = getSubCommandModel(subCommand, clazz);
-                if (subCommandModelMap.containsKey(subCommand.parentCommand())) {
-                    subCommandModelMap.get(subCommand.parentCommand()).add(subCommandModel);
+                final Class<?> parentCommandClass = subCommand.parentCommand();
+                if (subCommandModelMap.containsKey(parentCommandClass)) {
+                    subCommandModelMap.get(parentCommandClass).add(subCommandModel);
                 } else {
-                    subCommandModelMap.put(subCommand.parentCommand(), Collections.singletonList(subCommandModel));
+                    subCommandModelMap.put(parentCommandClass, Collections.singletonList(subCommandModel));
                 }
             }
         }

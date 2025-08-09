@@ -24,7 +24,7 @@ public class ClassUtils {
         try {
             final Class<?> clazz = Class.forName(className, false, classLoader);
             return Optional.of(clazz);
-        } catch (final ClassNotFoundException | NoClassDefFoundError exception) {
+        } catch (final Exception | Error exception) {
             return Optional.empty();
         }
     }

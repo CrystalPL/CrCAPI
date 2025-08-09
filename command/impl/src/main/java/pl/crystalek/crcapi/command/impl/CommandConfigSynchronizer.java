@@ -3,8 +3,8 @@ package pl.crystalek.crcapi.command.impl;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import pl.crystalek.crcapi.command.impl.config.ConfigBaseCommandData;
-import pl.crystalek.crcapi.command.impl.config.ConfigCommandData;
+import pl.crystalek.crcapi.command.api.config.ConfigBaseCommandData;
+import pl.crystalek.crcapi.command.api.config.ConfigCommandData;
 import pl.crystalek.crcapi.command.impl.model.CommandModel;
 import pl.crystalek.crcapi.command.impl.model.SubCommandModel;
 
