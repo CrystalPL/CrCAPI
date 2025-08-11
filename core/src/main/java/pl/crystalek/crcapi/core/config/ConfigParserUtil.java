@@ -13,6 +13,8 @@ import pl.crystalek.crcapi.core.config.exception.ConfigLoadException;
 import pl.crystalek.crcapi.core.item.ItemBuilder;
 import pl.crystalek.crcapi.core.util.NumberUtil;
 
+import java.time.Duration;
+import java.time.temporal.TemporalUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -350,5 +352,34 @@ public class ConfigParserUtil {
         if (!configurationSection.contains(field)) {
             throw new ConfigLoadException("Nie odnaleziono pola: " + field);
         }
+    }
+
+    /**
+     * Retrieves a Duration object from the specified ConfigurationSection at the given path.
+     *
+     * @param configurationSection the ConfigurationSection to retrieve the value from
+     * @param durationPath         the path to the duration value in the ConfigurationSection
+     * @param temporalUnit         the temporal unit to use for the duration
+     * @param durationCondition    a function to apply to the retrieved long value
+     * @return the Duration object created from the value at the given path and the specified temporal unit
+     * @throws ConfigLoadException if the specified path does not existor the retrieved value does not satisfy the specified condition
+     */
+    public Duration getDuration(final ConfigurationSection configurationSection, final String durationPath, final TemporalUnit temporalUnit, final Function<Long, Boolean> durationCondition) throws ConfigLoadException {
+        final long durationValue = getLong(configurationSection, durationPath, durationCondition);
+        return Duration.of(durationValue, temporalUnit);
+    }
+
+    /**
+     * Retrieves a Duration object from the specified ConfigurationSection at the given path.
+     *
+     * @param configurationSection the ConfigurationSection to retrieve the value from
+     * @param durationPath         the path to the duration value in the ConfigurationSection
+     * @param temporalUnit         the temporal unit to use for the duration
+     * @return the Duration object created from the value at the given path and the specified temporal unit
+     * @throws ConfigLoadException if the specified path does not exist or the value at the path is not a valid long
+     */
+    public Duration getDuration(final ConfigurationSection configurationSection, final String durationPath, final TemporalUnit temporalUnit) throws ConfigLoadException {
+        final long durationValue = getLong(configurationSection, durationPath);
+        return Duration.of(durationValue, temporalUnit);
     }
 }
